@@ -1,0 +1,101 @@
+{
+  "app": {
+    "name": "LAF Fit",
+    "tagline": "Lithuanian Armed Forces · Ages 25–50"
+  },
+  "nav": {
+    "home": "Home",
+    "workout": "Workout",
+    "schedule": "Schedule",
+    "progress": "Progress",
+    "guide": "Guide",
+    "skip": "Skip Day",
+    "notifications": "Alerts",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "common": {
+    "start": "Start",
+    "continue": "Continue",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "next": "Next",
+    "done": "Done",
+    "today": "Today",
+    "goal": "Goal",
+    "rest": "Rest"
+  },
+  "onboarding": {
+    "welcome": "Welcome",
+    "intro": "Let's build your plan to pass the LAF fitness test.",
+    "name": "Your name",
+    "namePlaceholder": "Enter your name",
+    "age": "Your age",
+    "gender": "Gender",
+    "male": "Male",
+    "female": "Female",
+    "fitnessLevel": "Fitness level",
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced",
+    "language": "Language",
+    "wakeTime": "Wake-up time",
+    "startPlan": "Start My Plan",
+    "stepOf": "Step {{current}} of {{total}}"
+  },
+  "home": {
+    "greeting": "Hi, {{name}}",
+    "todaysWorkout": "Today's Workout",
+    "yourPlan": "Your Plan",
+    "dailyRoutine": "Daily Routine",
+    "markComplete": "Mark Complete",
+    "skipDay": "Skip Day",
+    "cheatDay": "Cheat Day",
+    "completed": "Completed! 💪",
+    "streak": "{{count}} day streak"
+  },
+  "guide": {
+    "title": "Exercise Guide",
+    "illustration": "Illustration: Form guide + breathing cue"
+  },
+  "schedule": {
+    "title": "Weekly Plan",
+    "phasesTitle": "12-Week Progressive Plan"
+  },
+  "progress": {
+    "title": "Progress",
+    "comingSoon": "Charts & LAF readiness score arrive in the next update.",
+    "readiness": "LAF Readiness"
+  },
+  "skip": {
+    "title": "Skip / Cheat Day",
+    "chooseReason": "Why are you skipping?",
+    "sick": "Sick",
+    "tired": "Tired",
+    "travel": "Travel",
+    "other": "Other",
+    "confirmSkip": "Confirm Skip",
+    "confirmCheat": "Take Cheat Day",
+    "cheatNote": "No guilt — max 1 cheat day per week.",
+    "logged": "Logged. Rescheduled automatically."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "comingSoon": "Push reminders arrive in the next update."
+  },
+  "profile": {
+    "title": "Profile",
+    "ageGroup": "Age Group",
+    "frequency": "Frequency",
+    "reset": "Reset Profile",
+    "resetConfirm": "This clears your profile and logs. Continue?"
+  },
+  "settings": {
+    "title": "Settings",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "language": "Language"
+  }
+}

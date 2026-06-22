@@ -1,0 +1,101 @@
+{
+  "app": {
+    "name": "LAF Fit",
+    "tagline": "Lietuvos Kariuomenė · 25–50 m."
+  },
+  "nav": {
+    "home": "Pradžia",
+    "workout": "Treniruotė",
+    "schedule": "Grafikas",
+    "progress": "Pažanga",
+    "guide": "Vadovas",
+    "skip": "Praleisti",
+    "notifications": "Pranešimai",
+    "profile": "Profilis",
+    "settings": "Nustatymai"
+  },
+  "common": {
+    "start": "Pradėti",
+    "continue": "Tęsti",
+    "back": "Atgal",
+    "save": "Išsaugoti",
+    "cancel": "Atšaukti",
+    "next": "Toliau",
+    "done": "Baigta",
+    "today": "Šiandien",
+    "goal": "Tikslas",
+    "rest": "Poilsis"
+  },
+  "onboarding": {
+    "welcome": "Sveiki",
+    "intro": "Sukurkime jūsų planą LAF kūno rengybos testui išlaikyti.",
+    "name": "Jūsų vardas",
+    "namePlaceholder": "Įveskite vardą",
+    "age": "Jūsų amžius",
+    "gender": "Lytis",
+    "male": "Vyras",
+    "female": "Moteris",
+    "fitnessLevel": "Pajėgumo lygis",
+    "beginner": "Pradedantis",
+    "intermediate": "Vidutinis",
+    "advanced": "Pažengęs",
+    "language": "Kalba",
+    "wakeTime": "Pabudimo laikas",
+    "startPlan": "Pradėti Planą",
+    "stepOf": "{{current}} žingsnis iš {{total}}"
+  },
+  "home": {
+    "greeting": "Sveiki, {{name}}",
+    "todaysWorkout": "Šiandienos Treniruotė",
+    "yourPlan": "Jūsų Planas",
+    "dailyRoutine": "Dienos Rutina",
+    "markComplete": "Pažymėti Atlikta",
+    "skipDay": "Praleisti Dieną",
+    "cheatDay": "Poilsio Diena",
+    "completed": "Atlikta! 💪",
+    "streak": "{{count}} d. serija"
+  },
+  "guide": {
+    "title": "Pratimų Vadovas",
+    "illustration": "Iliustracija: Formos vadovas + kvėpavimo patarimas"
+  },
+  "schedule": {
+    "title": "Savaitės Planas",
+    "phasesTitle": "12 Savaičių Progresyvus Planas"
+  },
+  "progress": {
+    "title": "Pažanga",
+    "comingSoon": "Grafikai ir LAF pasirengimo balas — kitame atnaujinime.",
+    "readiness": "LAF Pasirengimas"
+  },
+  "skip": {
+    "title": "Praleisti / Poilsio Diena",
+    "chooseReason": "Kodėl praleidžiate?",
+    "sick": "Sergu",
+    "tired": "Pavargęs",
+    "travel": "Kelionė",
+    "other": "Kita",
+    "confirmSkip": "Patvirtinti Praleidimą",
+    "confirmCheat": "Imti Poilsio Dieną",
+    "cheatNote": "Be sąžinės graužaties — maks. 1 poilsio diena per savaitę.",
+    "logged": "Užfiksuota. Perplanuota automatiškai."
+  },
+  "notifications": {
+    "title": "Pranešimai",
+    "comingSoon": "Push priminimai — kitame atnaujinime."
+  },
+  "profile": {
+    "title": "Profilis",
+    "ageGroup": "Amžiaus Grupė",
+    "frequency": "Dažnis",
+    "reset": "Atstatyti Profilį",
+    "resetConfirm": "Tai ištrins jūsų profilį ir įrašus. Tęsti?"
+  },
+  "settings": {
+    "title": "Nustatymai",
+    "theme": "Tema",
+    "light": "Šviesi",
+    "dark": "Tamsi",
+    "language": "Kalba"
+  }
+}

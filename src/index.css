@@ -1,0 +1,47 @@
+@import 'tailwindcss';
+
+/* Enable class-based dark mode: <html class="dark"> */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Military / LAF palette */
+  --color-navy: #1e3a5f;
+  --color-navy-deep: #0f2540;
+  --color-forest: #2d6a4f;
+  --color-flag-yellow: #fdb913;
+  --color-flag-green: #006a44;
+  --color-flag-red: #c1272d;
+
+  --font-sans: 'Segoe UI', system-ui, Arial, sans-serif;
+}
+
+:root {
+  color-scheme: light dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Respect iOS safe areas for the bottom nav */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Hide scrollbars on horizontal pill rows but keep scrolling */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

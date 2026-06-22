@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1e3a5f"/>
+      <stop offset="1" stop-color="#2d6a4f"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#g)"/>
+  <path d="M256 96l112 40v104c0 84-58 142-112 168-54-26-112-84-112-168V136z" fill="#fdb913" opacity="0.95"/>
+  <text x="256" y="300" font-family="'Segoe UI',Arial,sans-serif" font-size="150" font-weight="800" fill="#1e3a5f" text-anchor="middle">LAF</text>
+</svg>

@@ -1,106 +1,38 @@
-import { supabase } from '@/lib/supabase'
-import type { Gender, FitnessLevel, Lang, UserProfile, WorkoutLog, DayStatus, SkipReason } from '@/types'
+import type { UserProfile, WorkoutLog } from '@/types'
 
 /**
- * Supabase data access for per-user profile and workout logs.
- * All calls assume an authenticated session; RLS enforces ownership.
+ * Client-side data access. These call the per-user API routes
+ * (src/app/api/*), which are protected by the NextAuth session.
  */
 
-interface ProfileRow {
-  id: string
-  name: string
-  age: number
-  gender: string
-  fitness_level: string
-  language: string
-  wake_time: string
-  created_at: string
+export async function getProfile(): Promise<UserProfile | null> {
+  const res = await fetch('/api/profile', { cache: 'no-store' })
+  if (!res.ok) return null
+  const data = (await res.json()) as { profile: UserProfile | null }
+  return data.profile
 }
 
-interface LogRow {
-  user_id: string
-  log_date: string
-  status: string
-  reason: string | null
-  logged_at: string
-}
-
-function rowToProfile(row: ProfileRow): UserProfile {
-  return {
-    name: row.name,
-    age: row.age,
-    gender: row.gender as Gender,
-    fitnessLevel: row.fitness_level as FitnessLevel,
-    language: row.language as Lang,
-    wakeTime: row.wake_time,
-    createdAt: row.created_at,
-  }
-}
-
-function rowToLog(row: LogRow): WorkoutLog {
-  return {
-    date: row.log_date,
-    status: row.status as DayStatus,
-    reason: (row.reason as SkipReason) ?? undefined,
-    loggedAt: row.logged_at,
-  }
-}
-
-/** Fetch the signed-in user's profile, or null if they haven't onboarded. */
-export async function fetchProfile(userId: string): Promise<UserProfile | null> {
-  if (!supabase) return null
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', userId)
-    .maybeSingle()
-  if (error) throw error
-  return data ? rowToProfile(data as ProfileRow) : null
-}
-
-/** Create or update the signed-in user's profile. */
-export async function upsertProfile(userId: string, profile: UserProfile): Promise<void> {
-  if (!supabase) return
-  const { error } = await supabase.from('profiles').upsert({
-    id: userId,
-    name: profile.name,
-    age: profile.age,
-    gender: profile.gender,
-    fitness_level: profile.fitnessLevel,
-    language: profile.language,
-    wake_time: profile.wakeTime,
-    updated_at: new Date().toISOString(),
+export async function putProfile(profile: UserProfile): Promise<void> {
+  const res = await fetch('/api/profile', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(profile),
   })
-  if (error) throw error
+  if (!res.ok) throw new Error('Failed to save profile')
 }
 
-/** Fetch all workout logs for the user, keyed by ISO date. */
-export async function fetchLogs(userId: string): Promise<Record<string, WorkoutLog>> {
-  if (!supabase) return {}
-  const { data, error } = await supabase
-    .from('workout_logs')
-    .select('*')
-    .eq('user_id', userId)
-  if (error) throw error
-  const map: Record<string, WorkoutLog> = {}
-  for (const row of (data ?? []) as LogRow[]) {
-    map[row.log_date] = rowToLog(row)
-  }
-  return map
+export async function getLogs(): Promise<Record<string, WorkoutLog>> {
+  const res = await fetch('/api/logs', { cache: 'no-store' })
+  if (!res.ok) return {}
+  const data = (await res.json()) as { logs: Record<string, WorkoutLog> }
+  return data.logs
 }
 
-/** Insert or update one day's log (unique per user per date). */
-export async function upsertLog(userId: string, log: WorkoutLog): Promise<void> {
-  if (!supabase) return
-  const { error } = await supabase.from('workout_logs').upsert(
-    {
-      user_id: userId,
-      log_date: log.date,
-      status: log.status,
-      reason: log.reason ?? null,
-      logged_at: log.loggedAt,
-    },
-    { onConflict: 'user_id,log_date' },
-  )
-  if (error) throw error
+export async function postLog(log: WorkoutLog): Promise<void> {
+  const res = await fetch('/api/logs', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(log),
+  })
+  if (!res.ok) throw new Error('Failed to save log')
 }

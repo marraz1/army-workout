@@ -43,6 +43,8 @@
     "loginLink": "Prisijungti",
     "passwordsMismatch": "Slaptažodžiai nesutampa.",
     "passwordTooShort": "Slaptažodį turi sudaryti bent 6 simboliai.",
+    "invalidCredentials": "Neteisingas el. paštas arba slaptažodis.",
+    "registerFailed": "Nepavyko sukurti paskyros. Bandykite dar kartą.",
     "checkEmail": "Patikrinkite el. paštą ir patvirtinkite paskyrą, tada prisijunkite.",
     "loading": "Kraunama…",
     "notConfigured": "Autentifikacija dar nesukonfigūruota. Įrašykite Supabase raktus į .env.local."

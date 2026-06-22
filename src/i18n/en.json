@@ -43,6 +43,8 @@
     "loginLink": "Sign in",
     "passwordsMismatch": "Passwords do not match.",
     "passwordTooShort": "Password must be at least 6 characters.",
+    "invalidCredentials": "Invalid email or password.",
+    "registerFailed": "Could not create the account. Please try again.",
     "checkEmail": "Check your inbox to confirm your email, then sign in.",
     "loading": "Loading…",
     "notConfigured": "Authentication isn't configured yet. Add your Supabase keys to .env.local."

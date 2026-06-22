@@ -1,0 +1,47 @@
+// Prisma schema — Neon Postgres
+// Apply with: npx prisma db push   (after DATABASE_URL is set in .env)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String       @id @default(cuid())
+  email       String       @unique
+  password    String
+  createdAt   DateTime     @default(now())
+  profile     Profile?
+  workoutLogs WorkoutLog[]
+}
+
+// One-to-one onboarding profile for each user.
+model Profile {
+  userId       String   @id
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String   @default("Recruit")
+  age          Int      @default(30)
+  gender       String   @default("M") // 'M' | 'F'
+  fitnessLevel String   @default("Intermediate") // Beginner | Intermediate | Advanced
+  language     String   @default("EN") // 'EN' | 'LT'
+  wakeTime     String   @default("06:00")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// One workout log per user per day.
+model WorkoutLog {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date     String // ISO date YYYY-MM-DD
+  status   String // 'completed' | 'skipped' | 'cheat'
+  reason   String?
+  loggedAt DateTime @default(now())
+
+  @@unique([userId, date])
+}

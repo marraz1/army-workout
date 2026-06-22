@@ -5,20 +5,31 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-lerna-debug.log*
 
+# Dependencies
 node_modules
+.pnp
+.pnp.*
+
+# Next.js
+.next
+out
+build
+next-env.d.ts
+
+# Production
 dist
-dist-ssr
-*.local
 
 # Environment / secrets
 .env
 .env.*
 !.env.example
 
-# PWA generated dev artifacts
-dev-dist
+# Prisma
+# (schema is committed; generated client lives in node_modules)
+
+# Vercel
+.vercel
 
 # Editor directories and files
 .vscode/*
@@ -30,3 +41,9 @@ dev-dist
 *.njsproj
 *.sln
 *.sw?
+
+# Misc
+*.local
+.DS_Store
+*.pem
+.eslintcache

@@ -1,3 +1,5 @@
+'use client'
+
 import {
   createContext,
   useCallback,
@@ -7,11 +9,11 @@ import {
   useState,
   type ReactNode,
 } from 'react'
+import { useSession } from 'next-auth/react'
 import { useTranslation } from 'react-i18next'
 import type { Lang, Theme, UserProfile, WorkoutLog } from '@/types'
 import { loadTheme, saveLang, saveTheme } from '@/lib/storage'
-import { fetchLogs, fetchProfile, upsertLog, upsertProfile } from '@/lib/db'
-import { useAuth } from '@/context/AuthContext'
+import { getLogs, getProfile, postLog, putProfile } from '@/lib/db'
 
 interface AppContextValue {
   /** True while the signed-in user's profile + logs are loading. */
@@ -30,14 +32,19 @@ const AppContext = createContext<AppContextValue | null>(null)
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const { i18n } = useTranslation()
-  const { user } = useAuth()
+  const { status } = useSession()
 
   const [profile, setProfileState] = useState<UserProfile | null>(null)
   const [logs, setLogs] = useState<Record<string, WorkoutLog>>({})
   const [dataLoading, setDataLoading] = useState(false)
-  const [theme, setTheme] = useState<Theme>(() => loadTheme())
+  const [theme, setTheme] = useState<Theme>('light')
 
-  const language: Lang = i18n.language === 'lt' ? 'LT' : 'EN'
+  const language: Lang = i18n?.language === 'lt' ? 'LT' : 'EN'
+
+  // Initialize theme from storage on mount (client only).
+  useEffect(() => {
+    setTheme(loadTheme())
+  }, [])
 
   // Apply theme to <html> and persist (device-level preference).
   useEffect(() => {
@@ -45,16 +52,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
     saveTheme(theme)
   }, [theme])
 
-  // Load this user's profile + logs whenever the session changes.
+  // Load this user's profile + logs whenever auth status changes.
   useEffect(() => {
     let cancelled = false
-    if (!user) {
+    if (status !== 'authenticated') {
       setProfileState(null)
       setLogs({})
       return
     }
     setDataLoading(true)
-    void Promise.all([fetchProfile(user.id), fetchLogs(user.id)])
+    void Promise.all([getProfile(), getLogs()])
       .then(([p, l]) => {
         if (cancelled) return
         setProfileState(p)
@@ -71,31 +78,26 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true
     }
-  }, [user, i18n])
+  }, [status, i18n])
 
   const setProfile = useCallback(
     async (next: UserProfile) => {
-      if (!user) return
-      await upsertProfile(user.id, next)
+      await putProfile(next)
       setProfileState(next)
       void i18n.changeLanguage(next.language === 'LT' ? 'lt' : 'en')
       saveLang(next.language)
     },
-    [user, i18n],
+    [i18n],
   )
 
-  const addLog = useCallback(
-    async (log: WorkoutLog) => {
-      if (!user) return
-      setLogs((prev) => ({ ...prev, [log.date]: log })) // optimistic
-      try {
-        await upsertLog(user.id, log)
-      } catch (err) {
-        console.error('Failed to save log', err)
-      }
-    },
-    [user],
-  )
+  const addLog = useCallback(async (log: WorkoutLog) => {
+    setLogs((prev) => ({ ...prev, [log.date]: log })) // optimistic
+    try {
+      await postLog(log)
+    } catch (err) {
+      console.error('Failed to save log', err)
+    }
+  }, [])
 
   const toggleTheme = useCallback(() => {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
@@ -105,15 +107,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
     (lang: Lang) => {
       void i18n.changeLanguage(lang === 'LT' ? 'lt' : 'en')
       saveLang(lang)
-      setProfileState((prev) => (prev ? { ...prev, language: lang } : prev))
-      if (user) {
-        setProfileState((prev) => {
-          if (prev) void upsertProfile(user.id, { ...prev, language: lang })
-          return prev
-        })
-      }
+      setProfileState((prev) => {
+        if (!prev) return prev
+        const next = { ...prev, language: lang }
+        void putProfile(next)
+        return next
+      })
     },
-    [i18n, user],
+    [i18n],
   )
 
   const value = useMemo<AppContextValue>(
@@ -134,7 +135,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export function useApp(): AppContextValue {
   const ctx = useContext(AppContext)
   if (!ctx) throw new Error('useApp must be used within AppProvider')

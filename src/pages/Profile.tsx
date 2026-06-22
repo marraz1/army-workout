@@ -4,22 +4,22 @@ import { SectionHeader } from '@/components/common/SectionHeader'
 import { Card } from '@/components/common/Card'
 import { Button } from '@/components/common/Button'
 import { useApp } from '@/context/AppContext'
+import { useAuth } from '@/context/AuthContext'
 import { ageGroupForAge } from '@/data/ageGroups'
 import { pickLang } from '@/lib/utils'
 
 export default function Profile() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { profile, resetProfile, language } = useApp()
+  const { profile, language } = useApp()
+  const { user, signOut } = useAuth()
 
   if (!profile) return null
   const group = ageGroupForAge(profile.age)
 
-  const handleReset = () => {
-    if (window.confirm(t('profile.resetConfirm'))) {
-      resetProfile()
-      navigate('/onboarding', { replace: true })
-    }
+  const handleSignOut = async () => {
+    await signOut()
+    navigate('/login', { replace: true })
   }
 
   const rows: { label: string; value: string }[] = [
@@ -51,6 +51,9 @@ export default function Profile() {
             <div className="text-sm" style={{ color: group.color }}>
               {pickLang(language, group.label, group.labelLT)} · {group.range}
             </div>
+            {user?.email && (
+              <div className="text-xs text-slate-400">{user.email}</div>
+            )}
           </div>
         </div>
       </Card>
@@ -79,8 +82,8 @@ export default function Profile() {
         </Button>
       </div>
 
-      <Button variant="danger" className="w-full" onClick={handleReset}>
-        {t('profile.reset')}
+      <Button variant="danger" className="w-full" onClick={handleSignOut}>
+        {t('auth.signOut')}
       </Button>
     </div>
   )

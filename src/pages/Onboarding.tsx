@@ -24,17 +24,24 @@ export default function Onboarding() {
   const next = () => setStep((s) => Math.min(TOTAL_STEPS, s + 1))
   const back = () => setStep((s) => Math.max(1, s - 1))
 
-  const finish = () => {
-    setProfile({
-      name: name.trim() || 'Recruit',
-      age,
-      gender,
-      fitnessLevel,
-      language,
-      wakeTime,
-      createdAt: todayISO(),
-    })
-    navigate('/', { replace: true })
+  const [saving, setSaving] = useState(false)
+
+  const finish = async () => {
+    setSaving(true)
+    try {
+      await setProfile({
+        name: name.trim() || 'Recruit',
+        age,
+        gender,
+        fitnessLevel,
+        language,
+        wakeTime,
+        createdAt: todayISO(),
+      })
+      navigate('/', { replace: true })
+    } finally {
+      setSaving(false)
+    }
   }
 
   const group = ageGroupForAge(age)
@@ -160,8 +167,12 @@ export default function Onboarding() {
               {t('common.next')} →
             </Button>
           ) : (
-            <Button onClick={finish} className="bg-flag-yellow text-navy hover:bg-yellow-400">
-              {t('onboarding.startPlan')} 🚀
+            <Button
+              onClick={finish}
+              disabled={saving}
+              className="bg-flag-yellow text-navy hover:bg-yellow-400"
+            >
+              {saving ? '…' : `${t('onboarding.startPlan')} 🚀`}
             </Button>
           )}
         </div>

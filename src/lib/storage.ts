@@ -1,9 +1,12 @@
-import type { UserProfile, WorkoutLog, Theme } from '@/types'
+import type { Lang, Theme } from '@/types'
 
+/**
+ * Device-level preferences only. User profile and workout logs now live in
+ * Supabase (per-user, RLS-protected) — see src/lib/db.ts.
+ */
 const KEYS = {
-  profile: 'laf.profile',
-  logs: 'laf.logs',
   theme: 'laf.theme',
+  lang: 'laf.lang',
 } as const
 
 function read<T>(key: string): T | null {
@@ -19,31 +22,8 @@ function write(key: string, value: unknown): void {
   try {
     localStorage.setItem(key, JSON.stringify(value))
   } catch {
-    /* storage full or unavailable — ignore for MVP */
+    /* storage full or unavailable — ignore */
   }
-}
-
-export function loadProfile(): UserProfile | null {
-  return read<UserProfile>(KEYS.profile)
-}
-
-export function saveProfile(profile: UserProfile): void {
-  write(KEYS.profile, profile)
-}
-
-export function clearProfile(): void {
-  localStorage.removeItem(KEYS.profile)
-  localStorage.removeItem(KEYS.logs)
-}
-
-export function loadLogs(): Record<string, WorkoutLog> {
-  return read<Record<string, WorkoutLog>>(KEYS.logs) ?? {}
-}
-
-export function saveLog(log: WorkoutLog): void {
-  const logs = loadLogs()
-  logs[log.date] = log
-  write(KEYS.logs, logs)
 }
 
 export function loadTheme(): Theme {
@@ -52,4 +32,12 @@ export function loadTheme(): Theme {
 
 export function saveTheme(theme: Theme): void {
   write(KEYS.theme, theme)
+}
+
+export function loadLang(): Lang {
+  return read<Lang>(KEYS.lang) ?? 'EN'
+}
+
+export function saveLang(lang: Lang): void {
+  write(KEYS.lang, lang)
 }

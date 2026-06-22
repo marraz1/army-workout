@@ -26,6 +26,27 @@
     "goal": "Goal",
     "rest": "Rest"
   },
+  "auth": {
+    "loginTitle": "Welcome back",
+    "loginSubtitle": "Sign in to continue your training.",
+    "registerTitle": "Create account",
+    "registerSubtitle": "Start your LAF fitness journey.",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "noAccount": "No account yet?",
+    "haveAccount": "Already have an account?",
+    "registerLink": "Register",
+    "loginLink": "Sign in",
+    "passwordsMismatch": "Passwords do not match.",
+    "passwordTooShort": "Password must be at least 6 characters.",
+    "checkEmail": "Check your inbox to confirm your email, then sign in.",
+    "loading": "Loading…",
+    "notConfigured": "Authentication isn't configured yet. Add your Supabase keys to .env.local."
+  },
   "onboarding": {
     "welcome": "Welcome",
     "intro": "Let's build your plan to pass the LAF fitness test.",

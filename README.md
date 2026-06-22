@@ -38,15 +38,27 @@ npm run build      # type-check + production build to dist/
 npm run preview    # preview the production build
 ```
 
-### Environment (optional in Phase 1)
+### Authentication & per-user data (Supabase)
 
-The app runs fully offline with `localStorage`. For Phase 2 cloud sync/auth, copy
-`.env.example` to `.env.local` and add your Supabase credentials:
+Accounts (email + password) and each user's workout history are stored in Supabase,
+isolated per user via Row-Level Security. To set it up:
+
+1. Create a free project at [supabase.com](https://supabase.com).
+2. In the dashboard: **SQL Editor → New query**, paste [`supabase/schema.sql`](supabase/schema.sql), and **Run**.
+3. (Optional, for faster local testing) **Authentication → Sign In / Providers → Email**: turn **Confirm email** off so new sign-ups log in immediately.
+4. **Project Settings → API**: copy the Project URL and `anon` public key.
+5. Copy `.env.example` to `.env.local` and fill in:
 
 ```
-VITE_SUPABASE_URL=...
-VITE_SUPABASE_ANON_KEY=...
+VITE_SUPABASE_URL=https://YOUR-PROJECT.supabase.co
+VITE_SUPABASE_ANON_KEY=YOUR-ANON-KEY
 ```
+
+6. Restart `npm run dev`. Register → onboarding → your plan & history.
+
+> On Vercel, add the same two env vars in **Project → Settings → Environment Variables**.
+
+Theme and language are device-level (localStorage); profile and logs are per-account (Supabase).
 
 ## Project Structure
 

@@ -26,6 +26,27 @@
     "goal": "Tikslas",
     "rest": "Poilsis"
   },
+  "auth": {
+    "loginTitle": "Sveiki sugrįžę",
+    "loginSubtitle": "Prisijunkite, kad tęstumėte treniruotes.",
+    "registerTitle": "Sukurti paskyrą",
+    "registerSubtitle": "Pradėkite savo LAF kūno rengybos kelią.",
+    "email": "El. paštas",
+    "password": "Slaptažodis",
+    "confirmPassword": "Pakartokite slaptažodį",
+    "signIn": "Prisijungti",
+    "signUp": "Registruotis",
+    "signOut": "Atsijungti",
+    "noAccount": "Dar neturite paskyros?",
+    "haveAccount": "Jau turite paskyrą?",
+    "registerLink": "Registruotis",
+    "loginLink": "Prisijungti",
+    "passwordsMismatch": "Slaptažodžiai nesutampa.",
+    "passwordTooShort": "Slaptažodį turi sudaryti bent 6 simboliai.",
+    "checkEmail": "Patikrinkite el. paštą ir patvirtinkite paskyrą, tada prisijunkite.",
+    "loading": "Kraunama…",
+    "notConfigured": "Autentifikacija dar nesukonfigūruota. Įrašykite Supabase raktus į .env.local."
+  },
   "onboarding": {
     "welcome": "Sveiki",
     "intro": "Sukurkime jūsų planą LAF kūno rengybos testui išlaikyti.",

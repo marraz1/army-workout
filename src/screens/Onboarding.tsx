@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/common/Button'
@@ -14,7 +14,12 @@ const TOTAL_STEPS = 6
 export default function Onboarding() {
   const { t } = useTranslation()
   const router = useRouter()
-  const { setProfile, language, setLanguage } = useApp()
+  const { profile, dataLoading, setProfile, language, setLanguage } = useApp()
+
+  // If the user already has a saved profile, skip onboarding entirely.
+  useEffect(() => {
+    if (!dataLoading && profile) router.replace('/')
+  }, [dataLoading, profile, router])
 
   const [step, setStep] = useState(1)
   const [name, setName] = useState('')

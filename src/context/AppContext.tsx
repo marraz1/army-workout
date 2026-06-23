@@ -36,7 +36,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const [profile, setProfileState] = useState<UserProfile | null>(null)
   const [logs, setLogs] = useState<Record<string, WorkoutLog>>({})
-  const [dataLoading, setDataLoading] = useState(false)
+  // Start true: until the session resolves and the profile fetch completes we
+  // don't yet know if the user has onboarded, so callers must show a loading
+  // state rather than assume "no profile" and redirect to onboarding.
+  const [dataLoading, setDataLoading] = useState(true)
   const [theme, setTheme] = useState<Theme>('light')
 
   const language: Lang = i18n?.language === 'lt' ? 'LT' : 'EN'
@@ -55,9 +58,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
   // Load this user's profile + logs whenever auth status changes.
   useEffect(() => {
     let cancelled = false
+    // While NextAuth is still resolving the session, keep dataLoading true so
+    // the UI shows a splash instead of prematurely redirecting to onboarding.
+    if (status === 'loading') return
     if (status !== 'authenticated') {
       setProfileState(null)
       setLogs({})
+      setDataLoading(false)
       return
     }
     setDataLoading(true)

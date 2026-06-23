@@ -15,7 +15,7 @@ const items: NavItem[] = [
   { href: '/', icon: '🏠', key: 'home' },
   { href: '/schedule', icon: '📅', key: 'schedule' },
   { href: '/guide', icon: '🖼️', key: 'guide' },
-  { href: '/progress', icon: '📊', key: 'progress' },
+  { href: '/history', icon: '📈', key: 'history' },
   { href: '/profile', icon: '👤', key: 'profile' },
 ]
 

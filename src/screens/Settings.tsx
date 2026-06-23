@@ -53,6 +53,30 @@ export default function Settings() {
           ))}
         </div>
       </Card>
+
+      <Card title={t('settings.features')}>
+        <div className="space-y-3">
+          {(
+            [
+              { icon: '✏️', key: 'plan' },
+              { icon: '📝', key: 'logger' },
+              { icon: '📈', key: 'progress' },
+            ] as const
+          ).map((f) => (
+            <div key={f.key} className="flex gap-3">
+              <span className="text-xl">{f.icon}</span>
+              <div>
+                <div className="text-sm font-bold text-slate-700 dark:text-slate-200">
+                  {t(`settings.feature.${f.key}.title`)}
+                </div>
+                <div className="text-xs text-slate-500 dark:text-slate-400">
+                  {t(`settings.feature.${f.key}.desc`)}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
     </div>
   )
 }

@@ -8,6 +8,7 @@
     "workout": "Workout",
     "schedule": "Schedule",
     "progress": "Progress",
+    "history": "History",
     "guide": "Guide",
     "skip": "Skip Day",
     "notifications": "Alerts",
@@ -24,7 +25,8 @@
     "done": "Done",
     "today": "Today",
     "goal": "Goal",
-    "rest": "Rest"
+    "rest": "Rest",
+    "edit": "Edit"
   },
   "auth": {
     "loginTitle": "Welcome back",
@@ -76,7 +78,8 @@
     "skipDay": "Skip Day",
     "cheatDay": "Cheat Day",
     "completed": "Completed! 💪",
-    "streak": "{{count}} day streak"
+    "streak": "{{count}} day streak",
+    "viewProgress": "Tap to view progress →"
   },
   "guide": {
     "title": "Exercise Guide",
@@ -84,7 +87,120 @@
   },
   "schedule": {
     "title": "Weekly Plan",
-    "phasesTitle": "12-Week Progressive Plan"
+    "phasesTitle": "12-Week Progressive Plan",
+    "editPlan": "Edit Plan",
+    "startSession": "Start Session"
+  },
+  "plan": {
+    "editTitle": "Edit Plan",
+    "sets": "Sets",
+    "reps": "Reps / Count",
+    "holdSeconds": "Hold (seconds)",
+    "holdHint": "Timed hold — value is seconds",
+    "goal": "Goal Target",
+    "rest": "Rest (seconds)",
+    "runGoal": "Run Goal (MM:SS)",
+    "addExercise": "Add Exercise",
+    "reset": "Reset",
+    "custom": "Custom",
+    "defaultWas": "Default: {{sets}} · Goal: {{goal}}",
+    "scopeTitle": "Apply changes to…",
+    "scopeOnce": "This workout only",
+    "scopeOnceDesc": "Applies today only. Next session reverts to the stored plan.",
+    "scopeAll": "All future workouts",
+    "scopeAllDesc": "Becomes your new personal default.",
+    "pickExercise": "Pick an exercise",
+    "noneToAdd": "All library exercises are already in your plan.",
+    "resetConfirm": "Reset this exercise to its age-group default?",
+    "removeConfirm": "Remove {{name}} from your plan?",
+    "errSets": "Sets must be between 1 and 8.",
+    "errReps": "Reps must be between 1 and 200.",
+    "errRest": "Rest must be between 15 and 300 seconds.",
+    "errRun": "Enter the run goal as MM:SS.",
+    "errRunMin": "Run goal must be at least 08:00."
+  },
+  "logger": {
+    "title": "Workout Logger",
+    "selectTitle": "Today's exercises",
+    "selectHint": "These are scheduled for today. Add or remove any before you start.",
+    "scheduledTag": "scheduled",
+    "set": "Set {{n}} / {{total}}",
+    "planReps": "Plan: {{n}} reps",
+    "planHold": "Plan: {{n}}s hold",
+    "restAfter": "Rest after: {{n}}s",
+    "actualReps": "Actual reps",
+    "actualHold": "Actual seconds",
+    "done": "Done",
+    "skip": "Skip",
+    "vsPlan": "vs plan",
+    "rest": "Rest",
+    "addRest": "+15s",
+    "skipRest": "Skip rest",
+    "runTime": "Your time (MM:SS)",
+    "energy": "Energy level",
+    "note": "Session note",
+    "notePlaceholder": "How did it feel? Pain, conditions…",
+    "summary": "Session Summary",
+    "totalReps": "Total Reps",
+    "setsDone": "Sets Done",
+    "runResult": "Run Time",
+    "lafScore": "LAF Score",
+    "planned": "planned",
+    "goal": "goal",
+    "save": "Save to History",
+    "saved": "Session saved!",
+    "newPBs": "{{count}} new personal best(s)!",
+    "nothingToday": "Nothing scheduled to log today."
+  },
+  "history": {
+    "title": "History & Progress",
+    "statsDone": "Workouts done",
+    "statsStreak": "Current streak",
+    "standards": "LAF Standards",
+    "overall": "Overall readiness",
+    "noSessions": "No sessions logged yet.",
+    "noBests": "No personal bests yet — log a session to start.",
+    "totalReps": "{{n}} total reps",
+    "runResult": "Run Result",
+    "energy": "Energy",
+    "delete": "Delete session",
+    "deleteConfirm": "Delete this session permanently?",
+    "filterAll": "All",
+    "volume": "Total reps",
+    "vsLastWeek": "vs last week",
+    "tabs": {
+      "heatmap": "Calendar",
+      "charts": "Charts",
+      "readiness": "Readiness",
+      "bests": "Bests",
+      "sessions": "Sessions",
+      "weekly": "Weekly"
+    },
+    "legend": {
+      "completed": "Completed",
+      "partial": "Partial",
+      "skipped": "Skipped",
+      "cheat": "Cheat Day",
+      "recovery": "Active Recovery",
+      "rest": "Rest Day"
+    },
+    "bands": {
+      "fail": "Fail",
+      "pass": "Pass",
+      "good": "Good",
+      "excellent": "Excellent"
+    },
+    "status": {
+      "completed": "Completed",
+      "partial": "Partial",
+      "skipped": "Skipped",
+      "cheat": "Cheat"
+    },
+    "metric": {
+      "maxReps": "Max reps",
+      "fastestRun": "Fastest run",
+      "longestHold": "Longest hold"
+    }
   },
   "progress": {
     "title": "Progress",
@@ -119,6 +235,21 @@
     "theme": "Theme",
     "light": "Light",
     "dark": "Dark",
-    "language": "Language"
+    "language": "Language",
+    "features": "App Features",
+    "feature": {
+      "plan": {
+        "title": "Plan Customisation",
+        "desc": "Edit sets, reps, rest, goal & run target; add or remove exercises; reset to default."
+      },
+      "logger": {
+        "title": "Workout Logger",
+        "desc": "Log each set, actual vs planned reps, run time, energy rating and notes."
+      },
+      "progress": {
+        "title": "Progress & Analytics",
+        "desc": "Calendar heatmap, exercise charts, LAF readiness, personal bests and session drill-down."
+      }
+    }
   }
 }

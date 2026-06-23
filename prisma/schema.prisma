@@ -11,12 +11,15 @@ datasource db {
 }
 
 model User {
-  id          String       @id @default(cuid())
-  email       String       @unique
-  password    String
-  createdAt   DateTime     @default(now())
-  profile     Profile?
-  workoutLogs WorkoutLog[]
+  id              String           @id @default(cuid())
+  email           String           @unique
+  password        String
+  createdAt       DateTime         @default(now())
+  profile         Profile?
+  workoutLogs     WorkoutLog[]
+  workoutPlans    WorkoutPlan[]
+  workoutSessions WorkoutSession[]
+  personalBests   PersonalBest[]
 }
 
 // One-to-one onboarding profile for each user.
@@ -44,4 +47,86 @@ model WorkoutLog {
   loggedAt DateTime @default(now())
 
   @@unique([userId, date])
+}
+
+// ─── v1.1 ──────────────────────────────────────────────────────────────────
+
+// A user's override of an exercise's plan (sets/reps/goal/rest). Effective plan
+// = age-group default overlaid with these rows.
+model WorkoutPlan {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exerciseId String // slug
+  setsCount  Int
+  repsTarget Int
+  goalTarget String?
+  restSec    Int
+  runGoalSec Int?
+  removed    Boolean  @default(false) // supports "Remove Exercise"
+  isCustom   Boolean  @default(true)
+  scope      String   @default("all") // 'all' | 'once'
+  onceDate   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([userId, exerciseId, scope, onceDate])
+  @@index([userId])
+}
+
+// A saved training session with rich set/run data.
+model WorkoutSession {
+  id               String         @id @default(cuid())
+  userId           String
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date             String
+  dayType          String
+  status           String // completed | partial | skipped | cheat
+  energyRating     Int? // 1–5
+  notes            String? // <=300 chars
+  totalDurationMin Int?
+  createdAt        DateTime       @default(now())
+  sets             SessionSet[]
+  runLog           RunLog?
+  personalBests    PersonalBest[]
+
+  @@index([userId, date])
+}
+
+model SessionSet {
+  id          String         @id @default(cuid())
+  sessionId   String
+  session     WorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  exerciseId  String
+  setNumber   Int
+  plannedReps Int
+  actualReps  Int
+  completed   Boolean        @default(false)
+
+  @@index([sessionId])
+}
+
+model RunLog {
+  id            String         @id @default(cuid())
+  sessionId     String         @unique
+  session       WorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  distanceKm    Float?
+  goalTimeSec   Int?
+  actualTimeSec Int?
+}
+
+model PersonalBest {
+  id         String          @id @default(cuid())
+  userId     String
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exerciseId String
+  metric     String // maxReps | fastestRunSec | longestHoldSec
+  value      Float
+  sessionId  String?
+  session    WorkoutSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  date       String
+  updatedAt  DateTime        @updatedAt
+
+  @@unique([userId, exerciseId, metric])
+  @@index([userId])
 }

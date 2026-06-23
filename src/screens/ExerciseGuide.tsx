@@ -1,21 +1,32 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { SectionHeader } from '@/components/common/SectionHeader'
+import { CustomBadge } from '@/components/plan/CustomBadge'
 import { useApp } from '@/context/AppContext'
+import { useWorkoutData } from '@/context/WorkoutDataContext'
 import { ageGroups, ageGroupForAge } from '@/data/ageGroups'
-import { cn, pickLang } from '@/lib/utils'
+import { resolveEffectivePlan } from '@/lib/plan'
+import { cn, pickLang, todayISO } from '@/lib/utils'
 
 export default function ExerciseGuide() {
   const { t } = useTranslation()
+  const router = useRouter()
   const { profile, language } = useApp()
+  const { plans } = useWorkoutData()
 
   const defaultIndex = profile
     ? ageGroups.indexOf(ageGroupForAge(profile.age))
     : 0
   const [active, setActive] = useState(defaultIndex < 0 ? 0 : defaultIndex)
   const group = ageGroups[active]
+
+  const effective = useMemo(
+    () => resolveEffectivePlan(group, plans, todayISO()),
+    [group, plans],
+  )
 
   return (
     <div>
@@ -57,37 +68,56 @@ export default function ExerciseGuide() {
         </div>
       </div>
 
-      {/* Exercise cards */}
+      {/* Exercise cards (effective plan: defaults + user overrides) */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {group.exercises.map((ex) => (
-          <div
-            key={ex.name}
-            className="rounded-2xl bg-white p-4 shadow-sm dark:bg-slate-800"
-            style={{ borderLeft: `4px solid ${group.color}` }}
-          >
-            <div className="flex items-start justify-between">
-              <div>
-                <div className="text-xl">{ex.icon}</div>
-                <div className="mt-1 font-bold text-slate-800 dark:text-slate-100">
-                  {ex.name}
+        {effective.map((item) => {
+          const ex = item.exercise
+          const def = group.exercises.find((e) => e.id === ex.id)
+          const setsDisplay = ex.isRepBased ? `${item.setsCount}×${item.repsTarget}` : ex.sets
+          return (
+            <div
+              key={ex.id}
+              className="rounded-2xl bg-white p-4 shadow-sm dark:bg-slate-800"
+              style={{ borderLeft: `4px solid ${group.color}` }}
+            >
+              <div className="flex items-start justify-between">
+                <div>
+                  <div className="text-xl">{ex.icon}</div>
+                  <div className="mt-1 flex items-center gap-2 font-bold text-slate-800 dark:text-slate-100">
+                    {ex.name}
+                    {item.isCustom && <CustomBadge />}
+                  </div>
+                </div>
+                <div className="flex flex-col items-end gap-1.5">
+                  <div
+                    className="rounded-lg px-2.5 py-1 text-sm font-bold"
+                    style={{ background: group.bg, color: group.color }}
+                  >
+                    {setsDisplay}
+                  </div>
+                  <button
+                    onClick={() => router.push(`/plan/edit?exercise=${ex.id}&group=${active}`)}
+                    className="text-xs font-semibold text-slate-400 hover:text-navy dark:hover:text-flag-yellow"
+                  >
+                    ✏️ {t('common.edit')}
+                  </button>
                 </div>
               </div>
-              <div
-                className="rounded-lg px-2.5 py-1 text-sm font-bold"
-                style={{ background: group.bg, color: group.color }}
-              >
-                {ex.sets}
+              <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                🎯 {item.goalTarget}
+              </div>
+              {def && item.isCustom && (
+                <div className="mt-1 text-[11px] text-slate-400">
+                  {t('plan.defaultWas', { sets: def.sets, goal: def.target })}
+                </div>
+              )}
+              {/* Illustration placeholder — replaced by Lottie/SVG in Phase 3 */}
+              <div className="mt-3 flex items-center gap-2 rounded-lg bg-green-50 px-3 py-2 text-[11px] text-green-700 dark:bg-green-900/20 dark:text-green-300">
+                🖼️ {t('guide.illustration')}
               </div>
             </div>
-            <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-              🎯 {ex.target}
-            </div>
-            {/* Illustration placeholder — replaced by Lottie/SVG in Phase 3 */}
-            <div className="mt-3 flex items-center gap-2 rounded-lg bg-green-50 px-3 py-2 text-[11px] text-green-700 dark:bg-green-900/20 dark:text-green-300">
-              🖼️ {t('guide.illustration')}
-            </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )

@@ -4,16 +4,22 @@ import { useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { Card } from '@/components/common/Card'
 import { Button } from '@/components/common/Button'
+import { ProgressBar } from '@/components/charts/ProgressBar'
 import { useApp } from '@/context/AppContext'
+import { useWorkoutData } from '@/context/WorkoutDataContext'
 import { ageGroupForAge } from '@/data/ageGroups'
 import { scheduleForDate } from '@/data/weekSchedule'
 import { dailyRoutine } from '@/data/dailyRoutine'
+import { computeReadiness } from '@/lib/laf'
 import { computeStreak, pickLang, todayISO } from '@/lib/utils'
+
+const REST_TYPES = new Set(['Rest', 'Active Recovery'])
 
 export default function Home() {
   const { t } = useTranslation()
   const router = useRouter()
   const { profile, language, logs, addLog } = useApp()
+  const { sessions, personalBests } = useWorkoutData()
 
   if (!profile) return null
 
@@ -21,7 +27,10 @@ export default function Home() {
   const today = scheduleForDate()
   const todayKey = todayISO()
   const todayLog = logs[todayKey]
+  const todaySession = sessions.find((s) => s.date === todayKey)
   const streak = computeStreak(logs)
+  const isRest = REST_TYPES.has(today.type)
+  const readiness = computeReadiness(profile, personalBests)
 
   const markComplete = () =>
     addLog({ date: todayKey, status: 'completed', loggedAt: new Date().toISOString() })
@@ -57,34 +66,53 @@ export default function Home() {
           </div>
         </div>
 
-        {todayLog ? (
-          <div className="mt-4 rounded-xl bg-green-50 px-4 py-3 text-center text-sm font-bold text-green-700 dark:bg-green-900/30 dark:text-green-300">
-            {todayLog.status === 'completed'
-              ? t('home.completed')
-              : t('skip.logged')}
+        {todaySession ? (
+          <div className="mt-4 rounded-xl bg-green-50 px-4 py-3 text-sm text-green-700 dark:bg-green-900/30 dark:text-green-300">
+            <div className="font-bold">{t(`history.status.${todaySession.status}`)} ✓</div>
+            <div className="text-xs opacity-80">
+              {t('history.totalReps', {
+                n: todaySession.sets.reduce((sum, set) => sum + set.actualReps, 0),
+              })}
+            </div>
           </div>
         ) : (
-          <div className="mt-4 grid grid-cols-3 gap-2">
-            <Button onClick={markComplete} className="px-2">
-              ✓ {t('home.markComplete')}
-            </Button>
-            <Button
-              variant="secondary"
-              className="px-2"
-              onClick={() => router.push('/skip')}
-            >
-              ⏭ {t('home.skipDay')}
-            </Button>
-            <Button
-              variant="secondary"
-              className="px-2"
-              onClick={() => router.push('/skip?cheat=1')}
-            >
-              🎭 {t('home.cheatDay')}
-            </Button>
-          </div>
+          <>
+            {!isRest && (
+              <Button className="mt-4 w-full" onClick={() => router.push(`/log?date=${todayKey}`)}>
+                ▶ {t('schedule.startSession')}
+              </Button>
+            )}
+            {todayLog ? (
+              <div className="mt-3 rounded-xl bg-green-50 px-4 py-3 text-center text-sm font-bold text-green-700 dark:bg-green-900/30 dark:text-green-300">
+                {todayLog.status === 'completed' ? t('home.completed') : t('skip.logged')}
+              </div>
+            ) : (
+              <div className="mt-3 grid grid-cols-3 gap-2">
+                <Button variant="secondary" onClick={markComplete} className="px-2">
+                  ✓ {t('home.markComplete')}
+                </Button>
+                <Button variant="secondary" className="px-2" onClick={() => router.push('/skip')}>
+                  ⏭ {t('home.skipDay')}
+                </Button>
+                <Button
+                  variant="secondary"
+                  className="px-2"
+                  onClick={() => router.push('/skip?cheat=1')}
+                >
+                  🎭 {t('home.cheatDay')}
+                </Button>
+              </div>
+            )}
+          </>
         )}
       </Card>
+
+      {/* LAF readiness widget → History */}
+      <button className="w-full text-left" onClick={() => router.push('/history')}>
+        <Card title={`🏆 ${t('progress.readiness')}`}>
+          <ProgressBar pct={readiness.overall} sublabel={t('home.viewProgress')} />
+        </Card>
+      </button>
 
       {/* Plan preview */}
       <Card title={t('home.yourPlan')}>

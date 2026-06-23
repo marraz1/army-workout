@@ -4,19 +4,17 @@ import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import en from './en.json'
 import lt from './lt.json'
-import { loadLang } from '@/lib/storage'
 
-/** i18next uses lowercase codes; our UI/profile use uppercase 'EN' | 'LT'. */
+// Always start with 'en' so server and client render identically (no hydration
+// mismatch). AppContext switches to the user's saved language after login via
+// i18n.changeLanguage(), which runs client-side only.
 if (!i18n.isInitialized) {
-  const initialLng =
-    typeof window !== 'undefined' && loadLang() === 'LT' ? 'lt' : 'en'
-
   void i18n.use(initReactI18next).init({
     resources: {
       en: { translation: en },
       lt: { translation: lt },
     },
-    lng: initialLng,
+    lng: 'en',
     fallbackLng: 'en',
     interpolation: { escapeValue: false },
   })

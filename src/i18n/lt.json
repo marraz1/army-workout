@@ -8,6 +8,7 @@
     "workout": "Treniruotė",
     "schedule": "Grafikas",
     "progress": "Pažanga",
+    "history": "Istorija",
     "guide": "Vadovas",
     "skip": "Praleisti",
     "notifications": "Pranešimai",
@@ -24,7 +25,8 @@
     "done": "Baigta",
     "today": "Šiandien",
     "goal": "Tikslas",
-    "rest": "Poilsis"
+    "rest": "Poilsis",
+    "edit": "Keisti"
   },
   "auth": {
     "loginTitle": "Sveiki sugrįžę",
@@ -76,7 +78,8 @@
     "skipDay": "Praleisti Dieną",
     "cheatDay": "Poilsio Diena",
     "completed": "Atlikta! 💪",
-    "streak": "{{count}} d. serija"
+    "streak": "{{count}} d. serija",
+    "viewProgress": "Bakstelėkite pažangai peržiūrėti →"
   },
   "guide": {
     "title": "Pratimų Vadovas",
@@ -84,7 +87,120 @@
   },
   "schedule": {
     "title": "Savaitės Planas",
-    "phasesTitle": "12 Savaičių Progresyvus Planas"
+    "phasesTitle": "12 Savaičių Progresyvus Planas",
+    "editPlan": "Redaguoti planą",
+    "startSession": "Pradėti seansą"
+  },
+  "plan": {
+    "editTitle": "Plano Keitimas",
+    "sets": "Serijos",
+    "reps": "Kartojimai",
+    "holdSeconds": "Laikymas (sek.)",
+    "holdHint": "Laikymas — reikšmė sekundėmis",
+    "goal": "Tikslas",
+    "rest": "Poilsis (sek.)",
+    "runGoal": "Bėgimo tikslas (MM:SS)",
+    "addExercise": "Pridėti pratimą",
+    "reset": "Atstatyti",
+    "custom": "Pakeista",
+    "defaultWas": "Numatyta: {{sets}} · Tikslas: {{goal}}",
+    "scopeTitle": "Pritaikyti pakeitimus…",
+    "scopeOnce": "Tik šiai treniruotei",
+    "scopeOnceDesc": "Galioja tik šiandien. Kitas seansas naudos išsaugotą planą.",
+    "scopeAll": "Visoms būsimoms",
+    "scopeAllDesc": "Tampa nauju asmeniniu numatytuoju.",
+    "pickExercise": "Pasirinkite pratimą",
+    "noneToAdd": "Visi pratimai jau yra jūsų plane.",
+    "resetConfirm": "Atstatyti šį pratimą į numatytąjį?",
+    "removeConfirm": "Pašalinti {{name}} iš jūsų plano?",
+    "errSets": "Serijų skaičius turi būti nuo 1 iki 8.",
+    "errReps": "Kartojimų turi būti nuo 1 iki 200.",
+    "errRest": "Poilsis turi būti nuo 15 iki 300 sekundžių.",
+    "errRun": "Įveskite bėgimo tikslą formatu MM:SS.",
+    "errRunMin": "Bėgimo tikslas turi būti bent 08:00."
+  },
+  "logger": {
+    "title": "Treniruotės Įrašas",
+    "selectTitle": "Šios dienos pratimai",
+    "selectHint": "Šie suplanuoti šiandienai. Pridėkite ar pašalinkite prieš pradėdami.",
+    "scheduledTag": "suplanuota",
+    "set": "Serija {{n}} / {{total}}",
+    "planReps": "Planas: {{n}} kart.",
+    "planHold": "Planas: {{n}}s laikymas",
+    "restAfter": "Poilsis po: {{n}}s",
+    "actualReps": "Realūs kartojimai",
+    "actualHold": "Realios sekundės",
+    "done": "Atlikta",
+    "skip": "Praleisti",
+    "vsPlan": "vs planas",
+    "rest": "Poilsis",
+    "addRest": "+15s",
+    "skipRest": "Praleisti poilsį",
+    "runTime": "Jūsų laikas (MM:SS)",
+    "energy": "Energijos lygis",
+    "note": "Seanso pastaba",
+    "notePlaceholder": "Kaip jautėtės? Skausmas, sąlygos…",
+    "summary": "Seanso Suvestinė",
+    "totalReps": "Visi kartojimai",
+    "setsDone": "Atliktos serijos",
+    "runResult": "Bėgimo laikas",
+    "lafScore": "LAF balas",
+    "planned": "planuota",
+    "goal": "tikslas",
+    "save": "Išsaugoti",
+    "saved": "Seansas išsaugotas!",
+    "newPBs": "{{count}} naujas asmeninis rekordas!",
+    "nothingToday": "Šiandien nėra ką įrašyti."
+  },
+  "history": {
+    "title": "Istorija ir Pažanga",
+    "statsDone": "Atliktos treniruotės",
+    "statsStreak": "Dabartinė serija",
+    "standards": "LAF Standartai",
+    "overall": "Bendras pasirengimas",
+    "noSessions": "Dar nėra įrašytų seansų.",
+    "noBests": "Dar nėra rekordų — įrašykite seansą.",
+    "totalReps": "{{n}} kartojimų iš viso",
+    "runResult": "Bėgimo rezultatas",
+    "energy": "Energija",
+    "delete": "Ištrinti seansą",
+    "deleteConfirm": "Ištrinti šį seansą visam laikui?",
+    "filterAll": "Visi",
+    "volume": "Visi kartojimai",
+    "vsLastWeek": "vs praėjusi savaitė",
+    "tabs": {
+      "heatmap": "Kalendorius",
+      "charts": "Grafikai",
+      "readiness": "Pasirengimas",
+      "bests": "Rekordai",
+      "sessions": "Seansai",
+      "weekly": "Savaitė"
+    },
+    "legend": {
+      "completed": "Atlikta",
+      "partial": "Dalinai",
+      "skipped": "Praleista",
+      "cheat": "Poilsio diena",
+      "recovery": "Aktyvus poilsis",
+      "rest": "Poilsio diena"
+    },
+    "bands": {
+      "fail": "Nepavyko",
+      "pass": "Išlaikyta",
+      "good": "Gerai",
+      "excellent": "Puikiai"
+    },
+    "status": {
+      "completed": "Atlikta",
+      "partial": "Dalinai",
+      "skipped": "Praleista",
+      "cheat": "Poilsis"
+    },
+    "metric": {
+      "maxReps": "Daugiausia kart.",
+      "fastestRun": "Greičiausias bėgimas",
+      "longestHold": "Ilgiausias laikymas"
+    }
   },
   "progress": {
     "title": "Pažanga",
@@ -119,6 +235,21 @@
     "theme": "Tema",
     "light": "Šviesi",
     "dark": "Tamsi",
-    "language": "Kalba"
+    "language": "Kalba",
+    "features": "Programos Funkcijos",
+    "feature": {
+      "plan": {
+        "title": "Plano Keitimas",
+        "desc": "Keiskite serijas, kartojimus, poilsį, tikslą ir bėgimo laiką; pridėkite ar pašalinkite pratimus."
+      },
+      "logger": {
+        "title": "Treniruotės Įrašas",
+        "desc": "Įrašykite kiekvieną seriją, realius vs planuotus kartojimus, bėgimo laiką, energiją ir pastabas."
+      },
+      "progress": {
+        "title": "Pažanga ir Analizė",
+        "desc": "Kalendoriaus žemėlapis, pratimų grafikai, LAF pasirengimas, rekordai ir seansų detalės."
+      }
+    }
   }
 }

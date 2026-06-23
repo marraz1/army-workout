@@ -18,6 +18,31 @@ export function cn(...classes: Array<string | false | null | undefined>): string
   return classes.filter(Boolean).join(' ')
 }
 
+/** Convert an exercise name to a stable slug, e.g. "Air Squats" → "air-squats". */
+export function slugify(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+}
+
+/** Format a duration in seconds as MM:SS (e.g. 930 → "15:30"). */
+export function formatMMSS(totalSec: number): string {
+  const safe = Math.max(0, Math.round(totalSec))
+  const m = Math.floor(safe / 60)
+  const s = safe % 60
+  return `${m}:${String(s).padStart(2, '0')}`
+}
+
+/** Parse a MM:SS string into seconds, or null if malformed. */
+export function parseMMSS(value: string): number | null {
+  const m = value.trim().match(/^(\d{1,3}):([0-5]?\d)$/)
+  if (!m) return null
+  return parseInt(m[1], 10) * 60 + parseInt(m[2], 10)
+}
+
 /**
  * Count consecutive days (ending today or yesterday) that were completed.
  * Per requirements, a streak survives skips but breaks on 3 in a row.

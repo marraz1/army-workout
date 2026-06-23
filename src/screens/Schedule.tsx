@@ -1,49 +1,126 @@
 'use client'
 
+import { useMemo, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { SectionHeader } from '@/components/common/SectionHeader'
 import { Card } from '@/components/common/Card'
+import { Button } from '@/components/common/Button'
 import { useApp } from '@/context/AppContext'
+import { useWorkoutData } from '@/context/WorkoutDataContext'
 import { weekSchedule, trainingPhases, scheduleForDate } from '@/data/weekSchedule'
-import { pickLang } from '@/lib/utils'
+import { cn, pickLang, todayISO } from '@/lib/utils'
+import type { SessionStatus } from '@/types'
+
+/** ISO date of each weekday (Mon-first index) in the current week. */
+function dateForWeekdayIndex(index: number): string {
+  const now = new Date()
+  const monFirst = (now.getDay() + 6) % 7
+  const monday = new Date(now)
+  monday.setDate(now.getDate() - monFirst)
+  const d = new Date(monday)
+  d.setDate(monday.getDate() + index)
+  return todayISO(d)
+}
+
+const REST_TYPES = new Set(['Rest', 'Active Recovery'])
 
 export default function Schedule() {
   const { t } = useTranslation()
-  const { language } = useApp()
+  const router = useRouter()
+  const { language, logs } = useApp()
+  const { sessions } = useWorkoutData()
   const todayDay = scheduleForDate().day
+  const [expanded, setExpanded] = useState<string | null>(todayDay)
+
+  const statusByDate = useMemo(() => {
+    const map: Record<string, SessionStatus> = {}
+    for (const [date, log] of Object.entries(logs)) {
+      map[date] = (log.status === 'cheat' ? 'cheat' : log.status === 'skipped' ? 'skipped' : 'completed') as SessionStatus
+    }
+    for (const s of sessions) map[s.date] = s.status
+    return map
+  }, [logs, sessions])
 
   return (
     <div className="space-y-6">
       <div>
         <SectionHeader icon="📅" title={t('schedule.title')} />
         <div className="space-y-2.5">
-          {weekSchedule.map((day) => (
-            <div
-              key={day.day}
-              className="flex items-center gap-3 rounded-2xl bg-white px-4 py-3 shadow-sm dark:bg-slate-800"
-              style={{ borderLeft: `5px solid ${day.color}` }}
-            >
-              <div className="w-11 text-center">
-                <div className="text-sm font-extrabold" style={{ color: day.color }}>
-                  {day.day}
-                </div>
-                {day.day === todayDay && (
-                  <div className="text-[9px] font-bold uppercase text-slate-400">
-                    {t('common.today')}
+          {weekSchedule.map((day, i) => {
+            const date = dateForWeekdayIndex(i)
+            const status = statusByDate[date]
+            const isRest = REST_TYPES.has(day.type)
+            const isOpen = expanded === day.day
+            return (
+              <div
+                key={day.day}
+                className="overflow-hidden rounded-2xl bg-white shadow-sm dark:bg-slate-800"
+                style={{ borderLeft: `5px solid ${day.color}` }}
+              >
+                <button
+                  onClick={() => setExpanded(isOpen ? null : day.day)}
+                  className="flex w-full items-center gap-3 px-4 py-3 text-left"
+                >
+                  <div className="w-11 text-center">
+                    <div className="text-sm font-extrabold" style={{ color: day.color }}>
+                      {day.day}
+                    </div>
+                    {day.day === todayDay && (
+                      <div className="text-[9px] font-bold uppercase text-slate-400">
+                        {t('common.today')}
+                      </div>
+                    )}
+                  </div>
+                  <div className="text-2xl">{day.icon}</div>
+                  <div className="flex-1">
+                    <div className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                      {day.type}
+                    </div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">{day.focus}</div>
+                  </div>
+                  {status && (
+                    <span
+                      className="rounded-md px-2 py-0.5 text-[10px] font-bold text-white"
+                      style={{
+                        background:
+                          status === 'completed'
+                            ? '#22c55e'
+                            : status === 'partial'
+                              ? '#eab308'
+                              : status === 'cheat'
+                                ? '#8b5cf6'
+                                : '#ef4444',
+                      }}
+                    >
+                      {t(`history.status.${status}`)}
+                    </span>
+                  )}
+                  <span className={cn('text-slate-300 transition-transform', isOpen && 'rotate-90')}>›</span>
+                </button>
+
+                {isOpen && (
+                  <div className="flex gap-2 border-t border-slate-100 px-4 py-3 dark:border-slate-700/60">
+                    <Button
+                      variant="secondary"
+                      className="flex-1"
+                      onClick={() => router.push(`/plan/edit?day=${day.day}`)}
+                    >
+                      ✏️ {t('schedule.editPlan')}
+                    </Button>
+                    {!isRest && (
+                      <Button
+                        className="flex-1"
+                        onClick={() => router.push(`/log?day=${day.day}&date=${date}`)}
+                      >
+                        ▶ {t('schedule.startSession')}
+                      </Button>
+                    )}
                   </div>
                 )}
               </div>
-              <div className="text-2xl">{day.icon}</div>
-              <div className="flex-1">
-                <div className="text-sm font-bold text-slate-800 dark:text-slate-100">
-                  {day.type}
-                </div>
-                <div className="text-xs text-slate-500 dark:text-slate-400">
-                  {day.focus}
-                </div>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
 

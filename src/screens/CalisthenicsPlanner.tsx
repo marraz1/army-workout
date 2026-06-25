@@ -30,11 +30,12 @@ export default function CalisthenicsPlanner() {
 
   const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
-  const exerciseId = Number(params.get('exerciseId') ?? 0)
+  const exerciseIdRaw = params.get('exerciseId') ?? '0'
+  const exerciseId = Number(exerciseIdRaw)
   const source = (params.get('source') ?? 'library') as CalisthenicsSource
 
   const libEx = source === 'library' ? findCalisthenicsExercise(exerciseId) : undefined
-  const custEx = source === 'custom' ? customExercises.find((e) => e.id === String(exerciseId)) : undefined
+  const custEx = source === 'custom' ? customExercises.find((e) => e.id === exerciseIdRaw) : undefined
   const ex = libEx ?? custEx
 
   const [step, setStep] = useState(1)
@@ -61,7 +62,7 @@ export default function CalisthenicsPlanner() {
         savePlan({
           source,
           libraryExerciseId: source === 'library' ? exerciseId : undefined,
-          customExerciseId: source === 'custom' ? String(exerciseId) : undefined,
+          customExerciseId: source === 'custom' ? exerciseIdRaw : undefined,
           dayOfWeek: d,
           timeOfDay: time,
           sets,

@@ -8,6 +8,7 @@ import { Card } from '@/components/common/Card'
 import { Button } from '@/components/common/Button'
 import { useApp } from '@/context/AppContext'
 import { useWorkoutData } from '@/context/WorkoutDataContext'
+import { useCalisthenics } from '@/context/CalisthenicsContext'
 import { weekSchedule, trainingPhases, scheduleForDate } from '@/data/weekSchedule'
 import { cn, pickLang, todayISO } from '@/lib/utils'
 import type { SessionStatus } from '@/types'
@@ -30,6 +31,7 @@ export default function Schedule() {
   const router = useRouter()
   const { language, logs } = useApp()
   const { sessions } = useWorkoutData()
+  const { plans: calPlans } = useCalisthenics()
   const todayDay = scheduleForDate().day
   const [expanded, setExpanded] = useState<string | null>(todayDay)
 
@@ -52,6 +54,10 @@ export default function Schedule() {
             const status = statusByDate[date]
             const isRest = REST_TYPES.has(day.type)
             const isOpen = expanded === day.day
+            const dayWeekday = (i + 1) % 7
+            const dayCalPlans = calPlans.filter(
+              (p) => p.dayOfWeek === dayWeekday && p.isActive,
+            )
             return (
               <div
                 key={day.day}
@@ -100,21 +106,52 @@ export default function Schedule() {
                 </button>
 
                 {isOpen && (
-                  <div className="flex gap-2 border-t border-slate-100 px-4 py-3 dark:border-slate-700/60">
-                    <Button
-                      variant="secondary"
-                      className="flex-1"
-                      onClick={() => router.push(`/plan/edit?day=${day.day}`)}
-                    >
-                      ✏️ {t('schedule.editPlan')}
-                    </Button>
-                    {!isRest && (
+                  <div className="border-t border-slate-100 dark:border-slate-700/60">
+                    <div className="flex gap-2 px-4 py-3">
                       <Button
+                        variant="secondary"
                         className="flex-1"
-                        onClick={() => router.push(`/log?day=${day.day}&date=${date}`)}
+                        onClick={() => router.push(`/plan/edit?day=${day.day}`)}
                       >
-                        ▶ {t('schedule.startSession')}
+                        ✏️ {t('schedule.editPlan')}
                       </Button>
+                      {!isRest && (
+                        <Button
+                          className="flex-1"
+                          onClick={() => router.push(`/log?day=${day.day}&date=${date}`)}
+                        >
+                          ▶ {t('schedule.startSession')}
+                        </Button>
+                      )}
+                    </div>
+                    {dayCalPlans.length > 0 && (
+                      <div className="border-t border-slate-100 px-4 pb-3 dark:border-slate-700/60">
+                        <p className="mb-2 pt-2 text-[11px] font-bold uppercase text-purple-600">
+                          🤸 Calisthenics
+                        </p>
+                        <div className="mb-3 space-y-1">
+                          {dayCalPlans.map((plan) => {
+                            const name =
+                              plan.libraryExercise?.name ??
+                              plan.customExercise?.name ??
+                              'Exercise'
+                            return (
+                              <div
+                                key={plan.id}
+                                className="border-l-4 border-purple-500 py-0.5 pl-2 text-xs text-slate-700 dark:text-slate-200"
+                              >
+                                {name} · {plan.sets}×{plan.repsOrSecs}
+                              </div>
+                            )
+                          })}
+                        </div>
+                        <Button
+                          className="w-full"
+                          onClick={() => router.push('/calisthenics/log')}
+                        >
+                          ▶ Start Calisthenics
+                        </Button>
+                      </div>
                     )}
                   </div>
                 )}

@@ -31,9 +31,14 @@ export default function Schedule() {
   const router = useRouter()
   const { language, logs } = useApp()
   const { sessions } = useWorkoutData()
-  const { plans: calPlans, logs: calLogs } = useCalisthenics()
+  const { plans: calPlans, logs: calLogs, removePlan } = useCalisthenics()
   const todayDay = scheduleForDate().day
   const [expanded, setExpanded] = useState<string | null>(todayDay)
+
+  const handleRemoveCalPlan = async (id: string, name: string) => {
+    if (!confirm(t('plan.removeConfirm', { name }))) return
+    await removePlan(id)
+  }
 
   const statusByDate = useMemo(() => {
     const map: Record<string, SessionStatus> = {}
@@ -135,7 +140,7 @@ export default function Schedule() {
                         <p className="mb-2 pt-2 text-[11px] font-bold uppercase text-purple-600">
                           🤸 {t('calisthenics.title')}
                         </p>
-                        <div className="mb-3 space-y-1">
+                        <div className="mb-3 space-y-1.5">
                           {dayCalPlans.map((plan) => {
                             const name =
                               plan.libraryExercise?.name ??
@@ -144,9 +149,25 @@ export default function Schedule() {
                             return (
                               <div
                                 key={plan.id}
-                                className="border-l-4 border-purple-500 py-0.5 pl-2 text-xs text-slate-700 dark:text-slate-200"
+                                className="flex items-center gap-2 border-l-4 border-purple-500 py-0.5 pl-2 text-xs text-slate-700 dark:text-slate-200"
                               >
-                                {name} · {plan.sets}×{plan.repsOrSecs}
+                                <span className="flex-1">
+                                  {name} · {plan.sets}×{plan.repsOrSecs}
+                                </span>
+                                <button
+                                  onClick={() => router.push(`/calisthenics/plan/new?planId=${plan.id}`)}
+                                  className="rounded px-1.5 py-0.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700"
+                                  aria-label={t('common.edit')}
+                                >
+                                  ✏️
+                                </button>
+                                <button
+                                  onClick={() => handleRemoveCalPlan(plan.id, name)}
+                                  className="rounded px-1.5 py-0.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+                                  aria-label={t('calisthenics.delete')}
+                                >
+                                  🗑️
+                                </button>
                               </div>
                             )
                           })}

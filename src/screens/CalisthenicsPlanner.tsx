@@ -16,7 +16,11 @@ export default function CalisthenicsPlanner() {
   const { t } = useTranslation()
   const router = useRouter()
   const params = useSearchParams()
-  const { customExercises, savePlan } = useCalisthenics()
+  const { customExercises, plans, savePlan, updatePlan, loading } = useCalisthenics()
+
+  // Edit mode: ?planId=xxx loads an existing scheduled plan entry.
+  const planId = params.get('planId') ?? undefined
+  const editingPlan = planId ? plans.find((p) => p.id === planId) : undefined
 
   const STEP_TITLES = [
     t('calisthenics.reviewExercise'),
@@ -30,22 +34,26 @@ export default function CalisthenicsPlanner() {
 
   const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
-  const exerciseIdRaw = params.get('exerciseId') ?? '0'
+  const exerciseIdRaw = editingPlan
+    ? (editingPlan.source === 'library' ? String(editingPlan.libraryExerciseId) : (editingPlan.customExerciseId ?? '0'))
+    : (params.get('exerciseId') ?? '0')
   const exerciseId = Number(exerciseIdRaw)
-  const source = (params.get('source') ?? 'library') as CalisthenicsSource
+  const source = editingPlan
+    ? editingPlan.source
+    : ((params.get('source') ?? 'library') as CalisthenicsSource)
 
   const libEx = source === 'library' ? findCalisthenicsExercise(exerciseId) : undefined
   const custEx = source === 'custom' ? customExercises.find((e) => e.id === exerciseIdRaw) : undefined
   const ex = libEx ?? custEx
 
   const [step, setStep] = useState(1)
-  const [days, setDays] = useState<number[]>([])
-  const [time, setTime] = useState('07:00')
-  const [sets, setSets] = useState(ex ? (libEx?.defaultSets ?? custEx?.defaultSets ?? 3) : 3)
-  const [repsOrSecs, setRepsOrSecs] = useState(ex ? (libEx?.defaultReps ?? custEx?.defaultRepsOrSecs ?? 10) : 10)
-  const [isTimed, setIsTimed] = useState(ex ? (libEx?.isTimed ?? custEx?.isTimed ?? false) : false)
-  const [rest, setRest] = useState(ex ? (libEx?.defaultRestSec ?? custEx?.restSec ?? 60) : 60)
-  const [goal, setGoal] = useState('')
+  const [days, setDays] = useState<number[]>(editingPlan ? [editingPlan.dayOfWeek] : [])
+  const [time, setTime] = useState(editingPlan?.timeOfDay ?? '07:00')
+  const [sets, setSets] = useState(editingPlan?.sets ?? (libEx?.defaultSets ?? custEx?.defaultSets ?? 3))
+  const [repsOrSecs, setRepsOrSecs] = useState(editingPlan?.repsOrSecs ?? (libEx?.defaultReps ?? custEx?.defaultRepsOrSecs ?? 10))
+  const [isTimed, setIsTimed] = useState(libEx?.isTimed ?? custEx?.isTimed ?? false)
+  const [rest, setRest] = useState(editingPlan?.restSec ?? (libEx?.defaultRestSec ?? custEx?.restSec ?? 60))
+  const [goal, setGoal] = useState(editingPlan?.goalTarget ?? '')
   const [saving, setSaving] = useState(false)
 
   const canNext = () => {
@@ -57,25 +65,46 @@ export default function CalisthenicsPlanner() {
     if (days.length === 0) return
     setSaving(true)
     try {
-      // Create one plan entry per selected day
-      await Promise.all(days.map((d) =>
-        savePlan({
-          source,
-          libraryExerciseId: source === 'library' ? exerciseId : undefined,
-          customExerciseId: source === 'custom' ? exerciseIdRaw : undefined,
-          dayOfWeek: d,
+      if (editingPlan) {
+        // Edit mode: update the single existing plan entry.
+        await updatePlan(editingPlan.id, {
+          dayOfWeek: days[0],
           timeOfDay: time,
           sets,
           repsOrSecs,
           restSec: rest,
           goalTarget: goal || undefined,
-          isActive: true,
         })
-      ))
-      router.push('/calisthenics')
+      } else {
+        // Create one plan entry per selected day
+        await Promise.all(days.map((d) =>
+          savePlan({
+            source,
+            libraryExerciseId: source === 'library' ? exerciseId : undefined,
+            customExerciseId: source === 'custom' ? exerciseIdRaw : undefined,
+            dayOfWeek: d,
+            timeOfDay: time,
+            sets,
+            repsOrSecs,
+            restSec: rest,
+            goalTarget: goal || undefined,
+            isActive: true,
+          })
+        ))
+      }
+      router.push(editingPlan ? '/schedule' : '/calisthenics')
     } finally {
       setSaving(false)
     }
+  }
+
+  // In edit mode, wait for plans to load before deciding the exercise is missing.
+  if (!ex && planId && loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-purple-600 border-t-transparent" />
+      </div>
+    )
   }
 
   if (!ex) {

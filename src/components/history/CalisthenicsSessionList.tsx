@@ -3,12 +3,21 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { CalisthenicsLog } from '@/types/calisthenics'
-import { findCalisthenicsExercise } from '@/data/calisthenicsExercises'
+import { calisthenicsExercises, findCalisthenicsExercise, MUSCLE_FILTER_MAP } from '@/data/calisthenicsExercises'
 import { useCalisthenics } from '@/context/CalisthenicsContext'
 
 interface CalisthenicsSessionListProps {
   logs: CalisthenicsLog[]
   muscleFilter?: string
+}
+
+/** True if a library log's exercise targets the selected muscle group. */
+function logMatchesMuscle(log: CalisthenicsLog, group: string): boolean {
+  if (log.source !== 'library') return false
+  const ex = calisthenicsExercises.find((e) => String(e.id) === log.exerciseId)
+  if (!ex) return false
+  const aliases = MUSCLE_FILTER_MAP[group] ?? [group]
+  return ex.muscles.some((m) => aliases.includes(m) || m === group)
 }
 
 export function CalisthenicsSessionList({ logs, muscleFilter }: CalisthenicsSessionListProps) {
@@ -17,13 +26,16 @@ export function CalisthenicsSessionList({ logs, muscleFilter }: CalisthenicsSess
   const [openDate, setOpenDate] = useState<string | null>(null)
 
   const grouped = useMemo(() => {
+    const visible = muscleFilter
+      ? logs.filter((l) => logMatchesMuscle(l, muscleFilter))
+      : logs
     const map = new Map<string, CalisthenicsLog[]>()
-    for (const log of logs) {
+    for (const log of visible) {
       if (!map.has(log.sessionDate)) map.set(log.sessionDate, [])
       map.get(log.sessionDate)!.push(log)
     }
     return Array.from(map.entries()).sort((a, b) => b[0].localeCompare(a[0]))
-  }, [logs])
+  }, [logs, muscleFilter])
 
   if (grouped.length === 0) {
     return (
@@ -42,18 +54,28 @@ export function CalisthenicsSessionList({ logs, muscleFilter }: CalisthenicsSess
           byEx.get(log.exerciseId)!.push(log)
         }
         const completed = dateLogs.filter((l) => l.completed).length
+        const status: 'completed' | 'partial' | 'skipped' =
+          completed === 0 ? 'skipped' : completed === dateLogs.length ? 'completed' : 'partial'
+        const statusColor =
+          status === 'completed' ? '#22c55e' : status === 'partial' ? '#eab308' : '#ef4444'
         const isOpen = openDate === date
 
         return (
           <div key={date} className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
             <button
-              className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-800/50"
+              className="w-full flex items-center justify-between gap-2 px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-800/50"
               onClick={() => setOpenDate(isOpen ? null : date)}
             >
-              <div>
+              <div className="flex-1 min-w-0">
                 <div className="text-sm font-semibold text-slate-800 dark:text-slate-100">{date}</div>
                 <div className="text-xs text-slate-500">{t('calisthenics.sessionSummary', { exercises: byEx.size, sets: completed })}</div>
               </div>
+              <span
+                className="rounded-md px-2 py-0.5 text-[10px] font-bold text-white"
+                style={{ background: statusColor }}
+              >
+                {t(`history.status.${status}`)}
+              </span>
               <span className="text-slate-400">{isOpen ? '▲' : '▼'}</span>
             </button>
 

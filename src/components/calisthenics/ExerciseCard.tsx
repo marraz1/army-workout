@@ -11,13 +11,14 @@ interface ExerciseCardProps {
   customBadge?: boolean
   onEdit?: () => void
   onDelete?: () => void
+  onAddToPlan?: () => void
 }
 
 const ILLUS_ICONS: Record<string, string> = {
   push: '💪', pull: '🏋️', squat: '🦵', hold: '🤸',
 }
 
-export function ExerciseCard({ exercise, customBadge, onEdit, onDelete }: ExerciseCardProps) {
+export function ExerciseCard({ exercise, customBadge, onEdit, onDelete, onAddToPlan }: ExerciseCardProps) {
   const [expanded, setExpanded] = useState(false)
   const router = useRouter()
 
@@ -108,7 +109,10 @@ export function ExerciseCard({ exercise, customBadge, onEdit, onDelete }: Exerci
 
       {/* Add to plan */}
       <button
-        onClick={() => router.push(`/calisthenics/plan/new?exerciseId=${exercise.id}&source=library`)}
+        onClick={() => onAddToPlan
+          ? onAddToPlan()
+          : router.push(`/calisthenics/plan/new?exerciseId=${exercise.id}&source=library`)
+        }
         className="mt-3 w-full rounded-xl py-2 text-sm font-semibold text-white transition-colors"
         style={{ backgroundColor: exercise.level === 'Beginner' ? '#16a34a' : exercise.level === 'Intermediate' ? '#2563eb' : '#9333ea' }}
       >

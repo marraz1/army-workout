@@ -179,6 +179,7 @@ export default function CalisthenicsLibrary() {
                       progressions: [],
                     }}
                     customBadge
+                    onAddToPlan={() => router.push(`/calisthenics/plan/new?exerciseId=${ex.id}&source=custom`)}
                     onEdit={() => router.push(`/calisthenics/exercise/${ex.id}/edit`)}
                     onDelete={() => handleDelete(ex.id)}
                   />

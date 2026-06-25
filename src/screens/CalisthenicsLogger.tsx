@@ -240,10 +240,13 @@ export default function CalisthenicsLogger() {
                   <span className={`text-xl ${checked ? '' : 'opacity-40'}`}>
                     {checked ? '✅' : '⬜'}
                   </span>
-                  <div>
+                  <div className="flex-1 min-w-0">
                     <div className="font-medium text-slate-800 dark:text-slate-100">{ex.name}</div>
                     <div className="text-xs text-slate-500">{plan.sets}×{plan.repsOrSecs}{ex.isHold ? 's' : ''} · {plan.restSec}s rest</div>
                   </div>
+                  <span className="shrink-0 rounded-full bg-purple-100 px-2 py-0.5 text-[10px] font-semibold text-purple-700 dark:bg-purple-900/40 dark:text-purple-300">
+                    {t('logger.scheduledTag')}
+                  </span>
                 </button>
               )
             })}

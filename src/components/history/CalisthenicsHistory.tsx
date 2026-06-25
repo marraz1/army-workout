@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useCalisthenics } from '@/context/CalisthenicsContext'
 import { MuscleHeatmap } from './MuscleHeatmap'
 import { CalisthenicsSessionList } from './CalisthenicsSessionList'
@@ -8,6 +9,7 @@ import { CalisthenicsSessionList } from './CalisthenicsSessionList'
 type SubView = 'sessions' | 'heatmap'
 
 export function CalisthenicsHistory() {
+  const { t } = useTranslation()
   const { logs, loading } = useCalisthenics()
   const [subView, setSubView] = useState<SubView>('sessions')
   const [muscleFilter, setMuscleFilter] = useState<string | undefined>()
@@ -34,7 +36,7 @@ export function CalisthenicsHistory() {
                 : 'bg-white text-slate-600 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300'
             }`}
           >
-            {v === 'sessions' ? 'Sessions' : 'Muscle Map'}
+            {v === 'sessions' ? t('calisthenics.sessionHistory') : t('calisthenics.muscleHeatmap')}
           </button>
         ))}
       </div>
@@ -42,13 +44,13 @@ export function CalisthenicsHistory() {
       {muscleFilter && (
         <div className="flex items-center gap-2">
           <span className="text-sm text-slate-600 dark:text-slate-300">
-            Filtering: <strong>{muscleFilter}</strong>
+            {t('calisthenics.filteringBy', { muscle: muscleFilter })}
           </span>
           <button
             onClick={() => setMuscleFilter(undefined)}
             className="text-xs text-purple-600 dark:text-purple-400"
           >
-            Clear
+            {t('calisthenics.clearFilter')}
           </button>
         </div>
       )}

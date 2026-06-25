@@ -71,7 +71,7 @@ export default function History() {
               : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-200'
           }`}
         >
-          🏋️ LAF
+          🏋️ {t('calisthenics.lafTab')}
         </button>
         <button
           onClick={() => setMode('calisthenics')}
@@ -81,7 +81,7 @@ export default function History() {
               : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-200'
           }`}
         >
-          🤸 Calisthenics
+          🤸 {t('calisthenics.historyTab')}
         </button>
       </div>
 

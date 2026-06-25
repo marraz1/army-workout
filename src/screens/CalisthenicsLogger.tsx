@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { useTranslation } from 'react-i18next'
 import { SetCard } from '@/components/logger/SetCard'
 import { RestTimer } from '@/components/logger/RestTimer'
 import { EnergyPicker } from '@/components/logger/EnergyPicker'
@@ -53,6 +54,7 @@ interface SetResult {
 }
 
 export default function CalisthenicsLogger() {
+  const { t } = useTranslation()
   const router = useRouter()
   const params = useSearchParams()
   const { plans, customExercises, saveLogs } = useCalisthenics()
@@ -194,12 +196,12 @@ export default function CalisthenicsLogger() {
       return (
         <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-4 text-center">
           <div className="text-4xl">🤸</div>
-          <p className="text-slate-600 dark:text-slate-300">No calisthenics planned for today.</p>
+          <p className="text-slate-600 dark:text-slate-300">{t('calisthenics.noPlannedToday')}</p>
           <button
             onClick={() => router.push('/calisthenics')}
             className="rounded-xl bg-purple-600 px-6 py-3 text-sm font-semibold text-white"
           >
-            Browse Library
+            {t('calisthenics.browseLibrary')}
           </button>
         </div>
       )
@@ -208,8 +210,8 @@ export default function CalisthenicsLogger() {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pb-24">
         <div className="px-4 py-6 space-y-4">
-          <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100">🤸 Calisthenics</h1>
-          <p className="text-sm text-slate-500">Select exercises to log today:</p>
+          <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100">🤸 {t('calisthenics.title')}</h1>
+          <p className="text-sm text-slate-500">{t('calisthenics.selectToLog')}</p>
           <div className="space-y-2">
             {todayPlans.map((plan) => {
               const ex = planToExercise(plan)
@@ -247,7 +249,7 @@ export default function CalisthenicsLogger() {
             disabled={selectedPlanIds.size === 0}
             className="w-full rounded-2xl bg-purple-600 py-4 text-sm font-semibold text-white disabled:opacity-50"
           >
-            ▶ Start Session
+            ▶ {t('calisthenics.startSession')}
           </button>
         </div>
       </div>
@@ -305,8 +307,8 @@ export default function CalisthenicsLogger() {
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pb-24 px-4 py-6 space-y-6">
         <div className="text-center">
           <div className="text-4xl">🤸</div>
-          <h2 className="mt-2 text-xl font-bold text-slate-800 dark:text-slate-100">Session Complete</h2>
-          <p className="text-sm text-slate-500 mt-1">{completed} / {total} sets completed</p>
+          <h2 className="mt-2 text-xl font-bold text-slate-800 dark:text-slate-100">{t('calisthenics.sessionComplete')}</h2>
+          <p className="text-sm text-slate-500 mt-1">{t('calisthenics.setsCompleted', { completed, total })}</p>
         </div>
 
         <EnergyPicker value={energyRating} onChange={setEnergyRating} />
@@ -316,7 +318,7 @@ export default function CalisthenicsLogger() {
           disabled={saving}
           className="w-full rounded-2xl bg-purple-600 py-4 text-sm font-semibold text-white disabled:opacity-50"
         >
-          {saving ? 'Saving…' : '💾 Save Session'}
+          {saving ? t('calisthenics.saving') : `💾 ${t('calisthenics.saveSession')}`}
         </button>
       </div>
     )
@@ -327,19 +329,19 @@ export default function CalisthenicsLogger() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-6 px-4 text-center">
         <div className="text-6xl">✅</div>
-        <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Session Saved!</h2>
+        <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">{t('calisthenics.sessionSaved')}</h2>
         <div className="flex gap-3">
           <button
             onClick={() => router.push('/history')}
             className="rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-medium dark:border-slate-600"
           >
-            History
+            {t('history.tabs.sessions')}
           </button>
           <button
             onClick={() => router.push('/')}
             className="rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white"
           >
-            Home
+            {t('nav.home')}
           </button>
         </div>
       </div>

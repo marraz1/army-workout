@@ -127,7 +127,7 @@ export default function Schedule() {
                     {dayCalPlans.length > 0 && (
                       <div className="border-t border-slate-100 px-4 pb-3 dark:border-slate-700/60">
                         <p className="mb-2 pt-2 text-[11px] font-bold uppercase text-purple-600">
-                          🤸 Calisthenics
+                          🤸 {t('calisthenics.title')}
                         </p>
                         <div className="mb-3 space-y-1">
                           {dayCalPlans.map((plan) => {
@@ -149,7 +149,7 @@ export default function Schedule() {
                           className="w-full"
                           onClick={() => router.push('/calisthenics/log')}
                         >
-                          ▶ Start Calisthenics
+                          ▶ {t('calisthenics.startSession')}
                         </Button>
                       </div>
                     )}

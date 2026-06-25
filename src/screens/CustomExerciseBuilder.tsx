@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { useTranslation } from 'react-i18next'
 import { HoldToggle } from '@/components/calisthenics/HoldToggle'
 import { RestPicker } from '@/components/calisthenics/RestPicker'
 import { LevelBadge } from '@/components/calisthenics/LevelBadge'
@@ -27,6 +28,7 @@ interface Props {
 }
 
 export default function CustomExerciseBuilder({ editId: editIdProp }: Props) {
+  const { t } = useTranslation()
   const router = useRouter()
   const params = useSearchParams()
   const editId = editIdProp ?? params.get('id') ?? undefined
@@ -95,7 +97,7 @@ export default function CustomExerciseBuilder({ editId: editIdProp }: Props) {
         <div className="flex items-center gap-3">
           <button onClick={() => router.back()} className="text-slate-500 dark:text-slate-400">←</button>
           <h1 className="text-base font-bold text-slate-800 dark:text-slate-100">
-            {existing ? 'Edit Exercise' : 'New Exercise'}
+            {existing ? t('calisthenics.builderEditTitle') : t('calisthenics.builderTitle')}
           </h1>
         </div>
       </div>
@@ -108,19 +110,19 @@ export default function CustomExerciseBuilder({ editId: editIdProp }: Props) {
         )}
 
         {/* Name */}
-        <Field label={`Exercise name (${name.length}/50)`}>
+        <Field label={`${t('calisthenics.name')} (${name.length}/50)`}>
           <input
             type="text"
             value={name}
             maxLength={50}
-            placeholder="e.g. Diamond Push-up"
+            placeholder={t('calisthenics.namePlaceholder')}
             onChange={(e) => setName(e.target.value)}
             className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
           />
         </Field>
 
         {/* Muscle groups */}
-        <Field label={`Muscle groups (${muscles.length}/4)`}>
+        <Field label={`${t('calisthenics.muscleGroups')} (${muscles.length}/4)`}>
           <div className="flex flex-wrap gap-2">
             {ALL_MUSCLES.map((m) => (
               <button
@@ -142,7 +144,7 @@ export default function CustomExerciseBuilder({ editId: editIdProp }: Props) {
         </Field>
 
         {/* Difficulty */}
-        <Field label="Difficulty">
+        <Field label={t('calisthenics.difficulty')}>
           <div className="flex gap-2">
             {LEVELS.map((l) => (
               <button
@@ -162,7 +164,7 @@ export default function CustomExerciseBuilder({ editId: editIdProp }: Props) {
         </Field>
 
         {/* Sets */}
-        <Field label="Default sets">
+        <Field label={t('calisthenics.defaultSets')}>
           <div className="flex items-center gap-4">
             <button type="button" onClick={() => setSets((s) => Math.max(1, s - 1))} className="h-10 w-10 rounded-full bg-slate-200 text-xl font-bold dark:bg-slate-700">−</button>
             <span className="text-2xl font-bold text-slate-800 dark:text-slate-100 min-w-[2ch] text-center">{sets}</span>
@@ -171,25 +173,25 @@ export default function CustomExerciseBuilder({ editId: editIdProp }: Props) {
         </Field>
 
         {/* Reps / Hold */}
-        <Field label="Default reps / hold time">
+        <Field label={t('calisthenics.defaultRepsOrSecs')}>
           <div className="space-y-3">
             <HoldToggle isTimed={isTimed} onChange={setIsTimed} />
             <div className="flex items-center gap-4">
               <button type="button" onClick={() => setRepsOrSecs((r) => Math.max(1, r - 1))} className="h-10 w-10 rounded-full bg-slate-200 text-xl font-bold dark:bg-slate-700">−</button>
               <span className="text-2xl font-bold text-slate-800 dark:text-slate-100 min-w-[3ch] text-center">{repsOrSecs}</span>
               <button type="button" onClick={() => setRepsOrSecs((r) => r + 1)} className="h-10 w-10 rounded-full bg-slate-200 text-xl font-bold dark:bg-slate-700">+</button>
-              <span className="text-slate-500">{isTimed ? 'seconds' : 'reps'}</span>
+              <span className="text-slate-500">{isTimed ? t('calisthenics.secondsLabel') : t('calisthenics.repsLabel')}</span>
             </div>
           </div>
         </Field>
 
         {/* Rest */}
-        <Field label="Default rest">
+        <Field label={t('calisthenics.restSeconds')}>
           <RestPicker value={rest} onChange={setRest} />
         </Field>
 
         {/* Description */}
-        <Field label={`Description (${description.length}/200)`}>
+        <Field label={`${t('calisthenics.description')} (${description.length}/200)`}>
           <textarea
             value={description}
             maxLength={200}
@@ -200,7 +202,7 @@ export default function CustomExerciseBuilder({ editId: editIdProp }: Props) {
         </Field>
 
         {/* Illustration */}
-        <Field label="Illustration template">
+        <Field label={t('calisthenics.illustrationTemplate')}>
           <div className="grid grid-cols-4 gap-2">
             {ILLUS.map(({ key, icon, label }) => (
               <button
@@ -221,7 +223,7 @@ export default function CustomExerciseBuilder({ editId: editIdProp }: Props) {
         </Field>
 
         {/* Notes */}
-        <Field label={`Notes / cues (${notes.length}/200)`}>
+        <Field label={`${t('calisthenics.notes')} (${notes.length}/200)`}>
           <textarea
             value={notes}
             maxLength={200}
@@ -237,7 +239,7 @@ export default function CustomExerciseBuilder({ editId: editIdProp }: Props) {
           disabled={saving}
           className="w-full rounded-2xl bg-purple-600 py-3.5 text-sm font-semibold text-white disabled:opacity-50"
         >
-          {saving ? 'Saving…' : existing ? '✓ Update Exercise' : '💾 Create Exercise'}
+          {saving ? t('calisthenics.saving') : existing ? `✓ ${t('calisthenics.editExercise')}` : `💾 ${t('calisthenics.newExercise')}`}
         </button>
       </form>
     </div>

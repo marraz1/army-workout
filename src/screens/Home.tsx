@@ -115,7 +115,7 @@ export default function Home() {
 
       {/* Today's Calisthenics */}
       {todayCalisthenicsPlans.length > 0 && (
-        <Card title="🤸 Today's Calisthenics" accent="#9333ea">
+        <Card title={`🤸 ${t('calisthenics.todayTitle')}`} accent="#9333ea">
           <div className="mb-3 space-y-1">
             {todayCalisthenicsPlans.slice(0, 4).map((plan) => {
               const name =
@@ -129,14 +129,14 @@ export default function Home() {
           </div>
           {isCalisthenicsLogged ? (
             <div className="rounded-xl bg-purple-50 px-4 py-3 text-center text-sm font-bold text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
-              ✓ Logged today
+              {t('calisthenics.loggedToday')}
             </div>
           ) : (
             <Button
               className="w-full bg-purple-600 hover:bg-purple-700"
               onClick={() => router.push('/calisthenics/log')}
             >
-              ▶ Start Calisthenics
+              ▶ {t('calisthenics.startSession')}
             </Button>
           )}
         </Card>

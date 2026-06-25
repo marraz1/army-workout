@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { useTranslation } from 'react-i18next'
 import { DayPicker } from '@/components/calisthenics/DayPicker'
 import { TimePicker } from '@/components/calisthenics/TimePicker'
 import { HoldToggle } from '@/components/calisthenics/HoldToggle'
@@ -11,22 +12,23 @@ import { findCalisthenicsExercise } from '@/data/calisthenicsExercises'
 import { useCalisthenics } from '@/context/CalisthenicsContext'
 import type { CalisthenicsSource } from '@/types/calisthenics'
 
-const STEP_TITLES = [
-  'Exercise',
-  'Day(s)',
-  'Time',
-  'Sets',
-  'Reps / Hold',
-  'Rest',
-  'Review & Save',
-]
-
-const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-
 export default function CalisthenicsPlanner() {
+  const { t } = useTranslation()
   const router = useRouter()
   const params = useSearchParams()
   const { customExercises, savePlan } = useCalisthenics()
+
+  const STEP_TITLES = [
+    t('calisthenics.reviewExercise'),
+    t('calisthenics.dayOfWeek'),
+    t('calisthenics.timeOfDay'),
+    t('calisthenics.sets'),
+    t('calisthenics.repsOrSecs'),
+    t('calisthenics.restSeconds'),
+    `${t('common.done')} & ${t('common.save')}`,
+  ]
+
+  const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
   const exerciseId = Number(params.get('exerciseId') ?? 0)
   const source = (params.get('source') ?? 'library') as CalisthenicsSource
@@ -78,7 +80,7 @@ export default function CalisthenicsPlanner() {
   if (!ex) {
     return (
       <div className="flex min-h-screen items-center justify-center text-slate-400">
-        Exercise not found.
+        {t('calisthenics.exerciseNotFound')}
       </div>
     )
   }
@@ -97,7 +99,7 @@ export default function CalisthenicsPlanner() {
         {/* Step title */}
         <div>
           <div className="text-xs font-bold uppercase text-purple-600 dark:text-purple-400">
-            Step {step} of 7
+            {t('calisthenics.stepOf', { step })}
           </div>
           <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mt-0.5">
             {STEP_TITLES[step - 1]}
@@ -125,10 +127,10 @@ export default function CalisthenicsPlanner() {
         {/* Step 2: Day picker */}
         {step === 2 && (
           <div className="space-y-2">
-            <p className="text-sm text-slate-500 dark:text-slate-400">Select one or more days</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{t('calisthenics.selectDays')}</p>
             <DayPicker selected={days} onChange={setDays} />
             {days.length === 0 && (
-              <p className="text-xs text-red-500">Please select at least one day.</p>
+              <p className="text-xs text-red-500">{t('calisthenics.selectDaysError')}</p>
             )}
           </div>
         )}
@@ -136,7 +138,7 @@ export default function CalisthenicsPlanner() {
         {/* Step 3: Time */}
         {step === 3 && (
           <div className="space-y-2">
-            <p className="text-sm text-slate-500 dark:text-slate-400">What time will you train?</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{t('calisthenics.selectTime')}</p>
             <TimePicker value={time} onChange={setTime} />
           </div>
         )}
@@ -155,7 +157,7 @@ export default function CalisthenicsPlanner() {
               onClick={() => setSets((s) => Math.min(10, s + 1))}
               className="h-10 w-10 rounded-full bg-slate-200 text-xl font-bold dark:bg-slate-700"
             >+</button>
-            <span className="text-slate-500">sets</span>
+            <span className="text-slate-500">{t('calisthenics.setsLabel')}</span>
           </div>
         )}
 
@@ -175,7 +177,7 @@ export default function CalisthenicsPlanner() {
                 onClick={() => setRepsOrSecs((r) => r + 1)}
                 className="h-10 w-10 rounded-full bg-slate-200 text-xl font-bold dark:bg-slate-700"
               >+</button>
-              <span className="text-slate-500">{isTimed ? 'seconds' : 'reps'}</span>
+              <span className="text-slate-500">{isTimed ? t('calisthenics.secondsLabel') : t('calisthenics.repsLabel')}</span>
             </div>
           </div>
         )}
@@ -189,20 +191,20 @@ export default function CalisthenicsPlanner() {
         {step === 7 && (
           <div className="space-y-4">
             <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800 space-y-3">
-              <Row label="Exercise" value={ex.name} />
-              <Row label="Days" value={days.map((d) => DAY_LABELS[d]).join(', ')} />
-              <Row label="Time" value={time} />
-              <Row label="Sets" value={`${sets} sets`} />
-              <Row label={isTimed ? 'Hold time' : 'Reps'} value={`${repsOrSecs}${isTimed ? 's' : ''}`} />
-              <Row label="Rest" value={`${rest}s`} />
+              <Row label={t('calisthenics.reviewExercise')} value={ex.name} />
+              <Row label={t('calisthenics.reviewDays')} value={days.map((d) => DAY_LABELS[d]).join(', ')} />
+              <Row label={t('calisthenics.reviewTime')} value={time} />
+              <Row label={t('calisthenics.reviewSets')} value={`${sets} ${t('calisthenics.setsLabel')}`} />
+              <Row label={isTimed ? t('calisthenics.holdToggle') : t('calisthenics.repsLabel')} value={`${repsOrSecs}${isTimed ? 's' : ''}`} />
+              <Row label={t('calisthenics.reviewRest')} value={`${rest}s`} />
             </div>
             <div className="space-y-1">
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-                Goal target (optional)
+                {t('calisthenics.goalTarget')}
               </label>
               <input
                 type="text"
-                placeholder="e.g. ≥15 reps"
+                placeholder={t('calisthenics.goalPlaceholder')}
                 value={goal}
                 onChange={(e) => setGoal(e.target.value)}
                 className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
@@ -218,7 +220,7 @@ export default function CalisthenicsPlanner() {
               onClick={() => setStep((s) => s - 1)}
               className="flex-1 rounded-xl border border-slate-200 py-3 text-sm font-medium text-slate-600 dark:border-slate-600 dark:text-slate-300"
             >
-              Back
+              {t('common.back')}
             </button>
           )}
           {step < 7 ? (
@@ -227,7 +229,7 @@ export default function CalisthenicsPlanner() {
               disabled={!canNext()}
               className="flex-1 rounded-xl bg-purple-600 py-3 text-sm font-semibold text-white disabled:opacity-50"
             >
-              Next
+              {t('common.next')}
             </button>
           ) : (
             <button
@@ -235,7 +237,7 @@ export default function CalisthenicsPlanner() {
               disabled={saving || days.length === 0}
               className="flex-1 rounded-xl bg-purple-600 py-3 text-sm font-semibold text-white disabled:opacity-50"
             >
-              {saving ? 'Saving…' : '💾 Save to Schedule'}
+              {saving ? t('calisthenics.saving') : `💾 ${t('calisthenics.saveToSchedule')}`}
             </button>
           )}
         </div>

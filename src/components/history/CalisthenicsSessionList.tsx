@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { CalisthenicsLog } from '@/types/calisthenics'
 import { findCalisthenicsExercise } from '@/data/calisthenicsExercises'
 import { useCalisthenics } from '@/context/CalisthenicsContext'
@@ -11,6 +12,7 @@ interface CalisthenicsSessionListProps {
 }
 
 export function CalisthenicsSessionList({ logs, muscleFilter }: CalisthenicsSessionListProps) {
+  const { t } = useTranslation()
   const { customExercises } = useCalisthenics()
   const [openDate, setOpenDate] = useState<string | null>(null)
 
@@ -26,7 +28,7 @@ export function CalisthenicsSessionList({ logs, muscleFilter }: CalisthenicsSess
   if (grouped.length === 0) {
     return (
       <div className="rounded-xl border border-slate-200 p-6 text-center text-sm text-slate-400 dark:border-slate-700">
-        No sessions logged yet.
+        {t('history.noSessions')}
       </div>
     )
   }
@@ -50,7 +52,7 @@ export function CalisthenicsSessionList({ logs, muscleFilter }: CalisthenicsSess
             >
               <div>
                 <div className="text-sm font-semibold text-slate-800 dark:text-slate-100">{date}</div>
-                <div className="text-xs text-slate-500">{byEx.size} exercise{byEx.size !== 1 ? 's' : ''} · {completed} sets completed</div>
+                <div className="text-xs text-slate-500">{t('calisthenics.sessionSummary', { exercises: byEx.size, sets: completed })}</div>
               </div>
               <span className="text-slate-400">{isOpen ? '▲' : '▼'}</span>
             </button>
@@ -77,7 +79,7 @@ export function CalisthenicsSessionList({ logs, muscleFilter }: CalisthenicsSess
                         <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{name}</span>
                         {isCustom && (
                           <span className="rounded-full bg-orange-100 px-1.5 py-0.5 text-[9px] font-bold text-orange-600 dark:bg-orange-900/30 dark:text-orange-400">
-                            🛠️ Custom
+                            🛠️ {t('calisthenics.customBadge')}
                           </span>
                         )}
                       </div>
@@ -91,7 +93,7 @@ export function CalisthenicsSessionList({ logs, muscleFilter }: CalisthenicsSess
                                 : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400'
                             }`}
                           >
-                            Set {l.setNumber}: {l.actualReps}{l.completed ? ' ✓' : ' ✗'}
+                            {t('calisthenics.set', { n: l.setNumber })}: {l.actualReps}{l.completed ? ' ✓' : ' ✗'}
                           </div>
                         ))}
                       </div>

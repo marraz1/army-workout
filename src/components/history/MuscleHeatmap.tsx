@@ -1,12 +1,12 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { CalisthenicsLog } from '@/types/calisthenics'
 import { calisthenicsExercises, MUSCLE_FILTER_MAP } from '@/data/calisthenicsExercises'
 
 const MUSCLE_GROUPS = ['Chest', 'Back', 'Shoulders', 'Core', 'Legs', 'Full Body']
 
-const PERIOD_LABELS = ['Last 7 days', 'Last 30 days', 'All time']
 const PERIOD_DAYS = [7, 30, Infinity]
 
 function getColor(count: number): string {
@@ -31,8 +31,15 @@ interface MuscleHeatmapProps {
 }
 
 export function MuscleHeatmap({ logs, onMuscleClick }: MuscleHeatmapProps) {
+  const { t } = useTranslation()
   const [periodIdx, setPeriodIdx] = useState(1)
   const days = PERIOD_DAYS[periodIdx]
+
+  const PERIOD_LABELS = [
+    t('calisthenics.period7'),
+    t('calisthenics.period30'),
+    t('calisthenics.periodAll'),
+  ]
 
   const counts = useMemo(() => {
     const cutoff = new Date()
@@ -107,7 +114,7 @@ export function MuscleHeatmap({ logs, onMuscleClick }: MuscleHeatmapProps) {
         ].map(({ color, label }) => (
           <div key={label} className="flex items-center gap-1">
             <span className="inline-block h-3 w-3 rounded-full" style={{ backgroundColor: color }} />
-            <span>{label} sessions</span>
+            <span>{label} {t('calisthenics.sessionsLegend')}</span>
           </div>
         ))}
       </div>

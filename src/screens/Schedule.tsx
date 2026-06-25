@@ -31,7 +31,7 @@ export default function Schedule() {
   const router = useRouter()
   const { language, logs } = useApp()
   const { sessions } = useWorkoutData()
-  const { plans: calPlans } = useCalisthenics()
+  const { plans: calPlans, logs: calLogs } = useCalisthenics()
   const todayDay = scheduleForDate().day
   const [expanded, setExpanded] = useState<string | null>(todayDay)
 
@@ -58,6 +58,7 @@ export default function Schedule() {
             const dayCalPlans = calPlans.filter(
               (p) => p.dayOfWeek === dayWeekday && p.isActive,
             )
+            const dayCalLogged = dayCalPlans.length > 0 && calLogs.some((l) => l.sessionDate === date)
             return (
               <div
                 key={day.day}
@@ -100,6 +101,11 @@ export default function Schedule() {
                       }}
                     >
                       {t(`history.status.${status}`)}
+                    </span>
+                  )}
+                  {dayCalLogged && (
+                    <span className="rounded-md bg-purple-600 px-2 py-0.5 text-[10px] font-bold text-white">
+                      🤸 ✓
                     </span>
                   )}
                   <span className={cn('text-slate-300 transition-transform', isOpen && 'rotate-90')}>›</span>

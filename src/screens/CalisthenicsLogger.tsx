@@ -86,6 +86,7 @@ export default function CalisthenicsLogger() {
   const [results, setResults] = useState<SetResult[]>([])
   const [energyRating, setEnergyRating] = useState<number>(3)
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
 
   const filteredQueue = queue.filter((q) => selectedPlanIds.has(q.plan.id))
   const current = filteredQueue[queueIdx]
@@ -157,6 +158,7 @@ export default function CalisthenicsLogger() {
 
   async function handleSave() {
     setSaving(true)
+    setSaveError('')
     try {
       // Group results by (planId, exerciseId, source)
       const byExercise = new Map<string, SetResult[]>()
@@ -185,6 +187,8 @@ export default function CalisthenicsLogger() {
         }),
       )
       setPhase('saved')
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : 'Failed to save session.')
     } finally {
       setSaving(false)
     }
@@ -312,6 +316,12 @@ export default function CalisthenicsLogger() {
         </div>
 
         <EnergyPicker value={energyRating} onChange={setEnergyRating} />
+
+        {saveError && (
+          <div className="rounded-xl bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
+            {saveError}
+          </div>
+        )}
 
         <button
           onClick={handleSave}

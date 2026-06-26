@@ -8,6 +8,7 @@ import { Card } from '@/components/common/Card'
 import { Button } from '@/components/common/Button'
 import { useApp } from '@/context/AppContext'
 import { useWorkoutData } from '@/context/WorkoutDataContext'
+import { useCalisthenics } from '@/context/CalisthenicsContext'
 import { weekSchedule, trainingPhases, scheduleForDate } from '@/data/weekSchedule'
 import { cn, pickLang, todayISO } from '@/lib/utils'
 import type { SessionStatus } from '@/types'
@@ -30,8 +31,14 @@ export default function Schedule() {
   const router = useRouter()
   const { language, logs } = useApp()
   const { sessions } = useWorkoutData()
+  const { plans: calPlans, logs: calLogs, removePlan } = useCalisthenics()
   const todayDay = scheduleForDate().day
   const [expanded, setExpanded] = useState<string | null>(todayDay)
+
+  const handleRemoveCalPlan = async (id: string, name: string) => {
+    if (!confirm(t('plan.removeConfirm', { name }))) return
+    await removePlan(id)
+  }
 
   const statusByDate = useMemo(() => {
     const map: Record<string, SessionStatus> = {}
@@ -52,6 +59,11 @@ export default function Schedule() {
             const status = statusByDate[date]
             const isRest = REST_TYPES.has(day.type)
             const isOpen = expanded === day.day
+            const dayWeekday = (i + 1) % 7
+            const dayCalPlans = calPlans.filter(
+              (p) => p.dayOfWeek === dayWeekday && p.isActive,
+            )
+            const dayCalLogged = dayCalPlans.length > 0 && calLogs.some((l) => l.sessionDate === date)
             return (
               <div
                 key={day.day}
@@ -96,25 +108,77 @@ export default function Schedule() {
                       {t(`history.status.${status}`)}
                     </span>
                   )}
+                  {dayCalLogged && (
+                    <span className="rounded-md bg-purple-600 px-2 py-0.5 text-[10px] font-bold text-white">
+                      🤸 ✓
+                    </span>
+                  )}
                   <span className={cn('text-slate-300 transition-transform', isOpen && 'rotate-90')}>›</span>
                 </button>
 
                 {isOpen && (
-                  <div className="flex gap-2 border-t border-slate-100 px-4 py-3 dark:border-slate-700/60">
-                    <Button
-                      variant="secondary"
-                      className="flex-1"
-                      onClick={() => router.push(`/plan/edit?day=${day.day}`)}
-                    >
-                      ✏️ {t('schedule.editPlan')}
-                    </Button>
-                    {!isRest && (
+                  <div className="border-t border-slate-100 dark:border-slate-700/60">
+                    <div className="flex gap-2 px-4 py-3">
                       <Button
+                        variant="secondary"
                         className="flex-1"
-                        onClick={() => router.push(`/log?day=${day.day}&date=${date}`)}
+                        onClick={() => router.push(`/plan/edit?day=${day.day}`)}
                       >
-                        ▶ {t('schedule.startSession')}
+                        ✏️ {t('schedule.editPlan')}
                       </Button>
+                      {!isRest && (
+                        <Button
+                          className="flex-1"
+                          onClick={() => router.push(`/log?day=${day.day}&date=${date}`)}
+                        >
+                          ▶ {t('schedule.startSession')}
+                        </Button>
+                      )}
+                    </div>
+                    {dayCalPlans.length > 0 && (
+                      <div className="border-t border-slate-100 px-4 pb-3 dark:border-slate-700/60">
+                        <p className="mb-2 pt-2 text-[11px] font-bold uppercase text-purple-600">
+                          🤸 {t('calisthenics.title')}
+                        </p>
+                        <div className="mb-3 space-y-1.5">
+                          {dayCalPlans.map((plan) => {
+                            const name =
+                              plan.libraryExercise?.name ??
+                              plan.customExercise?.name ??
+                              'Exercise'
+                            return (
+                              <div
+                                key={plan.id}
+                                className="flex items-center gap-2 border-l-4 border-purple-500 py-0.5 pl-2 text-xs text-slate-700 dark:text-slate-200"
+                              >
+                                <span className="flex-1">
+                                  {name} · {plan.sets}×{plan.repsOrSecs}
+                                </span>
+                                <button
+                                  onClick={() => router.push(`/calisthenics/plan/new?planId=${plan.id}`)}
+                                  className="rounded px-1.5 py-0.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700"
+                                  aria-label={t('common.edit')}
+                                >
+                                  ✏️
+                                </button>
+                                <button
+                                  onClick={() => handleRemoveCalPlan(plan.id, name)}
+                                  className="rounded px-1.5 py-0.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+                                  aria-label={t('calisthenics.delete')}
+                                >
+                                  🗑️
+                                </button>
+                              </div>
+                            )
+                          })}
+                        </div>
+                        <Button
+                          className="w-full"
+                          onClick={() => router.push('/calisthenics/log')}
+                        >
+                          ▶ {t('calisthenics.startSession')}
+                        </Button>
+                      </div>
                     )}
                   </div>
                 )}

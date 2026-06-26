@@ -11,15 +11,18 @@ datasource db {
 }
 
 model User {
-  id              String           @id @default(cuid())
-  email           String           @unique
-  password        String
-  createdAt       DateTime         @default(now())
-  profile         Profile?
-  workoutLogs     WorkoutLog[]
-  workoutPlans    WorkoutPlan[]
-  workoutSessions WorkoutSession[]
-  personalBests   PersonalBest[]
+  id                 String             @id @default(cuid())
+  email              String             @unique
+  password           String
+  createdAt          DateTime           @default(now())
+  profile            Profile?
+  workoutLogs        WorkoutLog[]
+  workoutPlans       WorkoutPlan[]
+  workoutSessions    WorkoutSession[]
+  personalBests      PersonalBest[]
+  customExercises    CustomExercise[]
+  calisthenicsPlans  CalisthenicsPlan[]
+  calisthenicsLogs   CalisthenicsLog[]
 }
 
 // One-to-one onboarding profile for each user.
@@ -129,4 +132,88 @@ model PersonalBest {
 
   @@unique([userId, exerciseId, metric])
   @@index([userId])
+}
+
+// ─── v2.0 Calisthenics ────────────────────────────────────────────────────────
+
+model CalisthenicsExercise {
+  id              Int                @id @default(autoincrement())
+  name            String
+  level           String             // 'Beginner' | 'Intermediate' | 'Advanced'
+  muscles         String[]
+  description     String?
+  defaultSets     Int                @default(3)
+  defaultReps     Int                @default(10)
+  defaultRestSec  Int                @default(60)
+  isTimed         Boolean            @default(false)
+  illustrationKey String?
+  progressions    String[]
+  plans           CalisthenicsPlan[]
+
+  @@map("calisthenics_exercises")
+}
+
+model CustomExercise {
+  id                   String             @id @default(cuid())
+  userId               String
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name                 String
+  muscles              String[]
+  level                String             @default("Beginner")
+  defaultSets          Int                @default(3)
+  defaultRepsOrSecs    Int                @default(10)
+  isTimed              Boolean            @default(false)
+  restSec              Int                @default(60)
+  description          String?
+  notes                String?
+  illustrationTemplate String?            // 'push' | 'pull' | 'squat' | 'hold'
+  createdAt            DateTime           @default(now())
+  plans                CalisthenicsPlan[]
+
+  @@index([userId])
+  @@map("custom_exercises")
+}
+
+model CalisthenicsPlan {
+  id                String                @id @default(cuid())
+  userId            String
+  user              User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  source            String                // 'library' | 'custom'
+  libraryExerciseId Int?
+  libraryExercise   CalisthenicsExercise? @relation(fields: [libraryExerciseId], references: [id], onDelete: SetNull)
+  customExerciseId  String?
+  customExercise    CustomExercise?       @relation(fields: [customExerciseId], references: [id], onDelete: SetNull)
+  dayOfWeek         Int                   // 0=Sun … 6=Sat
+  timeOfDay         String                @default("07:00")
+  sets              Int
+  repsOrSecs        Int
+  restSec           Int                   @default(60)
+  goalTarget        String?
+  isActive          Boolean               @default(true)
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+  logs              CalisthenicsLog[]
+
+  @@index([userId])
+  @@map("calisthenics_plans")
+}
+
+model CalisthenicsLog {
+  id          String            @id @default(cuid())
+  userId      String
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planId      String?
+  plan        CalisthenicsPlan? @relation(fields: [planId], references: [id], onDelete: SetNull)
+  source      String            // 'library' | 'custom'
+  exerciseId  String            // library Int as String, or custom cuid
+  sessionDate String            // YYYY-MM-DD
+  setNumber   Int
+  plannedReps Int
+  actualReps  Int
+  completed   Boolean           @default(false)
+  notes       String?
+  createdAt   DateTime          @default(now())
+
+  @@index([userId, sessionDate])
+  @@map("calisthenics_logs")
 }

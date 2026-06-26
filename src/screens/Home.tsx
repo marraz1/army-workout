@@ -7,6 +7,7 @@ import { Button } from '@/components/common/Button'
 import { ProgressBar } from '@/components/charts/ProgressBar'
 import { useApp } from '@/context/AppContext'
 import { useWorkoutData } from '@/context/WorkoutDataContext'
+import { useCalisthenics } from '@/context/CalisthenicsContext'
 import { ageGroupForAge } from '@/data/ageGroups'
 import { scheduleForDate } from '@/data/weekSchedule'
 import { dailyRoutine } from '@/data/dailyRoutine'
@@ -20,6 +21,7 @@ export default function Home() {
   const router = useRouter()
   const { profile, language, logs, addLog } = useApp()
   const { sessions, personalBests } = useWorkoutData()
+  const { plans: calPlans, logs: calLogs } = useCalisthenics()
 
   if (!profile) return null
 
@@ -27,6 +29,10 @@ export default function Home() {
   const today = scheduleForDate()
   const todayKey = todayISO()
   const todayLog = logs[todayKey]
+  const todayCalisthenicsPlans = calPlans.filter(
+    (p) => p.dayOfWeek === new Date().getDay() && p.isActive,
+  )
+  const isCalisthenicsLogged = calLogs.some((l) => l.sessionDate === todayKey)
   const todaySession = sessions.find((s) => s.date === todayKey)
   const streak = computeStreak(logs)
   const isRest = REST_TYPES.has(today.type)
@@ -106,6 +112,35 @@ export default function Home() {
           </>
         )}
       </Card>
+
+      {/* Today's Calisthenics */}
+      {todayCalisthenicsPlans.length > 0 && (
+        <Card title={`🤸 ${t('calisthenics.todayTitle')}`} accent="#9333ea">
+          <div className="mb-3 space-y-1">
+            {todayCalisthenicsPlans.slice(0, 4).map((plan) => {
+              const name =
+                plan.libraryExercise?.name ?? plan.customExercise?.name ?? 'Exercise'
+              return (
+                <div key={plan.id} className="text-sm text-slate-700 dark:text-slate-200">
+                  · {name} — {plan.sets}×{plan.repsOrSecs}
+                </div>
+              )
+            })}
+          </div>
+          {isCalisthenicsLogged ? (
+            <div className="rounded-xl bg-purple-50 px-4 py-3 text-center text-sm font-bold text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+              {t('calisthenics.loggedToday')}
+            </div>
+          ) : (
+            <Button
+              className="w-full bg-purple-600 hover:bg-purple-700"
+              onClick={() => router.push('/calisthenics/log')}
+            >
+              ▶ {t('calisthenics.startSession')}
+            </Button>
+          )}
+        </Card>
+      )}
 
       {/* LAF readiness widget → History */}
       <button className="w-full text-left" onClick={() => router.push('/history')}>

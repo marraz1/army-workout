@@ -16,6 +16,7 @@ const items: NavItem[] = [
   { href: '/schedule', icon: '📅', key: 'schedule' },
   { href: '/guide', icon: '🖼️', key: 'guide' },
   { href: '/history', icon: '📈', key: 'history' },
+  { href: '/calisthenics', icon: '🤸', key: 'calisthenics' },
   { href: '/profile', icon: '👤', key: 'profile' },
 ]
 
@@ -36,7 +37,9 @@ export function BottomNav() {
               className={cn(
                 'flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-semibold transition-colors',
                 active
-                  ? 'text-navy dark:text-flag-yellow'
+                  ? item.key === 'calisthenics'
+                    ? 'text-purple-600 dark:text-purple-400'
+                    : 'text-navy dark:text-flag-yellow'
                   : 'text-slate-400 dark:text-slate-500',
               )}
             >

@@ -13,6 +13,7 @@ import { WeeklySummary } from '@/components/history/WeeklySummary'
 import { SessionDetail } from '@/components/history/SessionDetail'
 import { useApp } from '@/context/AppContext'
 import { useWorkoutData } from '@/context/WorkoutDataContext'
+import { CalisthenicsHistory } from '@/components/history/CalisthenicsHistory'
 import { lafStandards } from '@/data/lafStandards'
 import { computeStreak } from '@/lib/utils'
 import type { WorkoutSession } from '@/types'
@@ -33,6 +34,7 @@ export default function History() {
   const { profile, logs } = useApp()
   const { sessions, personalBests, removeSession } = useWorkoutData()
 
+  const [mode, setMode] = useState<'laf' | 'calisthenics'>('laf')
   const [view, setView] = useState<View>('heatmap')
   const [selected, setSelected] = useState<WorkoutSession | null>(null)
 
@@ -58,6 +60,35 @@ export default function History() {
   return (
     <div className="space-y-5">
       <SectionHeader icon="📈" title={t('history.title')} />
+
+      {/* Mode toggle */}
+      <div className="flex gap-1.5">
+        <button
+          onClick={() => setMode('laf')}
+          className={`flex-1 rounded-full py-2 text-xs font-bold transition-colors ${
+            mode === 'laf'
+              ? 'bg-navy text-white'
+              : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-200'
+          }`}
+        >
+          🏋️ {t('calisthenics.lafTab')}
+        </button>
+        <button
+          onClick={() => setMode('calisthenics')}
+          className={`flex-1 rounded-full py-2 text-xs font-bold transition-colors ${
+            mode === 'calisthenics'
+              ? 'bg-purple-600 text-white'
+              : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-200'
+          }`}
+        >
+          🤸 {t('calisthenics.historyTab')}
+        </button>
+      </div>
+
+      {mode === 'calisthenics' ? (
+        <CalisthenicsHistory />
+      ) : (
+        <>
 
       {/* Quick stats (absorbed from Progress) */}
       <div className="grid grid-cols-2 gap-3">
@@ -156,6 +187,8 @@ export default function History() {
         <Card title={t('history.tabs.weekly')}>
           <WeeklySummary sessions={sessions} />
         </Card>
+      )}
+        </>
       )}
     </div>
   )

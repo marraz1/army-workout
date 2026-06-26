@@ -1,5 +1,5 @@
 # Logs
-logs
+/logs
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -47,3 +47,10 @@ dist
 .DS_Store
 *.pem
 .eslintcache
+
+# Local requirements/design docs
+LAF_App_Update_Requirements_v2.0.jsx
+tsconfig.tsbuildinfo
+
+# Diagnostic scripts
+scripts/

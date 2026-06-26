@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { HoldToggle } from '@/components/calisthenics/HoldToggle'
@@ -32,24 +32,40 @@ export default function CustomExerciseBuilder({ editId: editIdProp }: Props) {
   const router = useRouter()
   const params = useSearchParams()
   const editId = editIdProp ?? params.get('id') ?? undefined
-  const { customExercises, saveCustomExercise, updateCustomExercise } = useCalisthenics()
+  const { customExercises, saveCustomExercise, updateCustomExercise, loading } = useCalisthenics()
 
   const existing = editId ? customExercises.find((e) => e.id === editId) : undefined
 
-  const [name, setName] = useState(existing?.name ?? '')
-  const [muscles, setMuscles] = useState<string[]>(existing?.muscles ?? [])
-  const [level, setLevel] = useState<CalisthenicsLevel>(existing?.level ?? 'Beginner')
-  const [sets, setSets] = useState(existing?.defaultSets ?? 3)
-  const [repsOrSecs, setRepsOrSecs] = useState(existing?.defaultRepsOrSecs ?? 10)
-  const [isTimed, setIsTimed] = useState(existing?.isTimed ?? false)
-  const [rest, setRest] = useState(existing?.restSec ?? 60)
-  const [description, setDescription] = useState(existing?.description ?? '')
-  const [illustrationTemplate, setIllustrationTemplate] = useState<IllustrationTemplate>(
-    existing?.illustrationTemplate ?? 'push',
-  )
-  const [notes, setNotes] = useState(existing?.notes ?? '')
+  const [name, setName] = useState('')
+  const [muscles, setMuscles] = useState<string[]>([])
+  const [level, setLevel] = useState<CalisthenicsLevel>('Beginner')
+  const [sets, setSets] = useState(3)
+  const [repsOrSecs, setRepsOrSecs] = useState(10)
+  const [isTimed, setIsTimed] = useState(false)
+  const [rest, setRest] = useState(60)
+  const [description, setDescription] = useState('')
+  const [illustrationTemplate, setIllustrationTemplate] = useState<IllustrationTemplate>('push')
+  const [notes, setNotes] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [synced, setSynced] = useState(false)
+
+  // Sync form fields once the exercise data loads (fixes stale-init on cold navigation)
+  useEffect(() => {
+    if (existing && !synced) {
+      setName(existing.name)
+      setMuscles(existing.muscles)
+      setLevel(existing.level)
+      setSets(existing.defaultSets)
+      setRepsOrSecs(existing.defaultRepsOrSecs)
+      setIsTimed(existing.isTimed)
+      setRest(existing.restSec)
+      setDescription(existing.description ?? '')
+      setIllustrationTemplate(existing.illustrationTemplate ?? 'push')
+      setNotes(existing.notes ?? '')
+      setSynced(true)
+    }
+  }, [existing, synced])
 
   const toggleMuscle = (m: string) => {
     if (muscles.includes(m)) {
@@ -89,6 +105,15 @@ export default function CustomExerciseBuilder({ editId: editIdProp }: Props) {
     } finally {
       setSaving(false)
     }
+  }
+
+  // Show spinner while loading exercise data in edit mode
+  if (editId && loading && !existing) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-purple-600 border-t-transparent" />
+      </div>
+    )
   }
 
   return (

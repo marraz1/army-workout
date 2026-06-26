@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { DayPicker } from '@/components/calisthenics/DayPicker'
@@ -47,14 +47,37 @@ export default function CalisthenicsPlanner() {
   const ex = libEx ?? custEx
 
   const [step, setStep] = useState(1)
-  const [days, setDays] = useState<number[]>(editingPlan ? [editingPlan.dayOfWeek] : [])
-  const [time, setTime] = useState(editingPlan?.timeOfDay ?? '07:00')
-  const [sets, setSets] = useState(editingPlan?.sets ?? (libEx?.defaultSets ?? custEx?.defaultSets ?? 3))
-  const [repsOrSecs, setRepsOrSecs] = useState(editingPlan?.repsOrSecs ?? (libEx?.defaultReps ?? custEx?.defaultRepsOrSecs ?? 10))
+  const [days, setDays] = useState<number[]>([])
+  const [time, setTime] = useState('07:00')
+  const [sets, setSets] = useState(libEx?.defaultSets ?? custEx?.defaultSets ?? 3)
+  const [repsOrSecs, setRepsOrSecs] = useState(libEx?.defaultReps ?? custEx?.defaultRepsOrSecs ?? 10)
   const [isTimed, setIsTimed] = useState(libEx?.isTimed ?? custEx?.isTimed ?? false)
-  const [rest, setRest] = useState(editingPlan?.restSec ?? (libEx?.defaultRestSec ?? custEx?.restSec ?? 60))
-  const [goal, setGoal] = useState(editingPlan?.goalTarget ?? '')
+  const [rest, setRest] = useState(libEx?.defaultRestSec ?? custEx?.restSec ?? 60)
+  const [goal, setGoal] = useState('')
   const [saving, setSaving] = useState(false)
+  // Track whether we've synced form state from an existing plan (edit mode cold-load fix)
+  const [synced, setSynced] = useState(false)
+
+  useEffect(() => {
+    if (editingPlan && !synced) {
+      setDays([editingPlan.dayOfWeek])
+      setTime(editingPlan.timeOfDay)
+      setSets(editingPlan.sets)
+      setRepsOrSecs(editingPlan.repsOrSecs)
+      setRest(editingPlan.restSec)
+      setGoal(editingPlan.goalTarget ?? '')
+      setSynced(true)
+    } else if (!planId && !synced) {
+      // New plan: set defaults from exercise once available
+      if (libEx || custEx) {
+        setSets(libEx?.defaultSets ?? custEx?.defaultSets ?? 3)
+        setRepsOrSecs(libEx?.defaultReps ?? custEx?.defaultRepsOrSecs ?? 10)
+        setIsTimed(libEx?.isTimed ?? custEx?.isTimed ?? false)
+        setRest(libEx?.defaultRestSec ?? custEx?.restSec ?? 60)
+        setSynced(true)
+      }
+    }
+  }, [editingPlan, libEx, custEx, planId, synced])
 
   const canNext = () => {
     if (step === 2) return days.length > 0

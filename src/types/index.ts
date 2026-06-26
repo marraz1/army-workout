@@ -58,11 +58,20 @@ export interface ScheduleDay {
 }
 
 export interface RoutineItem {
+  id: string
   time: string
   icon: string
   label: string
   detail: string
   color: string
+}
+
+export interface RoutineLog {
+  id: string
+  date: string
+  itemKey: string
+  label: string
+  completed: boolean
 }
 
 export interface LafStandard {

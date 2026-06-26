@@ -6,14 +6,22 @@ import { useTranslation } from 'react-i18next'
 import { HoldToggle } from '@/components/calisthenics/HoldToggle'
 import { RestPicker } from '@/components/calisthenics/RestPicker'
 import { LevelBadge } from '@/components/calisthenics/LevelBadge'
+import { MuscleSelector, type MuscleState } from '@/components/muscle/MuscleSelector'
+import { CALIS_NAME_TO_SVG_ID, svgIdsToCalisthenicsNames } from '@/data/muscleMap'
 import { useCalisthenics } from '@/context/CalisthenicsContext'
 import type { CalisthenicsLevel, IllustrationTemplate } from '@/types/calisthenics'
 
-const ALL_MUSCLES = [
-  'Chest', 'Lats', 'Upper Back', 'Shoulders', 'Triceps', 'Biceps',
-  'Core', 'Obliques', 'Hip Flexors', 'Lower Back',
-  'Quads', 'Glutes', 'Hamstrings', 'Calves', 'Grip', 'Wrists', 'Full Body',
-]
+function namesToMuscleState(names: string[]): MuscleState {
+  const primary = names
+    .slice(0, 1)
+    .map((n) => CALIS_NAME_TO_SVG_ID[n])
+    .filter((id): id is string => id != null)
+  const secondary = names
+    .slice(1)
+    .map((n) => CALIS_NAME_TO_SVG_ID[n])
+    .filter((id): id is string => id != null)
+  return { primary, secondary }
+}
 
 const LEVELS: CalisthenicsLevel[] = ['Beginner', 'Intermediate', 'Advanced']
 const ILLUS: { key: IllustrationTemplate; icon: string; label: string }[] = [
@@ -40,7 +48,7 @@ export default function CustomExerciseBuilder({ editId: editIdProp }: Props) {
   const existing = editId ? customExercises.find((e) => e.id === editId) : undefined
 
   const [name, setName] = useState('')
-  const [muscles, setMuscles] = useState<string[]>([])
+  const [muscleState, setMuscleState] = useState<MuscleState>({ primary: [], secondary: [] })
   const [level, setLevel] = useState<CalisthenicsLevel>('Beginner')
   const [sets, setSets] = useState(3)
   const [repsOrSecs, setRepsOrSecs] = useState(10)
@@ -57,7 +65,7 @@ export default function CustomExerciseBuilder({ editId: editIdProp }: Props) {
   useEffect(() => {
     if (existing && !synced) {
       setName(existing.name)
-      setMuscles(existing.muscles)
+      setMuscleState(namesToMuscleState(existing.muscles))
       setLevel(existing.level)
       setSets(existing.defaultSets)
       setRepsOrSecs(existing.defaultRepsOrSecs)
@@ -70,19 +78,12 @@ export default function CustomExerciseBuilder({ editId: editIdProp }: Props) {
     }
   }, [existing, synced])
 
-  const toggleMuscle = (m: string) => {
-    if (muscles.includes(m)) {
-      setMuscles(muscles.filter((x) => x !== m))
-    } else if (muscles.length < 4) {
-      setMuscles([...muscles, m])
-    }
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
     if (!name.trim()) { setError('Name is required.'); return }
     if (name.length > 50) { setError('Name must be 50 characters or fewer.'); return }
+    const muscles = svgIdsToCalisthenicsNames([...muscleState.primary, ...muscleState.secondary])
     if (muscles.length === 0) { setError('Select at least one muscle group.'); return }
 
     setSaving(true)
@@ -102,6 +103,7 @@ export default function CustomExerciseBuilder({ editId: editIdProp }: Props) {
           illustrationTemplate,
         })
       }
+
       router.push('/calisthenics')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save exercise.')
@@ -150,25 +152,8 @@ export default function CustomExerciseBuilder({ editId: editIdProp }: Props) {
         </Field>
 
         {/* Muscle groups */}
-        <Field label={`${t('calisthenics.muscleGroups')} (${muscles.length}/4)`}>
-          <div className="flex flex-wrap gap-2">
-            {ALL_MUSCLES.map((m) => (
-              <button
-                key={m}
-                type="button"
-                onClick={() => toggleMuscle(m)}
-                className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-                  muscles.includes(m)
-                    ? 'bg-purple-600 text-white'
-                    : muscles.length >= 4
-                    ? 'bg-slate-100 text-slate-400 cursor-not-allowed dark:bg-slate-700'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300'
-                }`}
-              >
-                {m}
-              </button>
-            ))}
-          </div>
+        <Field label={t('calisthenics.muscleGroups')}>
+          <MuscleSelector value={muscleState} onChange={setMuscleState} />
         </Field>
 
         {/* Difficulty */}

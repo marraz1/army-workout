@@ -1,6 +1,113 @@
 import { ArmIcon, BackLegs, BackTorso, FrontLegs, FrontTorso } from '@/components/muscle/MuscleIconComponents'
 import type { MuscleHighlight } from '@/components/muscle/MuscleIconComponents'
 
+// ─── Calisthenics ↔ SVG ID bridge ─────────────────────────────────────────
+
+/** Maps Calisthenics title-case muscle names to SVG highlight IDs. */
+export const CALIS_NAME_TO_SVG_ID: Record<string, string | null> = {
+  'Chest':       'chest',
+  'Triceps':     'triceps',
+  'Shoulders':   'shoulders',
+  'Core':        'abs',
+  'Lats':        'lats',
+  'Biceps':      'biceps',
+  'Back':        'lats',
+  'Upper Back':  'lats',
+  'Rear Delts':  'rear_delt',
+  'Lower Back':  'lower_back',
+  'Obliques':    'obliques',
+  'Hip Flexors': 'hip_flexors',
+  'Adductors':   'adductors',
+  'Quads':       'quads',
+  'Glutes':      'glutes',
+  'Hamstrings':  'hamstrings',
+  'Calves':      'calves',
+  'Grip':        'forearms',
+  'Wrists':      'forearms',
+  'Forearms':    'forearms',
+  'Traps':       'traps',
+  'Full Body':   null,
+}
+
+const SVG_ID_TO_CALIS_NAME: Record<string, string> = {
+  chest:       'Chest',
+  triceps:     'Triceps',
+  shoulders:   'Shoulders',
+  abs:         'Core',
+  lats:        'Lats',
+  biceps:      'Biceps',
+  rear_delt:   'Rear Delts',
+  lower_back:  'Lower Back',
+  obliques:    'Obliques',
+  hip_flexors: 'Hip Flexors',
+  adductors:   'Adductors',
+  quads:       'Quads',
+  glutes:      'Glutes',
+  hamstrings:  'Hamstrings',
+  calves:      'Calves',
+  forearms:    'Grip',
+  traps:       'Traps',
+}
+
+function sideForId(id: string): string | undefined {
+  if (id === 'biceps' || id === 'forearms') return 'front'
+  if (id === 'triceps') return 'back'
+  return undefined
+}
+
+function compKeyForId(id: string): string {
+  const entry = ALL_MUSCLES.find((m) => m.id === id)
+  if (!entry) return 'unknown'
+  const side = sideForId(id)
+  return entry.component.name + (side ? `:${side}` : '')
+}
+
+/**
+ * Convert Calisthenics muscle name strings (e.g. "Chest", "Lats") to
+ * MuscleHighlight[] ready for MuscleDisplay. First name = primary colour.
+ */
+export function getMuscleHighlightsFromNames(muscles: string[]): MuscleHighlight[] {
+  // Map names → SVG IDs, preserving order and dropping unmapped values
+  const svgIds = muscles
+    .map((m) => CALIS_NAME_TO_SVG_ID[m])
+    .filter((id): id is string => id != null)
+
+  // Group by (component, side) pair — each unique pair becomes one MuscleHighlight
+  const groups = new Map<string, MuscleHighlight>()
+
+  for (const id of svgIds) {
+    const entry = ALL_MUSCLES.find((m) => m.id === id)
+    if (!entry) continue
+    const key = compKeyForId(id)
+    if (!groups.has(key)) {
+      const side = sideForId(id)
+      groups.set(key, {
+        component: entry.component,
+        highlight: [id],
+        props: side ? { side } : undefined,
+      })
+    } else {
+      groups.get(key)!.highlight.push(id)
+    }
+  }
+
+  return Array.from(groups.values())
+}
+
+/** Convert SVG IDs back to Calisthenics title-case names (for saving custom exercises). */
+export function svgIdsToCalisthenicsNames(ids: string[]): string[] {
+  const seen = new Set<string>()
+  const result: string[] = []
+  for (const id of ids) {
+    const name = SVG_ID_TO_CALIS_NAME[id]
+    if (name && !seen.has(name)) {
+      seen.add(name)
+      result.push(name)
+    }
+  }
+  return result
+}
+
 const map: Record<string, MuscleHighlight[]> = {
   'push-ups': [
     { component: FrontTorso, highlight: ['chest', 'shoulders', 'traps'] },

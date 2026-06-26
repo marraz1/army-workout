@@ -3,8 +3,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { CalisthenicsExerciseData } from '@/types/calisthenics'
+import { MuscleDisplay } from '@/components/muscle/MuscleDisplay'
+import { getMuscleHighlightsFromNames } from '@/data/muscleMap'
 import { LevelBadge } from './LevelBadge'
-import { MuscleTag } from './MuscleTag'
 
 interface ExerciseCardProps {
   exercise: CalisthenicsExerciseData
@@ -68,9 +69,9 @@ export function ExerciseCard({ exercise, customBadge, onEdit, onDelete, onAddToP
         </div>
       </div>
 
-      {/* Muscle tags */}
-      <div className="mt-2 flex flex-wrap gap-1">
-        {exercise.muscles.map((m) => <MuscleTag key={m} muscle={m} />)}
+      {/* Muscle icons */}
+      <div className="mt-2">
+        <MuscleDisplay highlights={getMuscleHighlightsFromNames(exercise.muscles)} compact />
       </div>
 
       {/* Description */}

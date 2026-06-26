@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { SetCard } from '@/components/logger/SetCard'
@@ -57,7 +57,7 @@ export default function CalisthenicsLogger() {
   const { t } = useTranslation()
   const router = useRouter()
   const params = useSearchParams()
-  const { plans, customExercises, saveLogs } = useCalisthenics()
+  const { plans, saveLogs, loading } = useCalisthenics()
 
   const date = params.get('date') ?? todayISO()
   const weekday = new Date(date + 'T12:00:00').getDay()
@@ -161,7 +161,7 @@ export default function CalisthenicsLogger() {
     }
   }
 
-  async function handleSave() {
+  const handleSave = useCallback(async () => {
     if (results.length === 0) {
       setSaveError(t('calisthenics.noSetsRecorded'))
       return
@@ -176,6 +176,13 @@ export default function CalisthenicsLogger() {
         if (!byExercise.has(key)) byExercise.set(key, [])
         byExercise.get(key)!.push(r)
       }
+
+      console.log('[CalisthenicsLogger] Saving session:', {
+        date,
+        exercises: byExercise.size,
+        totalSets: results.length,
+        results,
+      })
 
       await Promise.all(
         Array.from(byExercise.entries()).map(([, sets]) => {
@@ -192,19 +199,32 @@ export default function CalisthenicsLogger() {
               completed: s.completed,
             })),
           }
+          console.log('[CalisthenicsLogger] POST payload:', payload)
           return saveLogs(payload)
         }),
       )
+      console.log('[CalisthenicsLogger] Save complete ✅')
       setPhase('saved')
     } catch (err) {
-      setSaveError(err instanceof Error ? err.message : 'Failed to save session.')
+      const msg = err instanceof Error ? err.message : 'Failed to save session.'
+      console.error('[CalisthenicsLogger] Save error:', msg)
+      setSaveError(msg)
     } finally {
       setSaving(false)
     }
-  }
+  }, [results, date, saveLogs, t])
 
   // ─── PHASE: select ────────────────────────────────────────────────────────
   if (phase === 'select') {
+    // Show spinner while plans are loading so we never flash "nothing planned"
+    if (loading) {
+      return (
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="text-4xl animate-spin">🤸</div>
+        </div>
+      )
+    }
+
     if (todayPlans.length === 0) {
       return (
         <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-4 text-center">
@@ -261,8 +281,13 @@ export default function CalisthenicsLogger() {
             })}
           </div>
           <button
-            onClick={() => { setPhase('logging') }}
-            disabled={selectedPlanIds.size === 0}
+            onClick={() => {
+              if (filteredQueue.length === 0) return
+              setQueueIdx(0)
+              setResults([])
+              setPhase('logging')
+            }}
+            disabled={selectedPlanIds.size === 0 || filteredQueue.length === 0}
             className="w-full rounded-2xl bg-purple-600 py-4 text-sm font-semibold text-white disabled:opacity-50"
           >
             ▶ {t('calisthenics.startSession')}
@@ -273,6 +298,23 @@ export default function CalisthenicsLogger() {
   }
 
   // ─── PHASE: logging ───────────────────────────────────────────────────────
+  // Fallback: if current is undefined (queue unexpectedly empty), return to select
+  if (phase === 'logging' && !current) {
+    console.warn('[CalisthenicsLogger] filteredQueue empty during logging, returning to select')
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-4 text-center">
+        <div className="text-4xl">⚠️</div>
+        <p className="text-slate-600 dark:text-slate-300">No exercises in queue. Please go back and try again.</p>
+        <button
+          onClick={() => { setPhase('select'); setQueueIdx(0); setResults([]) }}
+          className="rounded-xl bg-purple-600 px-6 py-3 text-sm font-semibold text-white"
+        >
+          ← Back
+        </button>
+      </div>
+    )
+  }
+
   if (phase === 'logging' && current) {
     const ex = planToExercise(current.plan)
     const totalSets = filteredQueue.filter((q) => q.plan.id === current.plan.id).length
@@ -304,7 +346,6 @@ export default function CalisthenicsLogger() {
 
   // ─── PHASE: resting ───────────────────────────────────────────────────────
   if (phase === 'resting' && current) {
-    const ex = planToExercise(current.plan)
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 px-4 py-6">
         <RestTimer
@@ -330,8 +371,8 @@ export default function CalisthenicsLogger() {
         <EnergyPicker value={energyRating} onChange={setEnergyRating} />
 
         {saveError && (
-          <div className="rounded-xl bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
-            {saveError}
+          <div className="rounded-xl border-2 border-red-400 bg-red-50 p-4 text-sm font-semibold text-red-700 dark:border-red-600 dark:bg-red-900/20 dark:text-red-300">
+            ⚠️ {saveError}
           </div>
         )}
 

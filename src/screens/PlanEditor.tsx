@@ -10,6 +10,7 @@ import { PlanFieldRow } from '@/components/plan/PlanFieldRow'
 import { ScopeModal } from '@/components/plan/ScopeModal'
 import { AddExerciseModal } from '@/components/plan/AddExerciseModal'
 import { CustomBadge } from '@/components/plan/CustomBadge'
+import { MuscleSelector, deserializeMuscles, serializeMuscles, type MuscleState } from '@/components/muscle/MuscleSelector'
 import { useApp } from '@/context/AppContext'
 import { useWorkoutData } from '@/context/WorkoutDataContext'
 import { ageGroups, ageGroupForAge } from '@/data/ageGroups'
@@ -64,9 +65,20 @@ export default function PlanEditor() {
     : effective
 
   const [drafts, setDrafts] = useState<Record<string, DraftFields>>({})
+  const [muscleStates, setMuscleStates] = useState<Record<string, MuscleState>>({})
   const [scopeFor, setScopeFor] = useState<string | null>(null)
   const [addOpen, setAddOpen] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const getMuscleState = (id: string): MuscleState => {
+    if (muscleStates[id]) return muscleStates[id]
+    const existing = plans.find((p) => p.exerciseId === id)?.muscleData
+    return deserializeMuscles(existing)
+  }
+
+  const setMuscleState = (id: string, state: MuscleState) => {
+    setMuscleStates((prev) => ({ ...prev, [id]: state }))
+  }
 
   const getDraft = (item: EffectivePlanItem): DraftFields =>
     drafts[item.exercise.id] ?? draftFromItem(item)
@@ -113,6 +125,10 @@ export default function PlanEditor() {
     if (!item) return
     const d = getDraft(item)
 
+    const ms = getMuscleState(id)
+    const muscleData =
+      ms.primary.length || ms.secondary.length ? serializeMuscles(ms) : undefined
+
     await savePlan({
       exerciseId: id,
       setsCount: item.exercise.isRun ? 1 : parseInt(d.sets, 10),
@@ -124,6 +140,7 @@ export default function PlanEditor() {
       isCustom: true,
       scope,
       onceDate: scope === 'once' ? today : undefined,
+      muscleData,
     })
     setDrafts((prev) => {
       const next = { ...prev }
@@ -266,6 +283,18 @@ export default function PlanEditor() {
             {def && (
               <div className="mt-2 text-[11px] text-slate-400">
                 {t('plan.defaultWas', { sets: def.sets, goal: def.target })}
+              </div>
+            )}
+
+            {item.isCustom && (
+              <div className="mt-3 border-t border-slate-100 pt-3 dark:border-slate-700">
+                <div className="mb-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  💪 Muscle Groups
+                </div>
+                <MuscleSelector
+                  value={getMuscleState(ex.id)}
+                  onChange={(state) => setMuscleState(ex.id, state)}
+                />
               </div>
             )}
 

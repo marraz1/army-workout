@@ -118,6 +118,8 @@ export interface WorkoutPlan {
   scope: PlanScope
   /** ISO date the override applies to, when scope === 'once'. */
   onceDate?: string
+  /** JSON: { primary: string[], secondary: string[] } — user-tagged muscle groups. */
+  muscleData?: string
 }
 
 /** One logged set within a session. */

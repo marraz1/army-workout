@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslation } from 'react-i18next'
+import { MuscleDisplay } from '@/components/muscle/MuscleDisplay'
 import type { Exercise } from '@/types'
 
 interface AddExerciseModalProps {
@@ -38,7 +39,9 @@ export function AddExerciseModal({ open, options, onSelect, onCancel }: AddExerc
               onClick={() => onSelect(ex)}
               className="flex w-full items-center gap-3 rounded-xl bg-slate-50 px-3 py-2.5 text-left dark:bg-slate-700/50"
             >
-              <span className="text-xl">{ex.icon}</span>
+              <div className="shrink-0">
+                <MuscleDisplay exerciseId={ex.id} compact />
+              </div>
               <div className="flex-1">
                 <div className="text-sm font-bold text-slate-700 dark:text-slate-100">{ex.name}</div>
                 <div className="text-xs text-slate-500 dark:text-slate-400">{ex.sets} · {ex.target}</div>

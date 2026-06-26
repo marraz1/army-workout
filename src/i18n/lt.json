@@ -257,6 +257,8 @@
     "restSeconds": "Poilsis",
     "goalTarget": "Tikslas (neprivaloma)",
     "saveToSchedule": "Išsaugoti Grafike",
+    "updatePlan": "Atnaujinti planą",
+    "editingPlan": "Redaguojamas planas",
     "builderTitle": "Naujas Pratimas",
     "builderEditTitle": "Keisti Pratimą",
     "name": "Pratimo pavadinimas",

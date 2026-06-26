@@ -66,6 +66,7 @@ export default function CalisthenicsPlanner() {
       setRepsOrSecs(editingPlan.repsOrSecs)
       setRest(editingPlan.restSec)
       setGoal(editingPlan.goalTarget ?? '')
+      setStep(2) // skip exercise-preview step in edit mode
       setSynced(true)
     } else if (!planId && !synced) {
       // New plan: set defaults from exercise once available
@@ -149,6 +150,13 @@ export default function CalisthenicsPlanner() {
       </div>
 
       <div className="px-4 py-6 space-y-6">
+        {/* Edit mode banner */}
+        {editingPlan && (
+          <div className="flex items-center gap-2 rounded-xl bg-purple-50 px-3 py-2 text-sm font-medium text-purple-700 dark:bg-purple-900/20 dark:text-purple-300">
+            ✏️ {t('calisthenics.editingPlan')}: <span className="font-semibold">{ex.name}</span>
+          </div>
+        )}
+
         {/* Step title */}
         <div>
           <div className="text-xs font-bold uppercase text-purple-600 dark:text-purple-400">
@@ -290,7 +298,7 @@ export default function CalisthenicsPlanner() {
               disabled={saving || days.length === 0}
               className="flex-1 rounded-xl bg-purple-600 py-3 text-sm font-semibold text-white disabled:opacity-50"
             >
-              {saving ? t('calisthenics.saving') : `💾 ${t('calisthenics.saveToSchedule')}`}
+              {saving ? t('calisthenics.saving') : editingPlan ? `✓ ${t('calisthenics.updatePlan')}` : `💾 ${t('calisthenics.saveToSchedule')}`}
             </button>
           )}
         </div>

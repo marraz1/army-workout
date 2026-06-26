@@ -257,6 +257,8 @@
     "restSeconds": "Rest",
     "goalTarget": "Goal (optional)",
     "saveToSchedule": "Save to Schedule",
+    "updatePlan": "Update Plan",
+    "editingPlan": "Editing plan",
     "builderTitle": "New Exercise",
     "builderEditTitle": "Edit Exercise",
     "name": "Exercise name",

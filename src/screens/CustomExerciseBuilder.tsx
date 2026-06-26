@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams, useParams } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { HoldToggle } from '@/components/calisthenics/HoldToggle'
 import { RestPicker } from '@/components/calisthenics/RestPicker'
@@ -30,8 +30,11 @@ interface Props {
 export default function CustomExerciseBuilder({ editId: editIdProp }: Props) {
   const { t } = useTranslation()
   const router = useRouter()
-  const params = useSearchParams()
-  const editId = editIdProp ?? params.get('id') ?? undefined
+  const searchParams = useSearchParams()
+  const pathParams = useParams()
+  // Resolve the exercise ID from: explicit prop → path param (e.g. /exercise/[id]/edit) → query param
+  const pathId = typeof pathParams.id === 'string' ? pathParams.id : undefined
+  const editId = editIdProp ?? pathId ?? searchParams.get('id') ?? undefined
   const { customExercises, saveCustomExercise, updateCustomExercise, loading } = useCalisthenics()
 
   const existing = editId ? customExercises.find((e) => e.id === editId) : undefined

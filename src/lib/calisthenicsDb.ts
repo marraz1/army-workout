@@ -106,12 +106,26 @@ export async function getCalisthenicsLogs(query?: { from?: string; to?: string }
 }
 
 export async function postCalisthenicsLogs(payload: CalisthenicsSessionPayload): Promise<void> {
-  const res = await fetch('/api/calisthenics/logs', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  })
-  if (!res.ok) throw new Error('Failed to save calisthenics session')
+  let res: Response
+  try {
+    res = await fetch('/api/calisthenics/logs', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+  } catch (err) {
+    throw new Error(`Network error saving session: ${err instanceof Error ? err.message : String(err)}`)
+  }
+  if (!res.ok) {
+    let serverMsg = ''
+    try {
+      const body = (await res.json()) as { error?: string }
+      serverMsg = body.error ?? ''
+    } catch {
+      /* response had no JSON body */
+    }
+    throw new Error(`Save failed (HTTP ${res.status})${serverMsg ? `: ${serverMsg}` : ''}`)
+  }
 }
 
 // ─── Personal bests ────────────────────────────────────────────────────────

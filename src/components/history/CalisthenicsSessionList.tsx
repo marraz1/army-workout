@@ -4,6 +4,8 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { CalisthenicsLog } from '@/types/calisthenics'
 import { calisthenicsExercises, findCalisthenicsExercise, MUSCLE_FILTER_MAP } from '@/data/calisthenicsExercises'
+import { MuscleDisplay } from '@/components/muscle/MuscleDisplay'
+import { getMuscleHighlightsFromNames } from '@/data/muscleMap'
 import { useCalisthenics } from '@/context/CalisthenicsContext'
 
 interface CalisthenicsSessionListProps {
@@ -85,24 +87,32 @@ export function CalisthenicsSessionList({ logs, muscleFilter }: CalisthenicsSess
                   const firstLog = exLogs[0]
                   let name = exId
                   let isCustom = false
+                  let muscles: string[] = []
 
                   if (firstLog.source === 'library') {
                     const libEx = findCalisthenicsExercise(Number(exId))
                     name = libEx?.name ?? exId
+                    muscles = libEx?.muscles ?? []
                   } else {
                     const custEx = customExercises.find((e) => e.id === exId)
                     name = custEx?.name ?? exId
+                    muscles = custEx?.muscles ?? []
                     isCustom = true
                   }
 
+                  const muscleHighlights = getMuscleHighlightsFromNames(muscles)
+
                   return (
                     <div key={exId}>
-                      <div className="flex items-center gap-1.5 mb-1">
+                      <div className="flex items-center gap-1.5 mb-1 flex-wrap">
                         <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{name}</span>
                         {isCustom && (
                           <span className="rounded-full bg-orange-100 px-1.5 py-0.5 text-[9px] font-bold text-orange-600 dark:bg-orange-900/30 dark:text-orange-400">
                             🛠️ {t('calisthenics.customBadge')}
                           </span>
+                        )}
+                        {muscleHighlights.length > 0 && (
+                          <MuscleDisplay highlights={muscleHighlights} compact />
                         )}
                       </div>
                       <div className="flex flex-wrap gap-1.5">

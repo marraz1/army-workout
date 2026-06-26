@@ -78,8 +78,13 @@ export default function CalisthenicsLogger() {
     return items
   }, [todayPlans])
 
-  const [selectedPlanIds, setSelectedPlanIds] = useState<Set<string>>(
-    new Set(todayPlans.map((p) => p.id)),
+  // null = follow the default (all of today's plans); otherwise the user's edit.
+  // Deriving the default reactively avoids a stale empty-Set when plans load
+  // after the logger first mounts (cold load of /calisthenics/log).
+  const [selectedOverride, setSelectedOverride] = useState<Set<string> | null>(null)
+  const selectedPlanIds = useMemo(
+    () => selectedOverride ?? new Set(todayPlans.map((p) => p.id)),
+    [selectedOverride, todayPlans],
   )
   const [phase, setPhase] = useState<Phase>('select')
   const [queueIdx, setQueueIdx] = useState(0)
@@ -157,6 +162,10 @@ export default function CalisthenicsLogger() {
   }
 
   async function handleSave() {
+    if (results.length === 0) {
+      setSaveError(t('calisthenics.noSetsRecorded'))
+      return
+    }
     setSaving(true)
     setSaveError('')
     try {
@@ -224,8 +233,8 @@ export default function CalisthenicsLogger() {
                 <button
                   key={plan.id}
                   onClick={() =>
-                    setSelectedPlanIds((prev) => {
-                      const next = new Set(prev)
+                    setSelectedOverride(() => {
+                      const next = new Set(selectedPlanIds)
                       if (next.has(plan.id)) next.delete(plan.id)
                       else next.add(plan.id)
                       return next

@@ -309,6 +309,7 @@
     "selectToLog": "Select exercises to log today:",
     "sessionComplete": "Session Complete",
     "setsCompleted": "{{completed}} / {{total}} sets completed",
+    "noSetsRecorded": "No sets were recorded. Go back and log at least one set.",
     "saving": "Saving…",
     "saveSession": "Save Session",
     "sessionSaved": "Session Saved!",

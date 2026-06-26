@@ -309,6 +309,7 @@
     "selectToLog": "Pasirinkite pratimus šiandien:",
     "sessionComplete": "Sesija Baigta",
     "setsCompleted": "{{completed}} / {{total}} serijų atlikta",
+    "noSetsRecorded": "Neužfiksuota nė viena serija. Grįžkite ir įrašykite bent vieną.",
     "saving": "Saugoma…",
     "saveSession": "Išsaugoti Sesiją",
     "sessionSaved": "Sesija Išsaugota!",

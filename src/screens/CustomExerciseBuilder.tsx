@@ -7,6 +7,9 @@ import { HoldToggle } from '@/components/calisthenics/HoldToggle'
 import { RestPicker } from '@/components/calisthenics/RestPicker'
 import { LevelBadge } from '@/components/calisthenics/LevelBadge'
 import { MuscleSelector, type MuscleState } from '@/components/muscle/MuscleSelector'
+import { MuscleDisplay } from '@/components/muscle/MuscleDisplay'
+import { ArmIcon, BackLegs, BackTorso, FrontLegs, FrontTorso } from '@/components/muscle/MuscleIconComponents'
+import type { MuscleHighlight } from '@/components/muscle/MuscleIconComponents'
 import { CALIS_NAME_TO_SVG_ID, svgIdsToCalisthenicsNames } from '@/data/muscleMap'
 import { useCalisthenics } from '@/context/CalisthenicsContext'
 import type { CalisthenicsLevel, IllustrationTemplate } from '@/types/calisthenics'
@@ -24,11 +27,35 @@ function namesToMuscleState(names: string[]): MuscleState {
 }
 
 const LEVELS: CalisthenicsLevel[] = ['Beginner', 'Intermediate', 'Advanced']
-const ILLUS: { key: IllustrationTemplate; icon: string; label: string }[] = [
-  { key: 'push',  icon: '💪', label: 'Push'  },
-  { key: 'pull',  icon: '🏋️', label: 'Pull'  },
-  { key: 'squat', icon: '🦵', label: 'Squat' },
-  { key: 'hold',  icon: '🤸', label: 'Hold'  },
+const ILLUS: { key: IllustrationTemplate; label: string; highlights: MuscleHighlight[] }[] = [
+  {
+    key: 'push', label: 'Push',
+    highlights: [
+      { component: FrontTorso, highlight: ['chest', 'shoulders', 'traps'] },
+      { component: ArmIcon,    highlight: ['triceps'], props: { side: 'back' } },
+    ],
+  },
+  {
+    key: 'pull', label: 'Pull',
+    highlights: [
+      { component: BackTorso, highlight: ['lats', 'traps'] },
+      { component: ArmIcon,   highlight: ['biceps'], props: { side: 'front' } },
+    ],
+  },
+  {
+    key: 'squat', label: 'Squat',
+    highlights: [
+      { component: FrontLegs, highlight: ['quads', 'hip_flexors'] },
+      { component: BackLegs,  highlight: ['glutes', 'hamstrings'] },
+    ],
+  },
+  {
+    key: 'hold', label: 'Hold',
+    highlights: [
+      { component: FrontTorso, highlight: ['abs', 'obliques'] },
+      { component: BackTorso,  highlight: ['lower_back'] },
+    ],
+  },
 ]
 
 interface Props {
@@ -216,20 +243,22 @@ export default function CustomExerciseBuilder({ editId: editIdProp }: Props) {
 
         {/* Illustration */}
         <Field label={t('calisthenics.illustrationTemplate')}>
-          <div className="grid grid-cols-4 gap-2">
-            {ILLUS.map(({ key, icon, label }) => (
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {ILLUS.map(({ key, label, highlights }) => (
               <button
                 key={key}
                 type="button"
                 onClick={() => setIllustrationTemplate(key)}
-                className={`rounded-xl border py-3 text-center transition-colors ${
+                className={`rounded-xl border px-2 py-3 text-center transition-colors ${
                   illustrationTemplate === key
                     ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
                     : 'border-slate-200 bg-white dark:border-slate-600 dark:bg-slate-800'
                 }`}
               >
-                <div className="text-xl">{icon}</div>
-                <div className="text-[10px] mt-0.5 text-slate-600 dark:text-slate-300">{label}</div>
+                <div className="flex justify-center">
+                  <MuscleDisplay highlights={highlights} compact />
+                </div>
+                <div className="text-[10px] mt-1.5 font-medium text-slate-600 dark:text-slate-300">{label}</div>
               </button>
             ))}
           </div>

@@ -14,6 +14,7 @@ import { SessionDetail } from '@/components/history/SessionDetail'
 import { useApp } from '@/context/AppContext'
 import { useWorkoutData } from '@/context/WorkoutDataContext'
 import { CalisthenicsHistory } from '@/components/history/CalisthenicsHistory'
+import { DailyRoutineProgress } from '@/components/history/DailyRoutineProgress'
 import { lafStandards } from '@/data/lafStandards'
 import { computeStreak } from '@/lib/utils'
 import type { WorkoutSession } from '@/types'
@@ -34,7 +35,7 @@ export default function History() {
   const { profile, logs } = useApp()
   const { sessions, personalBests, removeSession } = useWorkoutData()
 
-  const [mode, setMode] = useState<'laf' | 'calisthenics'>('laf')
+  const [mode, setMode] = useState<'laf' | 'calisthenics' | 'routine'>('laf')
   const [view, setView] = useState<View>('heatmap')
   const [selected, setSelected] = useState<WorkoutSession | null>(null)
 
@@ -83,9 +84,21 @@ export default function History() {
         >
           🤸 {t('calisthenics.historyTab')}
         </button>
+        <button
+          onClick={() => setMode('routine')}
+          className={`flex-1 rounded-full py-2 text-xs font-bold transition-colors ${
+            mode === 'routine'
+              ? 'bg-emerald-600 text-white'
+              : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-200'
+          }`}
+        >
+          📋 {t('routine.historyTab')}
+        </button>
       </div>
 
-      {mode === 'calisthenics' ? (
+      {mode === 'routine' ? (
+        <DailyRoutineProgress />
+      ) : mode === 'calisthenics' ? (
         <CalisthenicsHistory />
       ) : (
         <>

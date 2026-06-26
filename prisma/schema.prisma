@@ -23,6 +23,8 @@ model User {
   customExercises    CustomExercise[]
   calisthenicsPlans  CalisthenicsPlan[]
   calisthenicsLogs   CalisthenicsLog[]
+  routineItems       RoutineItem[]
+  dailyRoutineLogs   DailyRoutineLog[]
 }
 
 // One-to-one onboarding profile for each user.
@@ -217,4 +219,37 @@ model CalisthenicsLog {
 
   @@index([userId, sessionDate])
   @@map("calisthenics_logs")
+}
+
+// ─── v2.1 Daily Routine ───────────────────────────────────────────────────────
+
+model RoutineItem {
+  id        String   @id
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  time      String
+  icon      String
+  label     String
+  detail    String
+  color     String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("routine_items")
+}
+
+model DailyRoutineLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      String
+  itemKey   String
+  label     String
+  completed Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, date, itemKey])
+  @@index([userId, date])
+  @@map("daily_routine_logs")
 }

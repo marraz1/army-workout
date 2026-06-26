@@ -327,6 +327,19 @@
     "set": "Set {{n}}",
     "sessionSummary": "{{exercises}} exercises · {{sets}} sets completed"
   },
+  "routine": {
+    "editTitle": "Edit Daily Routine",
+    "addItem": "Add Item",
+    "saving": "Saving…",
+    "labelPlaceholder": "Item name",
+    "detailPlaceholder": "Short description",
+    "check": "Mark complete",
+    "uncheck": "Mark incomplete",
+    "historyTab": "Routine",
+    "progressTitle": "Daily Routine Progress",
+    "noHistory": "No routine history yet — start checking off items!",
+    "itemsDone": "items done"
+  },
   "settings": {
     "title": "Settings",
     "theme": "Theme",

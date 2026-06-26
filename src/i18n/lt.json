@@ -327,6 +327,19 @@
     "set": "Serija {{n}}",
     "sessionSummary": "{{exercises}} pratimai · {{sets}} serijų atlikta"
   },
+  "routine": {
+    "editTitle": "Keisti Dienos Rutiną",
+    "addItem": "Pridėti Elementą",
+    "saving": "Saugoma…",
+    "labelPlaceholder": "Elemento pavadinimas",
+    "detailPlaceholder": "Trumpas aprašymas",
+    "check": "Pažymėti atlikta",
+    "uncheck": "Pašalinti žymėjimą",
+    "historyTab": "Rutina",
+    "progressTitle": "Dienos Rutinos Pažanga",
+    "noHistory": "Dar nėra rutinos istorijos — pradėkite žymėti elementus!",
+    "itemsDone": "atlikta"
+  },
   "settings": {
     "title": "Nustatymai",
     "theme": "Tema",

@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { Card } from '@/components/common/Card'
@@ -8,9 +9,10 @@ import { ProgressBar } from '@/components/charts/ProgressBar'
 import { useApp } from '@/context/AppContext'
 import { useWorkoutData } from '@/context/WorkoutDataContext'
 import { useCalisthenics } from '@/context/CalisthenicsContext'
+import { useRoutine } from '@/context/RoutineContext'
+import { RoutineEditModal } from '@/components/routine/RoutineEditModal'
 import { ageGroupForAge } from '@/data/ageGroups'
 import { scheduleForDate } from '@/data/weekSchedule'
-import { dailyRoutine } from '@/data/dailyRoutine'
 import { computeReadiness } from '@/lib/laf'
 import { computeStreak, pickLang, todayISO } from '@/lib/utils'
 
@@ -22,6 +24,8 @@ export default function Home() {
   const { profile, language, logs, addLog } = useApp()
   const { sessions, personalBests } = useWorkoutData()
   const { plans: calPlans, logs: calLogs } = useCalisthenics()
+  const { items: routineItems, todayChecked, toggleItem, saveItems } = useRoutine()
+  const [editingRoutine, setEditingRoutine] = useState(false)
 
   if (!profile) return null
 
@@ -175,32 +179,72 @@ export default function Home() {
       </Card>
 
       {/* Daily routine timeline */}
-      <Card title={t('home.dailyRoutine')}>
+      <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-slate-800">
+        <div className="mb-4 flex items-center justify-between">
+          <div className="text-[15px] font-bold text-navy dark:text-slate-100">
+            {t('home.dailyRoutine')}
+          </div>
+          <button
+            onClick={() => setEditingRoutine(true)}
+            className="rounded-full px-3 py-1 text-xs font-semibold text-slate-400 hover:bg-slate-100 hover:text-navy dark:hover:bg-slate-700 dark:hover:text-flag-yellow"
+          >
+            ✏️ {t('common.edit')}
+          </button>
+        </div>
+
         <div className="relative">
           <div className="absolute bottom-2 left-[18px] top-2 w-0.5 bg-slate-200 dark:bg-slate-700" />
           <div className="space-y-3">
-            {dailyRoutine.map((item) => (
-              <div key={item.time} className="relative flex gap-3">
-                <div
-                  className="z-10 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-base ring-2 ring-white dark:ring-slate-800"
-                  style={{ background: item.color }}
-                >
-                  {item.icon}
-                </div>
-                <div className="pt-1">
-                  <div className="text-xs font-bold text-slate-400">{item.time}</div>
-                  <div className="text-sm font-semibold text-slate-700 dark:text-slate-200">
-                    {item.label}
+            {routineItems.map((item) => {
+              const checked = todayChecked.has(item.id)
+              return (
+                <div key={item.id} className="relative flex items-start gap-3">
+                  <div
+                    className="z-10 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-base ring-2 ring-white dark:ring-slate-800"
+                    style={{ background: checked ? '#22c55e' : item.color }}
+                  >
+                    {checked ? '✓' : item.icon}
                   </div>
-                  <div className="text-xs text-slate-500 dark:text-slate-400">
-                    {item.detail}
+                  <div className="flex-1 pt-1">
+                    <div className="text-xs font-bold text-slate-400">{item.time}</div>
+                    <div
+                      className={`text-sm font-semibold ${
+                        checked
+                          ? 'text-slate-400 line-through dark:text-slate-500'
+                          : 'text-slate-700 dark:text-slate-200'
+                      }`}
+                    >
+                      {item.label}
+                    </div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">
+                      {item.detail}
+                    </div>
                   </div>
+                  <button
+                    onClick={() => toggleItem(item.id, item.label)}
+                    className={`mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded border-2 transition-colors ${
+                      checked
+                        ? 'border-green-500 bg-green-500 text-white'
+                        : 'border-slate-300 bg-white dark:border-slate-600 dark:bg-slate-700'
+                    }`}
+                    aria-label={checked ? t('routine.uncheck') : t('routine.check')}
+                  >
+                    {checked && <span className="text-[10px] font-bold">✓</span>}
+                  </button>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
-      </Card>
+      </div>
+
+      {editingRoutine && (
+        <RoutineEditModal
+          items={routineItems}
+          onSave={saveItems}
+          onClose={() => setEditingRoutine(false)}
+        />
+      )}
     </div>
   )
 }

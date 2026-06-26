@@ -153,11 +153,12 @@ export function RoutineEditModal({ items: initial, onSave, onClose }: Props) {
                   {PRESET_COLORS.map((c) => (
                     <button
                       key={c}
-                      className="h-6 w-6 rounded-full ring-2 ring-offset-1"
-                      style={{
-                        background: c,
-                        ringColor: item.color === c ? c : 'transparent',
-                      }}
+                      className={`h-6 w-6 rounded-full ring-offset-1 ${
+                        item.color === c
+                          ? 'ring-2 ring-slate-700 dark:ring-white'
+                          : 'ring-1 ring-slate-200 dark:ring-slate-600'
+                      }`}
+                      style={{ background: c }}
                       onClick={() => {
                         update(item.id, 'color', c)
                         setColorPickerFor(null)

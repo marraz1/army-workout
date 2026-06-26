@@ -4,6 +4,24 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { CalisthenicsLog } from '@/types/calisthenics'
 import { calisthenicsExercises, MUSCLE_FILTER_MAP } from '@/data/calisthenicsExercises'
+import { MuscleDisplay } from '@/components/muscle/MuscleDisplay'
+import { FrontTorso, BackTorso, FrontLegs, BackLegs } from '@/components/muscle/MuscleIconComponents'
+import type { MuscleHighlight } from '@/components/muscle/MuscleIconComponents'
+
+const HEATMAP_ICONS: Record<string, MuscleHighlight[]> = {
+  'Chest':     [{ component: FrontTorso, highlight: ['chest', 'shoulders'] }],
+  'Back':      [{ component: BackTorso,  highlight: ['lats', 'lower_back'] }],
+  'Shoulders': [{ component: FrontTorso, highlight: ['shoulders', 'traps'] }],
+  'Core':      [{ component: FrontTorso, highlight: ['abs', 'obliques'] }],
+  'Legs':      [
+    { component: FrontLegs, highlight: ['quads'] },
+    { component: BackLegs,  highlight: ['glutes', 'hamstrings'] },
+  ],
+  'Full Body': [
+    { component: FrontTorso, highlight: ['chest', 'abs'] },
+    { component: BackTorso,  highlight: ['lats'] },
+  ],
+}
 
 const MUSCLE_GROUPS = ['Chest', 'Back', 'Shoulders', 'Core', 'Legs', 'Full Body']
 
@@ -93,11 +111,15 @@ export function MuscleHeatmap({ logs, onMuscleClick }: MuscleHeatmapProps) {
             <button
               key={group}
               onClick={() => onMuscleClick?.(group)}
-              className="rounded-xl p-3 text-center transition-transform hover:scale-105"
-              style={{ backgroundColor: getColor(count) }}
+              className="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-600 transition-transform hover:scale-105"
             >
-              <div className="text-xs font-bold text-white drop-shadow">{group}</div>
-              <div className="text-lg font-bold text-white drop-shadow">{count}</div>
+              <div className="flex justify-center items-end p-2 bg-white dark:bg-slate-800">
+                <MuscleDisplay highlights={HEATMAP_ICONS[group] ?? []} compact />
+              </div>
+              <div className="px-2 py-1.5 text-center" style={{ backgroundColor: getColor(count) }}>
+                <div className="text-[10px] font-bold text-white drop-shadow leading-tight">{group}</div>
+                <div className="text-base font-bold text-white drop-shadow">{count}</div>
+              </div>
             </button>
           )
         })}

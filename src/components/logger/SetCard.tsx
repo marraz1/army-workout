@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { MuscleDisplay } from '@/components/muscle/MuscleDisplay'
 import type { Exercise } from '@/types'
 
 interface SetCardProps {
@@ -38,6 +39,10 @@ export function SetCard({
         <span className="rounded-md bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-500 dark:bg-slate-700 dark:text-slate-300">
           {t('logger.set', { n: setNumber, total: totalSets })}
         </span>
+      </div>
+
+      <div className="mb-3">
+        <MuscleDisplay exerciseId={exercise.id} compact />
       </div>
 
       <div className="mb-4 text-xs text-slate-500 dark:text-slate-400">

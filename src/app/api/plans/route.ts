@@ -16,6 +16,7 @@ function toPlan(row: {
   isCustom: boolean
   scope: string
   onceDate: string | null
+  muscleData: string | null
 }): WorkoutPlan {
   return {
     id: row.id,
@@ -29,6 +30,7 @@ function toPlan(row: {
     isCustom: row.isCustom,
     scope: row.scope as WorkoutPlan['scope'],
     onceDate: row.onceDate ?? undefined,
+    muscleData: row.muscleData ?? undefined,
   }
 }
 
@@ -68,6 +70,7 @@ export async function PUT(req: Request) {
     isCustom: body.isCustom ?? true,
     scope,
     onceDate,
+    muscleData: body.muscleData ?? null,
   }
 
   // Postgres treats NULL as distinct in unique constraints, so for scope 'all'

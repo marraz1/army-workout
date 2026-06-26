@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
+import { MuscleDisplay } from '@/components/muscle/MuscleDisplay'
 import { SectionHeader } from '@/components/common/SectionHeader'
 import { CustomBadge } from '@/components/plan/CustomBadge'
 import { useApp } from '@/context/AppContext'
@@ -111,9 +112,8 @@ export default function ExerciseGuide() {
                   {t('plan.defaultWas', { sets: def.sets, goal: def.target })}
                 </div>
               )}
-              {/* Illustration placeholder — replaced by Lottie/SVG in Phase 3 */}
-              <div className="mt-3 flex items-center gap-2 rounded-lg bg-green-50 px-3 py-2 text-[11px] text-green-700 dark:bg-green-900/20 dark:text-green-300">
-                🖼️ {t('guide.illustration')}
+              <div className="mt-3 flex justify-center rounded-lg bg-slate-50 px-3 py-3 dark:bg-slate-700/40">
+                <MuscleDisplay exerciseId={ex.id} compact />
               </div>
             </div>
           )

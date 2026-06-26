@@ -70,6 +70,7 @@ model WorkoutPlan {
   isCustom   Boolean  @default(true)
   scope      String   @default("all") // 'all' | 'once'
   onceDate   String?
+  muscleData String?  // JSON: { primary: string[], secondary: string[] }
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 

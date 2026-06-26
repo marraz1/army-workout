@@ -1,9 +1,31 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { heatColor } from '@/components/charts/Heatmap'
+import { MuscleDisplay } from '@/components/muscle/MuscleDisplay'
+import type { MuscleHighlight } from '@/components/muscle/MuscleIconComponents'
+import { getMuscleHighlights } from '@/data/muscleMap'
 import type { SessionStatus, WorkoutSession } from '@/types'
+
+function sessionMuscleHighlights(session: WorkoutSession): MuscleHighlight[] {
+  const uniqueIds = [...new Set(session.sets.map((s) => s.exerciseId))]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const merged = new Map<React.ComponentType<any>, MuscleHighlight>()
+  for (const id of uniqueIds) {
+    for (const h of getMuscleHighlights(id)) {
+      const existing = merged.get(h.component)
+      if (!existing) {
+        merged.set(h.component, { ...h, highlight: [...h.highlight] })
+      } else {
+        for (const hid of h.highlight) {
+          if (!existing.highlight.includes(hid)) existing.highlight.push(hid)
+        }
+      }
+    }
+  }
+  return Array.from(merged.values())
+}
 
 interface SessionHistoryListProps {
   sessions: WorkoutSession[]
@@ -52,6 +74,7 @@ export function SessionHistoryList({ sessions, onSelect }: SessionHistoryListPro
       <div className="space-y-2">
         {filtered.map((s) => {
           const totalReps = s.sets.reduce((sum, set) => sum + set.actualReps, 0)
+          const muscleHighlights = sessionMuscleHighlights(s)
           return (
             <button
               key={s.id}
@@ -69,6 +92,11 @@ export function SessionHistoryList({ sessions, onSelect }: SessionHistoryListPro
                 <div className="text-[11px] text-slate-500">
                   {s.dayType} · {t('history.totalReps', { n: totalReps })}
                 </div>
+                {muscleHighlights.length > 0 && (
+                  <div className="mt-1">
+                    <MuscleDisplay highlights={muscleHighlights} compact />
+                  </div>
+                )}
               </div>
               <span className="text-slate-300">›</span>
             </button>

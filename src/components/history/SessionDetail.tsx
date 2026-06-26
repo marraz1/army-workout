@@ -2,6 +2,7 @@
 
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/common/Button'
+import { MuscleDisplay } from '@/components/muscle/MuscleDisplay'
 import { exerciseIcon, exerciseName } from '@/lib/exercises'
 import { formatMMSS } from '@/lib/utils'
 import type { PersonalBest, SessionSet, WorkoutSession } from '@/types'
@@ -61,12 +62,13 @@ export function SessionDetail({ session, personalBests, onBack, onDelete }: Sess
         <div className="mt-4 space-y-3">
           {groups.map((g) => (
             <div key={g.exerciseId} className="rounded-xl bg-slate-50 p-3 dark:bg-slate-700/40">
-              <div className="mb-2 flex items-center gap-2">
+              <div className="mb-2 flex items-center gap-2 flex-wrap">
                 <span>{exerciseIcon(g.exerciseId)}</span>
                 <span className="text-sm font-bold text-slate-700 dark:text-slate-100">
                   {exerciseName(g.exerciseId)}
                 </span>
                 {pbExercises.has(g.exerciseId) && <span className="text-sm">⭐</span>}
+                <MuscleDisplay exerciseId={g.exerciseId} compact />
               </div>
               <div className="space-y-1">
                 {g.sets.map((set) => {

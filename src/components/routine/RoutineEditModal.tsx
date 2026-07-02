@@ -76,21 +76,31 @@ export function RoutineEditModal({ items: initial, onSave, onClose }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-black/60" onClick={onClose}>
       <div
-        className="mt-auto max-h-[90vh] w-full overflow-y-auto rounded-t-2xl bg-white p-5 dark:bg-slate-800"
+        className="mt-auto flex max-h-[90vh] w-full flex-col rounded-t-2xl bg-white dark:bg-slate-800"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center justify-between p-5 pb-4">
           <h2 className="text-base font-bold text-navy dark:text-white">
             {t('routine.editTitle')}
           </h2>
-          <button
-            onClick={onClose}
-            className="rounded-full px-3 py-1 text-sm text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700"
-          >
-            ✕
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="rounded-full px-3 py-1 text-sm font-semibold text-flag-yellow hover:bg-slate-100 disabled:opacity-50 dark:hover:bg-slate-700"
+            >
+              {saving ? t('routine.saving') : t('common.save')}
+            </button>
+            <button
+              onClick={onClose}
+              className="rounded-full px-3 py-1 text-sm text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700"
+            >
+              ✕
+            </button>
+          </div>
         </div>
 
+        <div className="flex-1 overflow-y-auto px-5 pb-4">
         <div className="space-y-3">
           {items.map((item, idx) => (
             <div
@@ -195,8 +205,10 @@ export function RoutineEditModal({ items: initial, onSave, onClose }: Props) {
         >
           + {t('routine.addItem')}
         </button>
+        </div>
 
-        <div className="mt-4 flex gap-2">
+
+        <div className="flex gap-2 border-t border-slate-200 p-5 pt-4 dark:border-slate-700">
           <Button variant="secondary" className="flex-1" onClick={onClose}>
             {t('common.cancel')}
           </Button>

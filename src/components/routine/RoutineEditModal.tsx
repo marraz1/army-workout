@@ -83,12 +83,21 @@ export function RoutineEditModal({ items: initial, onSave, onClose }: Props) {
           <h2 className="text-base font-bold text-navy dark:text-white">
             {t('routine.editTitle')}
           </h2>
-          <button
-            onClick={onClose}
-            className="rounded-full px-3 py-1 text-sm text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700"
-          >
-            ✕
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="rounded-full px-3 py-1 text-sm font-semibold text-flag-yellow hover:bg-slate-100 disabled:opacity-50 dark:hover:bg-slate-700"
+            >
+              {saving ? t('routine.saving') : t('common.save')}
+            </button>
+            <button
+              onClick={onClose}
+              className="rounded-full px-3 py-1 text-sm text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700"
+            >
+              ✕
+            </button>
+          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto px-5 pb-4">

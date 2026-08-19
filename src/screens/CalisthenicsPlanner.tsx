@@ -3,17 +3,20 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
+import { useApp } from '@/context/AppContext'
 import { DayPicker } from '@/components/calisthenics/DayPicker'
 import { TimePicker } from '@/components/calisthenics/TimePicker'
 import { HoldToggle } from '@/components/calisthenics/HoldToggle'
 import { RestPicker } from '@/components/calisthenics/RestPicker'
 import { LevelBadge } from '@/components/calisthenics/LevelBadge'
 import { findCalisthenicsExercise } from '@/data/calisthenicsExercises'
+import { localizeCalisthenicsExercise } from '@/data/calisthenicsExercises.lt'
 import { useCalisthenics } from '@/context/CalisthenicsContext'
 import type { CalisthenicsSource } from '@/types/calisthenics'
 
 export default function CalisthenicsPlanner() {
   const { t } = useTranslation()
+  const { language } = useApp()
   const router = useRouter()
   const params = useSearchParams()
   const { customExercises, plans, savePlan, updatePlan, loading } = useCalisthenics()
@@ -42,7 +45,8 @@ export default function CalisthenicsPlanner() {
     ? editingPlan.source
     : ((params.get('source') ?? 'library') as CalisthenicsSource)
 
-  const libEx = source === 'library' ? findCalisthenicsExercise(exerciseId) : undefined
+  const libRaw = source === 'library' ? findCalisthenicsExercise(exerciseId) : undefined
+  const libEx = libRaw ? localizeCalisthenicsExercise(libRaw, language) : undefined
   const custEx = source === 'custom' ? customExercises.find((e) => e.id === exerciseIdRaw) : undefined
   const ex = libEx ?? custEx
 

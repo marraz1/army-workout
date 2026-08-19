@@ -10,6 +10,7 @@ import { useApp } from '@/context/AppContext'
 import { useWorkoutData } from '@/context/WorkoutDataContext'
 import { useCalisthenics } from '@/context/CalisthenicsContext'
 import { weekSchedule, trainingPhases, scheduleForDate } from '@/data/weekSchedule'
+import { localizedCalisthenicsName } from '@/data/calisthenicsExercises.lt'
 import { cn, pickLang, todayISO } from '@/lib/utils'
 import type { SessionStatus } from '@/types'
 
@@ -145,9 +146,11 @@ export default function Schedule() {
                         <div className="mb-3 space-y-1.5">
                           {dayCalPlans.map((plan) => {
                             const name =
-                              plan.libraryExercise?.name ??
-                              plan.customExercise?.name ??
-                              'Exercise'
+                              localizedCalisthenicsName(
+                                plan.libraryExercise,
+                                language,
+                                plan.customExercise?.name ?? t('calisthenics.reviewExercise'),
+                              )
                             return (
                               <div
                                 key={plan.id}

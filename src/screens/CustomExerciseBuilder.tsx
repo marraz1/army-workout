@@ -81,10 +81,10 @@ export default function CustomExerciseBuilder({ editId: editIdProp }: Props) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
-    if (!name.trim()) { setError('Name is required.'); return }
-    if (name.length > 50) { setError('Name must be 50 characters or fewer.'); return }
+    if (!name.trim()) { setError(t('calisthenics.errNameRequired')); return }
+    if (name.length > 50) { setError(t('calisthenics.errNameTooLong')); return }
     const muscles = svgIdsToCalisthenicsNames([...muscleState.primary, ...muscleState.secondary])
-    if (muscles.length === 0) { setError('Select at least one muscle group.'); return }
+    if (muscles.length === 0) { setError(t('calisthenics.errNoMuscles')); return }
 
     setSaving(true)
     try {
@@ -106,7 +106,7 @@ export default function CustomExerciseBuilder({ editId: editIdProp }: Props) {
 
       router.push('/calisthenics')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save exercise.')
+      setError(err instanceof Error ? err.message : t('calisthenics.errSaveExercise'))
     } finally {
       setSaving(false)
     }

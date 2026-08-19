@@ -117,7 +117,9 @@ export function MuscleHeatmap({ logs, onMuscleClick }: MuscleHeatmapProps) {
                 <MuscleDisplay highlights={HEATMAP_ICONS[group] ?? []} compact />
               </div>
               <div className="px-2 py-1.5 text-center" style={{ backgroundColor: getColor(count) }}>
-                <div className="text-[10px] font-bold text-white drop-shadow leading-tight">{group}</div>
+                <div className="text-[10px] font-bold text-white drop-shadow leading-tight">
+                  {t(`muscles.${group}`, { defaultValue: group })}
+                </div>
                 <div className="text-base font-bold text-white drop-shadow">{count}</div>
               </div>
             </button>

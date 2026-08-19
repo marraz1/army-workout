@@ -359,7 +359,13 @@
     "repsMode": "Reps",
     "holdMode": "Hold (s)",
     "restCustom": "Custom",
-    "restRangeHint": "seconds (15–300)"
+    "restRangeHint": "seconds (15–300)",
+    "errNameRequired": "Name is required.",
+    "errNameTooLong": "Name must be 50 characters or fewer.",
+    "errNoMuscles": "Select at least one muscle group.",
+    "errSaveExercise": "Failed to save exercise.",
+    "errSaveSession": "Failed to save session.",
+    "allMusclesFilter": "All"
   },
   "routine": {
     "editTitle": "Edit Daily Routine",
@@ -413,5 +419,33 @@
     "fri": "F",
     "sat": "S",
     "sun": "S"
+  },
+  "muscles": {
+    "Abs": "Abs",
+    "Adductors": "Adductors",
+    "Ankles": "Ankles",
+    "Back": "Back",
+    "Biceps": "Biceps",
+    "Calves": "Calves",
+    "Chest": "Chest",
+    "Core": "Core",
+    "Forearms": "Forearms",
+    "Full Body": "Full Body",
+    "Glutes": "Glutes",
+    "Grip": "Grip",
+    "Hamstrings": "Hamstrings",
+    "Hip Flexors": "Hip Flexors",
+    "Lats": "Lats",
+    "Legs": "Legs",
+    "Lower Back": "Lower Back",
+    "Obliques": "Obliques",
+    "Quads": "Quads",
+    "Rear Delts": "Rear Delts",
+    "Rhomboids": "Rhomboids",
+    "Shoulders": "Shoulders",
+    "Traps": "Traps",
+    "Triceps": "Triceps",
+    "Upper Back": "Upper Back",
+    "Wrists": "Wrists"
   }
 }

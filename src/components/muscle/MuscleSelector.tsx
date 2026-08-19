@@ -108,7 +108,7 @@ export function MuscleSelector({ value, onChange }: MuscleSelectorProps) {
               )}
               <CompTyped highlight={highlight} width={44} height={50} {...sideProps} />
               <span style={{ fontSize: 9, fontWeight: 600, color: '#64748b', textAlign: 'center', lineHeight: 1.2 }}>
-                {label}
+                {t(`muscles.${label}`, { defaultValue: label })}
               </span>
             </button>
           )

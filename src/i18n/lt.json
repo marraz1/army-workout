@@ -359,7 +359,13 @@
     "repsMode": "Kartojimai",
     "holdMode": "Laikymas (s)",
     "restCustom": "Kita",
-    "restRangeHint": "sekundės (15–300)"
+    "restRangeHint": "sekundės (15–300)",
+    "errNameRequired": "Pavadinimas privalomas.",
+    "errNameTooLong": "Pavadinimą turi sudaryti ne daugiau kaip 50 simbolių.",
+    "errNoMuscles": "Pasirinkite bent vieną raumenų grupę.",
+    "errSaveExercise": "Nepavyko išsaugoti pratimo.",
+    "errSaveSession": "Nepavyko išsaugoti seanso.",
+    "allMusclesFilter": "Visi"
   },
   "routine": {
     "editTitle": "Keisti Dienos Rutiną",
@@ -413,5 +419,33 @@
     "fri": "P",
     "sat": "Š",
     "sun": "S"
+  },
+  "muscles": {
+    "Abs": "Pilvo raumenys",
+    "Adductors": "Šlaunų pritraukiamieji",
+    "Ankles": "Kulkšnys",
+    "Back": "Nugara",
+    "Biceps": "Bicepsai",
+    "Calves": "Blauzdos",
+    "Chest": "Krūtinė",
+    "Core": "Liemuo",
+    "Forearms": "Dilbiai",
+    "Full Body": "Visas kūnas",
+    "Glutes": "Sėdmenys",
+    "Grip": "Rankos griebimas",
+    "Hamstrings": "Užpakaliniai šlaunų",
+    "Hip Flexors": "Klubų lenkiamieji",
+    "Lats": "Plačiausieji nugaros",
+    "Legs": "Kojos",
+    "Lower Back": "Juosmuo",
+    "Obliques": "Šoniniai pilvo",
+    "Quads": "Keturgalviai",
+    "Rear Delts": "Užpakaliniai deltiniai",
+    "Rhomboids": "Rombiniai",
+    "Shoulders": "Pečiai",
+    "Traps": "Trapeciniai",
+    "Triceps": "Tricepsai",
+    "Upper Back": "Viršutinė nugara",
+    "Wrists": "Riešai"
   }
 }

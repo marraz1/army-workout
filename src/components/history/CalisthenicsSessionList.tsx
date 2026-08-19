@@ -4,9 +4,11 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { CalisthenicsLog } from '@/types/calisthenics'
 import { calisthenicsExercises, findCalisthenicsExercise, MUSCLE_FILTER_MAP } from '@/data/calisthenicsExercises'
+import { localizedCalisthenicsName } from '@/data/calisthenicsExercises.lt'
 import { MuscleDisplay } from '@/components/muscle/MuscleDisplay'
 import { getMuscleHighlightsFromNames } from '@/data/muscleMap'
 import { useCalisthenics } from '@/context/CalisthenicsContext'
+import { useApp } from '@/context/AppContext'
 
 interface CalisthenicsSessionListProps {
   logs: CalisthenicsLog[]
@@ -25,6 +27,7 @@ function logMatchesMuscle(log: CalisthenicsLog, group: string): boolean {
 export function CalisthenicsSessionList({ logs, muscleFilter }: CalisthenicsSessionListProps) {
   const { t } = useTranslation()
   const { customExercises } = useCalisthenics()
+  const { language } = useApp()
   const [openDate, setOpenDate] = useState<string | null>(null)
 
   const grouped = useMemo(() => {
@@ -91,7 +94,7 @@ export function CalisthenicsSessionList({ logs, muscleFilter }: CalisthenicsSess
 
                   if (firstLog.source === 'library') {
                     const libEx = findCalisthenicsExercise(Number(exId))
-                    name = libEx?.name ?? exId
+                    name = localizedCalisthenicsName(libEx, language, exId)
                     muscles = libEx?.muscles ?? []
                   } else {
                     const custEx = customExercises.find((e) => e.id === exId)

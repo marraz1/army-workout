@@ -3,13 +3,15 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
+import { useApp } from '@/context/AppContext'
 import { SetCard } from '@/components/logger/SetCard'
 import { RestTimer } from '@/components/logger/RestTimer'
 import { EnergyPicker } from '@/components/logger/EnergyPicker'
 import { useCalisthenics } from '@/context/CalisthenicsContext'
 import { findCalisthenicsExercise } from '@/data/calisthenicsExercises'
+import { localizedCalisthenicsName } from '@/data/calisthenicsExercises.lt'
 import { todayISO } from '@/lib/utils'
-import type { Exercise } from '@/types'
+import type { Exercise, Lang } from '@/types'
 import type { CalisthenicsPlan, CalisthenicsSetInput, CalisthenicsSource } from '@/types/calisthenics'
 
 interface QueueItem {
@@ -19,13 +21,15 @@ interface QueueItem {
 
 type Phase = 'select' | 'logging' | 'resting' | 'summary' | 'saved'
 
-function planToExercise(plan: CalisthenicsPlan): Exercise {
+function planToExercise(plan: CalisthenicsPlan, lang: Lang): Exercise {
   const libEx = plan.source === 'library' && plan.libraryExerciseId
     ? findCalisthenicsExercise(plan.libraryExerciseId)
     : undefined
   const custEx = plan.customExercise
 
-  const name = libEx?.name ?? custEx?.name ?? 'Exercise'
+  const name = libEx
+    ? localizedCalisthenicsName(libEx, lang, libEx.name)
+    : (custEx?.name ?? 'Exercise')
   const isTimed = libEx?.isTimed ?? custEx?.isTimed ?? false
 
   return {
@@ -55,6 +59,7 @@ interface SetResult {
 
 export default function CalisthenicsLogger() {
   const { t } = useTranslation()
+  const { language } = useApp()
   const router = useRouter()
   const params = useSearchParams()
   const { plans, saveLogs, loading } = useCalisthenics()
@@ -206,7 +211,7 @@ export default function CalisthenicsLogger() {
       console.log('[CalisthenicsLogger] Save complete ✅')
       setPhase('saved')
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Failed to save session.'
+      const msg = err instanceof Error ? err.message : t('calisthenics.errSaveSession')
       console.error('[CalisthenicsLogger] Save error:', msg)
       setSaveError(msg)
     } finally {
@@ -247,7 +252,7 @@ export default function CalisthenicsLogger() {
           <p className="text-sm text-slate-500">{t('calisthenics.selectToLog')}</p>
           <div className="space-y-2">
             {todayPlans.map((plan) => {
-              const ex = planToExercise(plan)
+              const ex = planToExercise(plan, language)
               const checked = selectedPlanIds.has(plan.id)
               return (
                 <button
@@ -316,7 +321,7 @@ export default function CalisthenicsLogger() {
   }
 
   if (phase === 'logging' && current) {
-    const ex = planToExercise(current.plan)
+    const ex = planToExercise(current.plan, language)
     const totalSets = filteredQueue.filter((q) => q.plan.id === current.plan.id).length
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pb-24 px-4 py-6">

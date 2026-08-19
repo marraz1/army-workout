@@ -13,6 +13,7 @@ import { useRoutine } from '@/context/RoutineContext'
 import { RoutineEditModal } from '@/components/routine/RoutineEditModal'
 import { ageGroupForAge } from '@/data/ageGroups'
 import { scheduleForDate } from '@/data/weekSchedule'
+import { localizedCalisthenicsName } from '@/data/calisthenicsExercises.lt'
 import { computeReadiness } from '@/lib/laf'
 import { computeStreak, pickLang, pickLangOpt, todayISO } from '@/lib/utils'
 
@@ -125,7 +126,11 @@ export default function Home() {
           <div className="mb-3 space-y-1">
             {todayCalisthenicsPlans.slice(0, 4).map((plan) => {
               const name =
-                plan.libraryExercise?.name ?? plan.customExercise?.name ?? 'Exercise'
+                localizedCalisthenicsName(
+                  plan.libraryExercise,
+                  language,
+                  plan.customExercise?.name ?? t('calisthenics.reviewExercise'),
+                )
               return (
                 <div key={plan.id} className="text-sm text-slate-700 dark:text-slate-200">
                   · {name} — {plan.sets}×{plan.repsOrSecs}

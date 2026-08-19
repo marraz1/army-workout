@@ -5,7 +5,9 @@ import { useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { ExerciseCard } from '@/components/calisthenics/ExerciseCard'
 import { calisthenicsExercises, MUSCLE_FILTER_MAP } from '@/data/calisthenicsExercises'
+import { localizeCalisthenicsExercise } from '@/data/calisthenicsExercises.lt'
 import { useCalisthenics } from '@/context/CalisthenicsContext'
+import { useApp } from '@/context/AppContext'
 import type { CalisthenicsLevel, CalisthenicsExerciseData } from '@/types/calisthenics'
 
 type LibTab = 'library' | 'my'
@@ -16,12 +18,15 @@ export default function CalisthenicsLibrary() {
   const { t } = useTranslation()
   const router = useRouter()
   const { customExercises, removeCustomExercise } = useCalisthenics()
+  const { language } = useApp()
   const [tab, setTab] = useState<LibTab>('library')
   const [level, setLevel] = useState<string>('All')
   const [muscle, setMuscle] = useState<string>('All')
   const [search, setSearch] = useState('')
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
 
+  // Filter on the English data (muscle/level values are the stored keys),
+  // then localize what actually gets rendered.
   const filtered = calisthenicsExercises.filter((ex) => {
     if (level !== 'All' && ex.level !== level) return false
     if (muscle !== 'All') {
@@ -88,7 +93,7 @@ export default function CalisthenicsLibrary() {
                         : 'bg-white text-slate-600 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
                     }`}
                   >
-                    {l}
+                    {l === 'All' ? t('calisthenics.allLevels') : t(`calisthenics.level${l}`)}
                   </button>
                 ))}
               </div>
@@ -103,7 +108,7 @@ export default function CalisthenicsLibrary() {
                         : 'bg-white text-slate-600 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
                     }`}
                   >
-                    {m}
+                    {m === 'All' ? t('calisthenics.allMusclesFilter') : t(`muscles.${m}`, { defaultValue: m })}
                   </button>
                 ))}
               </div>
@@ -120,7 +125,7 @@ export default function CalisthenicsLibrary() {
             ) : (
               <div className="space-y-3">
                 {filtered.map((ex) => (
-                  <ExerciseCard key={ex.id} exercise={ex} />
+                  <ExerciseCard key={ex.id} exercise={localizeCalisthenicsExercise(ex, language)} />
                 ))}
               </div>
             )}

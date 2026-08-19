@@ -1,3 +1,7 @@
+'use client'
+
+import { useTranslation } from 'react-i18next'
+
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 interface DayPickerProps {
@@ -6,13 +10,15 @@ interface DayPickerProps {
 }
 
 export function DayPicker({ selected, onChange }: DayPickerProps) {
+  const { t } = useTranslation()
+
   const toggle = (d: number) => {
     onChange(selected.includes(d) ? selected.filter((x) => x !== d) : [...selected, d])
   }
 
   return (
     <div className="flex gap-2 flex-wrap">
-      {DAYS.map((label, i) => (
+      {DAYS.map((day, i) => (
         <button
           key={i}
           type="button"
@@ -23,7 +29,7 @@ export function DayPicker({ selected, onChange }: DayPickerProps) {
               : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600'
           }`}
         >
-          {label}
+          {t(`weekdays.${day}`)}
         </button>
       ))}
     </div>

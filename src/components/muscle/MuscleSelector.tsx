@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { C } from '@/components/muscle/MuscleIconComponents'
 import { ALL_MUSCLES } from '@/data/muscleMap'
 
@@ -30,6 +31,8 @@ const STATUS_STYLE: Record<MuscleStatus, { border: string; bg: string; label: st
 
 /** Icon reference sheet with clickable muscle groups. Tap to cycle: none → primary → secondary → none. */
 export function MuscleSelector({ value, onChange }: MuscleSelectorProps) {
+  const { t } = useTranslation()
+
   function getStatus(id: string): MuscleStatus {
     if (value.primary.includes(id)) return 'primary'
     if (value.secondary.includes(id)) return 'secondary'
@@ -51,13 +54,13 @@ export function MuscleSelector({ value, onChange }: MuscleSelectorProps) {
       <div className="mb-2 flex items-center gap-3 text-[11px] text-slate-500">
         <span className="flex items-center gap-1">
           <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: 2, background: C.primary }} />
-          Primary
+          {t('muscle.primary')}
         </span>
         <span className="flex items-center gap-1">
           <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: 2, background: C.secondary }} />
-          Secondary
+          {t('muscle.secondary')}
         </span>
-        <span className="text-slate-400">Tap to cycle</span>
+        <span className="text-slate-400">{t('muscle.tapToCycle')}</span>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>

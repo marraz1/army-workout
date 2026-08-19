@@ -32,7 +32,7 @@ export default function CalisthenicsPlanner() {
     `${t('common.done')} & ${t('common.save')}`,
   ]
 
-  const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  const DAY_KEYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
   const exerciseIdRaw = editingPlan
     ? (editingPlan.source === 'library' ? String(editingPlan.libraryExerciseId) : (editingPlan.customExerciseId ?? '0'))
@@ -253,7 +253,7 @@ export default function CalisthenicsPlanner() {
           <div className="space-y-4">
             <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800 space-y-3">
               <Row label={t('calisthenics.reviewExercise')} value={ex.name} />
-              <Row label={t('calisthenics.reviewDays')} value={days.map((d) => DAY_LABELS[d]).join(', ')} />
+              <Row label={t('calisthenics.reviewDays')} value={days.map((d) => t(`weekdays.${DAY_KEYS[d]}`)).join(', ')} />
               <Row label={t('calisthenics.reviewTime')} value={time} />
               <Row label={t('calisthenics.reviewSets')} value={`${sets} ${t('calisthenics.setsLabel')}`} />
               <Row label={isTimed ? t('calisthenics.holdToggle') : t('calisthenics.repsLabel')} value={`${repsOrSecs}${isTimed ? 's' : ''}`} />

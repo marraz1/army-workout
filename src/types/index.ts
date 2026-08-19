@@ -7,10 +7,16 @@ export interface Exercise {
   /** Stable slug used as a DB key across plans/sessions/PBs (e.g. "push-ups"). Never rename. */
   id: string
   name: string
+  /** Lithuanian name. Absent on user-created exercises — fall back to `name`. */
+  nameLT?: string
   /** Display string, e.g. "4×30". Kept for reference; structured fields drive logic. */
   sets: string
+  /** Lithuanian sets string (only differs where it contains words, e.g. "3×/week"). */
+  setsLT?: string
   /** Display string, e.g. "≥41 (LAF min)". */
   target: string
+  /** Lithuanian target string. */
+  targetLT?: string
   icon: string
   /** Number of sets to perform. */
   setsCount: number
@@ -46,7 +52,11 @@ export interface AgeGroup {
   goalLT: string
   exercises: Exercise[]
   rest: string
+  /** Lithuanian rest description. */
+  restLT: string
   frequency: string
+  /** Lithuanian frequency description. */
+  frequencyLT: string
 }
 
 export interface ScheduleDay {
@@ -54,6 +64,10 @@ export interface ScheduleDay {
   type: string
   icon: string
   focus: string
+  /** Lithuanian day type, e.g. "Jėga". */
+  typeLT: string
+  /** Lithuanian focus description. */
+  focusLT: string
   color: string
 }
 
@@ -62,7 +76,11 @@ export interface RoutineItem {
   time: string
   icon: string
   label: string
+  /** Lithuanian label. Absent on user-created items — fall back to `label`. */
+  labelLT?: string
   detail: string
+  /** Lithuanian detail. Absent on user-created items — fall back to `detail`. */
+  detailLT?: string
   color: string
 }
 
@@ -76,10 +94,16 @@ export interface RoutineLog {
 
 export interface LafStandard {
   group: string
+  /** Lithuanian group label, e.g. "Vyrai 21–30". */
+  groupLT: string
   pushups: string
   situps: string
+  /** Lithuanian sit-up standard (the "(2min)" qualifier is translated). */
+  situpsLT: string
   run: string
   note: string
+  /** Lithuanian note. */
+  noteLT: string
 }
 
 /** User onboarding profile, persisted to localStorage (and Supabase later). */

@@ -304,12 +304,12 @@ export default function CalisthenicsLogger() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-4 text-center">
         <div className="text-4xl">⚠️</div>
-        <p className="text-slate-600 dark:text-slate-300">No exercises in queue. Please go back and try again.</p>
+        <p className="text-slate-600 dark:text-slate-300">{t('logger.emptyQueue')}</p>
         <button
           onClick={() => { setPhase('select'); setQueueIdx(0); setResults([]) }}
           className="rounded-xl bg-purple-600 px-6 py-3 text-sm font-semibold text-white"
         >
-          ← Back
+          ← {t('common.back')}
         </button>
       </div>
     )

@@ -27,7 +27,31 @@
     "today": "Šiandien",
     "goal": "Tikslas",
     "rest": "Poilsis",
-    "edit": "Keisti"
+    "edit": "Keisti",
+    "delete": "Ištrinti",
+    "loading": "Kraunama…"
+  },
+  "a11y": {
+    "previousMonth": "Ankstesnis mėnuo",
+    "nextMonth": "Kitas mėnuo",
+    "toggleTheme": "Keisti temą",
+    "toggleLanguage": "Keisti kalbą",
+    "decrease": "Sumažinti",
+    "increase": "Padidinti"
+  },
+  "charts": {
+    "noData": "Dar nėra duomenų"
+  },
+  "muscle": {
+    "primary": "Pagrindiniai",
+    "secondary": "Pagalbiniai",
+    "tapToCycle": "Spustelėkite, kad pakeistumėte"
+  },
+  "standards": {
+    "group": "Grupė",
+    "push": "Atsispaudimai",
+    "sit": "Pilvo pres.",
+    "run": "Bėgimas"
   },
   "auth": {
     "loginTitle": "Sveiki sugrįžę",
@@ -118,7 +142,8 @@
     "errReps": "Kartojimų turi būti nuo 1 iki 200.",
     "errRest": "Poilsis turi būti nuo 15 iki 300 sekundžių.",
     "errRun": "Įveskite bėgimo tikslą formatu MM:SS.",
-    "errRunMin": "Bėgimo tikslas turi būti bent 08:00."
+    "errRunMin": "Bėgimo tikslas turi būti bent 08:00.",
+    "muscleGroups": "Raumenų Grupės"
   },
   "logger": {
     "title": "Treniruotės Įrašas",
@@ -151,7 +176,8 @@
     "save": "Išsaugoti",
     "saved": "Seansas išsaugotas!",
     "newPBs": "{{count}} naujas asmeninis rekordas!",
-    "nothingToday": "Šiandien nėra ką įrašyti."
+    "nothingToday": "Šiandien nėra ką įrašyti.",
+    "emptyQueue": "Eilėje nėra pratimų. Grįžkite atgal ir bandykite dar kartą."
   },
   "history": {
     "title": "Istorija ir Pažanga",
@@ -206,7 +232,9 @@
   "progress": {
     "title": "Pažanga",
     "comingSoon": "Grafikai ir LAF pasirengimo balas — kitame atnaujinime.",
-    "readiness": "LAF Pasirengimas"
+    "readiness": "LAF Pasirengimas",
+    "workoutsDone": "Atliktos treniruotės",
+    "currentStreak": "Dabartinė serija"
   },
   "skip": {
     "title": "Praleisti / Poilsio Diena",
@@ -325,7 +353,13 @@
     "searchPlaceholder": "Ieškoti pratimų…",
     "noSearchResults": "Nėra pratimų pagal jūsų paiešką.",
     "set": "Serija {{n}}",
-    "sessionSummary": "{{exercises}} pratimai · {{sets}} serijų atlikta"
+    "sessionSummary": "{{exercises}} pratimai · {{sets}} serijų atlikta",
+    "progressionPath": "Progresijos Kelias",
+    "addToPlanCta": "+ Pridėti į Planą",
+    "repsMode": "Kartojimai",
+    "holdMode": "Laikymas (s)",
+    "restCustom": "Kita",
+    "restRangeHint": "sekundės (15–300)"
   },
   "routine": {
     "editTitle": "Keisti Dienos Rutiną",
@@ -361,5 +395,23 @@
         "desc": "Kalendoriaus žemėlapis, pratimų grafikai, LAF pasirengimas, rekordai ir seansų detalės."
       }
     }
+  },
+  "weekdays": {
+    "Mon": "Pr",
+    "Tue": "An",
+    "Wed": "Tr",
+    "Thu": "Kt",
+    "Fri": "Pn",
+    "Sat": "Št",
+    "Sun": "Sk"
+  },
+  "weekdaysShort": {
+    "mon": "P",
+    "tue": "A",
+    "wed": "T",
+    "thu": "K",
+    "fri": "P",
+    "sat": "Š",
+    "sun": "S"
   }
 }

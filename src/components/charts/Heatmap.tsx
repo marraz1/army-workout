@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { todayISO } from '@/lib/utils'
 
 export type HeatStatus =
@@ -26,14 +27,16 @@ interface HeatmapProps {
   onSelectDate?: (dateISO: string) => void
 }
 
-const WEEKDAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
+const WEEKDAY_KEYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
 
-function monthLabel(year: number, month: number): string {
-  return new Date(year, month, 1).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })
+function monthLabel(year: number, month: number, locale: string): string {
+  return new Date(year, month, 1).toLocaleDateString(locale, { month: 'long', year: 'numeric' })
 }
 
 /** Monthly calendar grid, each day cell coloured by status. Mon-first. */
 export function Heatmap({ statusByDate, onSelectDate }: HeatmapProps) {
+  const { t, i18n } = useTranslation()
+  const localeTag = i18n.language === 'lt' ? 'lt-LT' : 'en-GB'
   const now = new Date()
   const [year, setYear] = useState(now.getFullYear())
   const [month, setMonth] = useState(now.getMonth())
@@ -56,24 +59,24 @@ export function Heatmap({ statusByDate, onSelectDate }: HeatmapProps) {
         <button
           onClick={() => step(-1)}
           className="rounded-lg px-3 py-1 text-sm font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700"
-          aria-label="Previous month"
+          aria-label={t('a11y.previousMonth')}
         >
           ‹
         </button>
-        <div className="text-sm font-bold text-navy dark:text-slate-100">{monthLabel(year, month)}</div>
+        <div className="text-sm font-bold text-navy dark:text-slate-100">{monthLabel(year, month, localeTag)}</div>
         <button
           onClick={() => step(1)}
           className="rounded-lg px-3 py-1 text-sm font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700"
-          aria-label="Next month"
+          aria-label={t('a11y.nextMonth')}
         >
           ›
         </button>
       </div>
 
       <div className="grid grid-cols-7 gap-1.5">
-        {WEEKDAYS.map((d, i) => (
+        {WEEKDAY_KEYS.map((d, i) => (
           <div key={i} className="text-center text-[10px] font-bold text-slate-400">
-            {d}
+            {t(`weekdaysShort.${d}`)}
           </div>
         ))}
         {Array.from({ length: leading }).map((_, i) => (

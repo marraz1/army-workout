@@ -15,7 +15,7 @@ import { useApp } from '@/context/AppContext'
 import { useWorkoutData } from '@/context/WorkoutDataContext'
 import { ageGroups, ageGroupForAge } from '@/data/ageGroups'
 import { resolveEffectivePlan } from '@/lib/plan'
-import { formatMMSS, parseMMSS, todayISO } from '@/lib/utils'
+import { formatMMSS, parseMMSS, pickLangOpt, todayISO } from '@/lib/utils'
 import type { EffectivePlanItem, Exercise, PlanScope } from '@/types'
 
 interface DraftFields {
@@ -40,7 +40,7 @@ export default function PlanEditor() {
   const { t } = useTranslation()
   const router = useRouter()
   const params = useSearchParams()
-  const { profile } = useApp()
+  const { profile, language } = useApp()
   const { plans, savePlan, resetPlan } = useWorkoutData()
 
   const focusExercise = params.get('exercise')
@@ -160,7 +160,9 @@ export default function PlanEditor() {
   }
 
   const onRemove = async (item: EffectivePlanItem) => {
-    if (!confirm(t('plan.removeConfirm', { name: item.exercise.name }))) return
+    if (!confirm(t('plan.removeConfirm', {
+      name: pickLangOpt(language, item.exercise.name, item.exercise.nameLT),
+    }))) return
     await savePlan({
       exerciseId: item.exercise.id,
       setsCount: item.setsCount,
@@ -229,7 +231,9 @@ export default function PlanEditor() {
             <div className="mb-2 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-xl">{ex.icon}</span>
-                <span className="font-bold text-slate-800 dark:text-slate-100">{ex.name}</span>
+                <span className="font-bold text-slate-800 dark:text-slate-100">
+                  {pickLangOpt(language, ex.name, ex.nameLT)}
+                </span>
               </div>
               {item.isCustom && <CustomBadge />}
             </div>
@@ -289,7 +293,7 @@ export default function PlanEditor() {
             {item.isCustom && (
               <div className="mt-3 border-t border-slate-100 pt-3 dark:border-slate-700">
                 <div className="mb-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
-                  💪 Muscle Groups
+                  💪 {t('plan.muscleGroups')}
                 </div>
                 <MuscleSelector
                   value={getMuscleState(ex.id)}

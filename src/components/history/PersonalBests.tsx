@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslation } from 'react-i18next'
+import { useApp } from '@/context/AppContext'
 import { exerciseIcon, exerciseName } from '@/lib/exercises'
 import { formatMMSS } from '@/lib/utils'
 import type { PersonalBest, PersonalBestMetric } from '@/types'
@@ -24,6 +25,7 @@ function formatValue(pb: PersonalBest): string {
 /** All-time personal bests list with metric label, value and date. */
 export function PersonalBests({ personalBests }: PersonalBestsProps) {
   const { t } = useTranslation()
+  const { language } = useApp()
 
   if (personalBests.length === 0) {
     return <div className="py-6 text-center text-sm text-slate-400">{t('history.noBests')}</div>
@@ -40,7 +42,7 @@ export function PersonalBests({ personalBests }: PersonalBestsProps) {
           <span className="text-lg">{exerciseIcon(pb.exerciseId)}</span>
           <div className="flex-1">
             <div className="text-sm font-bold text-slate-700 dark:text-slate-100">
-              {exerciseName(pb.exerciseId)}
+              {exerciseName(pb.exerciseId, language)}
             </div>
             <div className="text-[11px] text-slate-500">{t(metricKey[pb.metric])} · {pb.date}</div>
           </div>

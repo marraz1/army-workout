@@ -4,15 +4,19 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Card } from '@/components/common/Card'
 import { useRoutine } from '@/context/RoutineContext'
+import { useApp } from '@/context/AppContext'
+import { pickLangOpt } from '@/lib/utils'
 import type { RoutineLog } from '@/types'
 
-function formatDate(iso: string) {
+function formatDate(iso: string, locale: string) {
   const d = new Date(iso + 'T00:00:00')
-  return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })
+  return d.toLocaleDateString(locale, { weekday: 'short', month: 'short', day: 'numeric' })
 }
 
 export function DailyRoutineProgress() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const { language } = useApp()
+  const localeTag = i18n.language === 'lt' ? 'lt-LT' : 'en-GB'
   const { logs, items } = useRoutine()
   const [expanded, setExpanded] = useState<string | null>(null)
 
@@ -58,7 +62,7 @@ export function DailyRoutineProgress() {
               {/* Date */}
               <div className="w-28 flex-shrink-0">
                 <div className="text-sm font-semibold text-slate-700 dark:text-slate-200">
-                  {formatDate(date)}
+                  {formatDate(date, localeTag)}
                 </div>
                 <div className="text-xs text-slate-400">
                   {completed}/{total} {t('routine.itemsDone')}
@@ -111,7 +115,7 @@ export function DailyRoutineProgress() {
                               : 'text-slate-300 line-through dark:text-slate-600'
                           }`}
                         >
-                          {item.label}
+                          {pickLangOpt(language, item.label, item.labelLT)}
                         </span>
                         {done && <span className="ml-auto text-green-500">✓</span>}
                       </div>

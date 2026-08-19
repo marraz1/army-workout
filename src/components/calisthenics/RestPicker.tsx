@@ -1,4 +1,7 @@
+'use client'
+
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 const PRESETS = [30, 45, 60, 90, 120]
 
@@ -9,6 +12,7 @@ interface RestPickerProps {
 
 export function RestPicker({ value, onChange }: RestPickerProps) {
   const [custom, setCustom] = useState(!PRESETS.includes(value))
+  const { t } = useTranslation()
 
   const selectPreset = (sec: number) => {
     setCustom(false)
@@ -41,7 +45,7 @@ export function RestPicker({ value, onChange }: RestPickerProps) {
               : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300'
           }`}
         >
-          Custom
+          {t('calisthenics.restCustom')}
         </button>
       </div>
       {custom && (
@@ -54,7 +58,7 @@ export function RestPicker({ value, onChange }: RestPickerProps) {
             onChange={(e) => onChange(Math.min(300, Math.max(15, Number(e.target.value))))}
             className="w-24 rounded-lg border border-slate-200 px-3 py-1.5 text-sm dark:border-slate-600 dark:bg-slate-800"
           />
-          <span className="text-sm text-slate-500">seconds (15–300)</span>
+          <span className="text-sm text-slate-500">{t('calisthenics.restRangeHint')}</span>
         </div>
       )}
     </div>

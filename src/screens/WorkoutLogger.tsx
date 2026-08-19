@@ -17,7 +17,7 @@ import { scheduleForDate } from '@/data/weekSchedule'
 import { resolveEffectivePlan } from '@/lib/plan'
 import { computeReadiness } from '@/lib/laf'
 import { computeSessionSummary, deriveStatus } from '@/lib/session'
-import { cn, parseMMSS, todayISO } from '@/lib/utils'
+import { cn, parseMMSS, pickLangOpt, todayISO } from '@/lib/utils'
 import type { EffectivePlanItem, PersonalBest, SessionSet } from '@/types'
 import type { SessionPayload } from '@/lib/db'
 
@@ -32,7 +32,7 @@ export default function WorkoutLogger() {
   const { t } = useTranslation()
   const router = useRouter()
   const params = useSearchParams()
-  const { profile } = useApp()
+  const { profile, language } = useApp()
   const { plans, personalBests, saveSession } = useWorkoutData()
 
   const date = params.get('date') ?? todayISO()
@@ -273,9 +273,13 @@ export default function WorkoutLogger() {
                     </span>
                     <span className="text-xl">{ex.icon}</span>
                     <div className="flex-1">
-                      <div className="text-sm font-bold text-slate-700 dark:text-slate-100">{ex.name}</div>
+                      <div className="text-sm font-bold text-slate-700 dark:text-slate-100">
+                        {pickLangOpt(language, ex.name, ex.nameLT)}
+                      </div>
                       <div className="text-[11px] text-slate-500 dark:text-slate-400">
-                        {ex.isRun ? ex.target : `${item.setsCount}×${item.repsTarget}`}
+                        {ex.isRun
+                          ? pickLangOpt(language, ex.target, ex.targetLT)
+                          : `${item.setsCount}×${item.repsTarget}`}
                       </div>
                     </div>
                     {scheduled && (
@@ -319,7 +323,7 @@ export default function WorkoutLogger() {
       {phase === 'run' && runItem && (
         <Card>
           <div className="mb-2 flex items-center gap-2 text-lg font-bold text-navy dark:text-slate-100">
-            🏃 {runItem.exercise.name}
+            🏃 {pickLangOpt(language, runItem.exercise.name, runItem.exercise.nameLT)}
           </div>
           {runItem.runGoalSec && (
             <div className="mb-3 text-xs text-slate-500">

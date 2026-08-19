@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslation } from 'react-i18next'
+import { useApp } from '@/context/AppContext'
 import { Button } from '@/components/common/Button'
 import { MuscleDisplay } from '@/components/muscle/MuscleDisplay'
 import { exerciseIcon, exerciseName } from '@/lib/exercises'
@@ -19,6 +20,7 @@ const ENERGY_EMOJI = ['', '😴', '😓', '😐', '🙂', '💪']
 /** Drill-down view of one session: per-set actual vs plan, run, energy, notes. */
 export function SessionDetail({ session, personalBests, onBack, onDelete }: SessionDetailProps) {
   const { t } = useTranslation()
+  const { language } = useApp()
 
   // Group sets by exercise, preserving first-seen order.
   const groups: Array<{ exerciseId: string; sets: SessionSet[] }> = []
@@ -65,7 +67,7 @@ export function SessionDetail({ session, personalBests, onBack, onDelete }: Sess
               <div className="mb-2 flex items-center gap-2 flex-wrap">
                 <span>{exerciseIcon(g.exerciseId)}</span>
                 <span className="text-sm font-bold text-slate-700 dark:text-slate-100">
-                  {exerciseName(g.exerciseId)}
+                  {exerciseName(g.exerciseId, language)}
                 </span>
                 {pbExercises.has(g.exerciseId) && <span className="text-sm">⭐</span>}
                 <MuscleDisplay exerciseId={g.exerciseId} compact />

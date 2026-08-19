@@ -76,7 +76,7 @@ export default function Schedule() {
                 >
                   <div className="w-11 text-center">
                     <div className="text-sm font-extrabold" style={{ color: day.color }}>
-                      {day.day}
+                      {t(`weekdays.${day.day}`)}
                     </div>
                     {day.day === todayDay && (
                       <div className="text-[9px] font-bold uppercase text-slate-400">
@@ -87,9 +87,11 @@ export default function Schedule() {
                   <div className="text-2xl">{day.icon}</div>
                   <div className="flex-1">
                     <div className="text-sm font-bold text-slate-800 dark:text-slate-100">
-                      {day.type}
+                      {pickLang(language, day.type, day.typeLT)}
                     </div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">{day.focus}</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">
+                      {pickLang(language, day.focus, day.focusLT)}
+                    </div>
                   </div>
                   {status && (
                     <span

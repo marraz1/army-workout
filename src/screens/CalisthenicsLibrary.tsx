@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { ExerciseCard } from "@/components/calisthenics/ExerciseCard";
 import { calisthenicsExercises, MUSCLE_FILTER_MAP } from "@/data/calisthenicsExercises";
 import { useCalisthenics } from "@/context/CalisthenicsContext";
-import type { CalisthenicsLevel, CalisthenicsExerciseData } from "@/types/calisthenics";
+import type { CalisthenicsLevel } from "@/types/calisthenics";
 
 type LibTab = "library" | "my";
 const LEVELS: (CalisthenicsLevel | "All")[] = ["All", "Beginner", "Intermediate", "Advanced"];

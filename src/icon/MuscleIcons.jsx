@@ -15,8 +15,6 @@ const C = {
 // ─────────────────────────────────────────────────────────────────────────
 function FrontTorso({ highlight = [] }) {
   const h = (id) => highlight.includes(id);
-  const col = (id, fallback = C.body) =>
-    h(id) ? (highlight[0] === id ? C.primary : C.secondary) : fallback;
   // primary = first item, secondary = rest
   const isPrimary = (id) => highlight[0] === id;
   const fill = (id) => (h(id) ? (isPrimary(id) ? C.primary : C.secondary) : C.body);

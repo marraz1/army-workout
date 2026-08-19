@@ -1,55 +1,55 @@
-'use client'
+"use client";
 
-import React, { useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { heatColor } from '@/components/charts/Heatmap'
-import { MuscleDisplay } from '@/components/muscle/MuscleDisplay'
-import type { MuscleHighlight } from '@/components/muscle/MuscleIconComponents'
-import { getMuscleHighlights } from '@/data/muscleMap'
-import type { SessionStatus, WorkoutSession } from '@/types'
+import React, { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { heatColor } from "@/components/charts/Heatmap";
+import { MuscleDisplay } from "@/components/muscle/MuscleDisplay";
+import type { MuscleHighlight } from "@/components/muscle/MuscleIconComponents";
+import { getMuscleHighlights } from "@/data/muscleMap";
+import type { SessionStatus, WorkoutSession } from "@/types";
 
 function sessionMuscleHighlights(session: WorkoutSession): MuscleHighlight[] {
-  const uniqueIds = [...new Set(session.sets.map((s) => s.exerciseId))]
+  const uniqueIds = [...new Set(session.sets.map((s) => s.exerciseId))];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const merged = new Map<React.ComponentType<any>, MuscleHighlight>()
+  const merged = new Map<React.ComponentType<any>, MuscleHighlight>();
   for (const id of uniqueIds) {
     for (const h of getMuscleHighlights(id)) {
-      const existing = merged.get(h.component)
+      const existing = merged.get(h.component);
       if (!existing) {
-        merged.set(h.component, { ...h, highlight: [...h.highlight] })
+        merged.set(h.component, { ...h, highlight: [...h.highlight] });
       } else {
         for (const hid of h.highlight) {
-          if (!existing.highlight.includes(hid)) existing.highlight.push(hid)
+          if (!existing.highlight.includes(hid)) existing.highlight.push(hid);
         }
       }
     }
   }
-  return Array.from(merged.values())
+  return Array.from(merged.values());
 }
 
 interface SessionHistoryListProps {
-  sessions: WorkoutSession[]
-  onSelect: (session: WorkoutSession) => void
+  sessions: WorkoutSession[];
+  onSelect: (session: WorkoutSession) => void;
 }
 
-const FILTERS: Array<SessionStatus | 'all'> = ['all', 'completed', 'partial', 'skipped', 'cheat']
+const FILTERS: Array<SessionStatus | "all"> = ["all", "completed", "partial", "skipped", "cheat"];
 
 function statusColor(status: SessionStatus): string {
-  return heatColor[status as keyof typeof heatColor] ?? '#94a3b8'
+  return heatColor[status as keyof typeof heatColor] ?? "#94a3b8";
 }
 
 /** Filterable, scrollable list of saved sessions. */
 export function SessionHistoryList({ sessions, onSelect }: SessionHistoryListProps) {
-  const { t } = useTranslation()
-  const [filter, setFilter] = useState<SessionStatus | 'all'>('all')
+  const { t } = useTranslation();
+  const [filter, setFilter] = useState<SessionStatus | "all">("all");
 
   const filtered = useMemo(
-    () => (filter === 'all' ? sessions : sessions.filter((s) => s.status === filter)),
+    () => (filter === "all" ? sessions : sessions.filter((s) => s.status === filter)),
     [sessions, filter],
-  )
+  );
 
   if (sessions.length === 0) {
-    return <div className="py-6 text-center text-sm text-slate-400">{t('history.noSessions')}</div>
+    return <div className="py-6 text-center text-sm text-slate-400">{t("history.noSessions")}</div>;
   }
 
   return (
@@ -60,21 +60,21 @@ export function SessionHistoryList({ sessions, onSelect }: SessionHistoryListPro
             key={f}
             onClick={() => setFilter(f)}
             className={
-              'rounded-full px-3 py-1 text-xs font-bold transition-colors ' +
+              "rounded-full px-3 py-1 text-xs font-bold transition-colors " +
               (f === filter
-                ? 'bg-navy text-white'
-                : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-200')
+                ? "bg-navy text-white"
+                : "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-200")
             }
           >
-            {f === 'all' ? t('history.filterAll') : t(`history.status.${f}`)}
+            {f === "all" ? t("history.filterAll") : t(`history.status.${f}`)}
           </button>
         ))}
       </div>
 
       <div className="space-y-2">
         {filtered.map((s) => {
-          const totalReps = s.sets.reduce((sum, set) => sum + set.actualReps, 0)
-          const muscleHighlights = sessionMuscleHighlights(s)
+          const totalReps = s.sets.reduce((sum, set) => sum + set.actualReps, 0);
+          const muscleHighlights = sessionMuscleHighlights(s);
           return (
             <button
               key={s.id}
@@ -90,7 +90,7 @@ export function SessionHistoryList({ sessions, onSelect }: SessionHistoryListPro
               <div className="flex-1">
                 <div className="text-sm font-bold text-slate-700 dark:text-slate-100">{s.date}</div>
                 <div className="text-[11px] text-slate-500">
-                  {s.dayType} · {t('history.totalReps', { n: totalReps })}
+                  {s.dayType} · {t("history.totalReps", { n: totalReps })}
                 </div>
                 {muscleHighlights.length > 0 && (
                   <div className="mt-1">
@@ -100,9 +100,9 @@ export function SessionHistoryList({ sessions, onSelect }: SessionHistoryListPro
               </div>
               <span className="text-slate-300">›</span>
             </button>
-          )
+          );
         })}
       </div>
     </div>
-  )
+  );
 }

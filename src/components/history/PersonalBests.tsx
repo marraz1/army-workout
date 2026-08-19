@@ -1,32 +1,32 @@
-'use client'
+"use client";
 
-import { useTranslation } from 'react-i18next'
-import { exerciseIcon, exerciseName } from '@/lib/exercises'
-import { formatMMSS } from '@/lib/utils'
-import type { PersonalBest, PersonalBestMetric } from '@/types'
+import { useTranslation } from "react-i18next";
+import { exerciseIcon, exerciseName } from "@/lib/exercises";
+import { formatMMSS } from "@/lib/utils";
+import type { PersonalBest, PersonalBestMetric } from "@/types";
 
 interface PersonalBestsProps {
-  personalBests: PersonalBest[]
+  personalBests: PersonalBest[];
 }
 
 const metricKey: Record<PersonalBestMetric, string> = {
-  maxReps: 'history.metric.maxReps',
-  fastestRunSec: 'history.metric.fastestRun',
-  longestHoldSec: 'history.metric.longestHold',
-}
+  maxReps: "history.metric.maxReps",
+  fastestRunSec: "history.metric.fastestRun",
+  longestHoldSec: "history.metric.longestHold",
+};
 
 function formatValue(pb: PersonalBest): string {
-  if (pb.metric === 'fastestRunSec') return formatMMSS(pb.value)
-  if (pb.metric === 'longestHoldSec') return `${pb.value}s`
-  return String(pb.value)
+  if (pb.metric === "fastestRunSec") return formatMMSS(pb.value);
+  if (pb.metric === "longestHoldSec") return `${pb.value}s`;
+  return String(pb.value);
 }
 
 /** All-time personal bests list with metric label, value and date. */
 export function PersonalBests({ personalBests }: PersonalBestsProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   if (personalBests.length === 0) {
-    return <div className="py-6 text-center text-sm text-slate-400">{t('history.noBests')}</div>
+    return <div className="py-6 text-center text-sm text-slate-400">{t("history.noBests")}</div>;
   }
 
   return (
@@ -42,7 +42,9 @@ export function PersonalBests({ personalBests }: PersonalBestsProps) {
             <div className="text-sm font-bold text-slate-700 dark:text-slate-100">
               {exerciseName(pb.exerciseId)}
             </div>
-            <div className="text-[11px] text-slate-500">{t(metricKey[pb.metric])} · {pb.date}</div>
+            <div className="text-[11px] text-slate-500">
+              {t(metricKey[pb.metric])} · {pb.date}
+            </div>
           </div>
           <div className="text-lg font-extrabold text-navy dark:text-flag-yellow">
             {formatValue(pb)}
@@ -50,5 +52,5 @@ export function PersonalBests({ personalBests }: PersonalBestsProps) {
         </div>
       ))}
     </div>
-  )
+  );
 }

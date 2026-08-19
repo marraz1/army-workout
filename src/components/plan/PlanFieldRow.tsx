@@ -1,18 +1,18 @@
-'use client'
+"use client";
 
-import { cn } from '@/lib/utils'
+import { cn } from "@/lib/utils";
 
 interface PlanFieldRowProps {
-  icon: string
-  label: string
+  icon: string;
+  label: string;
   /** Current numeric value, or string for text/time fields. */
-  value: string | number
-  type?: 'number' | 'text'
-  min?: number
-  max?: number
-  hint?: string
-  placeholder?: string
-  onChange: (value: string) => void
+  value: string | number;
+  type?: "number" | "text";
+  min?: number;
+  max?: number;
+  hint?: string;
+  placeholder?: string;
+  onChange: (value: string) => void;
 }
 
 /** A single labelled inline input used in the plan editor. */
@@ -20,7 +20,7 @@ export function PlanFieldRow({
   icon,
   label,
   value,
-  type = 'number',
+  type = "number",
   min,
   max,
   hint,
@@ -36,18 +36,18 @@ export function PlanFieldRow({
       </div>
       <input
         type={type}
-        inputMode={type === 'number' ? 'numeric' : 'text'}
+        inputMode={type === "number" ? "numeric" : "text"}
         value={value}
         min={min}
         max={max}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
         className={cn(
-          'h-10 rounded-lg border-2 border-slate-200 bg-white px-3 text-right text-sm font-bold text-navy',
-          'focus:border-navy focus:outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100',
-          type === 'number' ? 'w-20' : 'w-28',
+          "h-10 rounded-lg border-2 border-slate-200 bg-white px-3 text-right text-sm font-bold text-navy",
+          "focus:border-navy focus:outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100",
+          type === "number" ? "w-20" : "w-28",
         )}
       />
     </div>
-  )
+  );
 }

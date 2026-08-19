@@ -1,69 +1,70 @@
-'use client'
+"use client";
 
-import { useMemo, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useTranslation } from 'react-i18next'
-import { SectionHeader } from '@/components/common/SectionHeader'
-import { Card } from '@/components/common/Card'
-import { Button } from '@/components/common/Button'
-import { useApp } from '@/context/AppContext'
-import { useWorkoutData } from '@/context/WorkoutDataContext'
-import { useCalisthenics } from '@/context/CalisthenicsContext'
-import { weekSchedule, trainingPhases, scheduleForDate } from '@/data/weekSchedule'
-import { cn, pickLang, todayISO } from '@/lib/utils'
-import type { SessionStatus } from '@/types'
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
+import { SectionHeader } from "@/components/common/SectionHeader";
+import { Card } from "@/components/common/Card";
+import { Button } from "@/components/common/Button";
+import { useApp } from "@/context/AppContext";
+import { useWorkoutData } from "@/context/WorkoutDataContext";
+import { useCalisthenics } from "@/context/CalisthenicsContext";
+import { weekSchedule, trainingPhases, scheduleForDate } from "@/data/weekSchedule";
+import { cn, pickLang, todayISO } from "@/lib/utils";
+import type { SessionStatus } from "@/types";
 
 /** ISO date of each weekday (Mon-first index) in the current week. */
 function dateForWeekdayIndex(index: number): string {
-  const now = new Date()
-  const monFirst = (now.getDay() + 6) % 7
-  const monday = new Date(now)
-  monday.setDate(now.getDate() - monFirst)
-  const d = new Date(monday)
-  d.setDate(monday.getDate() + index)
-  return todayISO(d)
+  const now = new Date();
+  const monFirst = (now.getDay() + 6) % 7;
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - monFirst);
+  const d = new Date(monday);
+  d.setDate(monday.getDate() + index);
+  return todayISO(d);
 }
 
-const REST_TYPES = new Set(['Rest', 'Active Recovery'])
+const REST_TYPES = new Set(["Rest", "Active Recovery"]);
 
 export default function Schedule() {
-  const { t } = useTranslation()
-  const router = useRouter()
-  const { language, logs } = useApp()
-  const { sessions } = useWorkoutData()
-  const { plans: calPlans, logs: calLogs, removePlan } = useCalisthenics()
-  const todayDay = scheduleForDate().day
-  const [expanded, setExpanded] = useState<string | null>(todayDay)
+  const { t } = useTranslation();
+  const router = useRouter();
+  const { language, logs } = useApp();
+  const { sessions } = useWorkoutData();
+  const { plans: calPlans, logs: calLogs, removePlan } = useCalisthenics();
+  const todayDay = scheduleForDate().day;
+  const [expanded, setExpanded] = useState<string | null>(todayDay);
 
   const handleRemoveCalPlan = async (id: string, name: string) => {
-    if (!confirm(t('plan.removeConfirm', { name }))) return
-    await removePlan(id)
-  }
+    if (!confirm(t("plan.removeConfirm", { name }))) return;
+    await removePlan(id);
+  };
 
   const statusByDate = useMemo(() => {
-    const map: Record<string, SessionStatus> = {}
+    const map: Record<string, SessionStatus> = {};
     for (const [date, log] of Object.entries(logs)) {
-      map[date] = (log.status === 'cheat' ? 'cheat' : log.status === 'skipped' ? 'skipped' : 'completed') as SessionStatus
+      map[date] = (
+        log.status === "cheat" ? "cheat" : log.status === "skipped" ? "skipped" : "completed"
+      ) as SessionStatus;
     }
-    for (const s of sessions) map[s.date] = s.status
-    return map
-  }, [logs, sessions])
+    for (const s of sessions) map[s.date] = s.status;
+    return map;
+  }, [logs, sessions]);
 
   return (
     <div className="space-y-6">
       <div>
-        <SectionHeader icon="📅" title={t('schedule.title')} />
+        <SectionHeader icon="📅" title={t("schedule.title")} />
         <div className="space-y-2.5">
           {weekSchedule.map((day, i) => {
-            const date = dateForWeekdayIndex(i)
-            const status = statusByDate[date]
-            const isRest = REST_TYPES.has(day.type)
-            const isOpen = expanded === day.day
-            const dayWeekday = (i + 1) % 7
-            const dayCalPlans = calPlans.filter(
-              (p) => p.dayOfWeek === dayWeekday && p.isActive,
-            )
-            const dayCalLogged = dayCalPlans.length > 0 && calLogs.some((l) => l.sessionDate === date)
+            const date = dateForWeekdayIndex(i);
+            const status = statusByDate[date];
+            const isRest = REST_TYPES.has(day.type);
+            const isOpen = expanded === day.day;
+            const dayWeekday = (i + 1) % 7;
+            const dayCalPlans = calPlans.filter((p) => p.dayOfWeek === dayWeekday && p.isActive);
+            const dayCalLogged =
+              dayCalPlans.length > 0 && calLogs.some((l) => l.sessionDate === date);
             return (
               <div
                 key={day.day}
@@ -80,7 +81,7 @@ export default function Schedule() {
                     </div>
                     {day.day === todayDay && (
                       <div className="text-[9px] font-bold uppercase text-slate-400">
-                        {t('common.today')}
+                        {t("common.today")}
                       </div>
                     )}
                   </div>
@@ -96,13 +97,13 @@ export default function Schedule() {
                       className="rounded-md px-2 py-0.5 text-[10px] font-bold text-white"
                       style={{
                         background:
-                          status === 'completed'
-                            ? '#22c55e'
-                            : status === 'partial'
-                              ? '#eab308'
-                              : status === 'cheat'
-                                ? '#8b5cf6'
-                                : '#ef4444',
+                          status === "completed"
+                            ? "#22c55e"
+                            : status === "partial"
+                              ? "#eab308"
+                              : status === "cheat"
+                                ? "#8b5cf6"
+                                : "#ef4444",
                       }}
                     >
                       {t(`history.status.${status}`)}
@@ -113,7 +114,11 @@ export default function Schedule() {
                       🤸 ✓
                     </span>
                   )}
-                  <span className={cn('text-slate-300 transition-transform', isOpen && 'rotate-90')}>›</span>
+                  <span
+                    className={cn("text-slate-300 transition-transform", isOpen && "rotate-90")}
+                  >
+                    ›
+                  </span>
                 </button>
 
                 {isOpen && (
@@ -124,28 +129,26 @@ export default function Schedule() {
                         className="flex-1"
                         onClick={() => router.push(`/plan/edit?day=${day.day}`)}
                       >
-                        ✏️ {t('schedule.editPlan')}
+                        ✏️ {t("schedule.editPlan")}
                       </Button>
                       {!isRest && (
                         <Button
                           className="flex-1"
                           onClick={() => router.push(`/log?day=${day.day}&date=${date}`)}
                         >
-                          ▶ {t('schedule.startSession')}
+                          ▶ {t("schedule.startSession")}
                         </Button>
                       )}
                     </div>
                     {dayCalPlans.length > 0 && (
                       <div className="border-t border-slate-100 px-4 pb-3 dark:border-slate-700/60">
                         <p className="mb-2 pt-2 text-[11px] font-bold uppercase text-purple-600">
-                          🤸 {t('calisthenics.title')}
+                          🤸 {t("calisthenics.title")}
                         </p>
                         <div className="mb-3 space-y-1.5">
                           {dayCalPlans.map((plan) => {
                             const name =
-                              plan.libraryExercise?.name ??
-                              plan.customExercise?.name ??
-                              'Exercise'
+                              plan.libraryExercise?.name ?? plan.customExercise?.name ?? "Exercise";
                             return (
                               <div
                                 key={plan.id}
@@ -155,40 +158,39 @@ export default function Schedule() {
                                   {name} · {plan.sets}×{plan.repsOrSecs}
                                 </span>
                                 <button
-                                  onClick={() => router.push(`/calisthenics/plan/new?planId=${plan.id}`)}
+                                  onClick={() =>
+                                    router.push(`/calisthenics/plan/new?planId=${plan.id}`)
+                                  }
                                   className="rounded px-1.5 py-0.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700"
-                                  aria-label={t('common.edit')}
+                                  aria-label={t("common.edit")}
                                 >
                                   ✏️
                                 </button>
                                 <button
                                   onClick={() => handleRemoveCalPlan(plan.id, name)}
                                   className="rounded px-1.5 py-0.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
-                                  aria-label={t('calisthenics.delete')}
+                                  aria-label={t("calisthenics.delete")}
                                 >
                                   🗑️
                                 </button>
                               </div>
-                            )
+                            );
                           })}
                         </div>
-                        <Button
-                          className="w-full"
-                          onClick={() => router.push('/calisthenics/log')}
-                        >
-                          ▶ {t('calisthenics.startSession')}
+                        <Button className="w-full" onClick={() => router.push("/calisthenics/log")}>
+                          ▶ {t("calisthenics.startSession")}
                         </Button>
                       </div>
                     )}
                   </div>
                 )}
               </div>
-            )
+            );
           })}
         </div>
       </div>
 
-      <Card title={t('schedule.phasesTitle')}>
+      <Card title={t("schedule.phasesTitle")}>
         <div className="space-y-3">
           {trainingPhases.map((p) => (
             <div
@@ -213,5 +215,5 @@ export default function Schedule() {
         </div>
       </Card>
     </div>
-  )
+  );
 }

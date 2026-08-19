@@ -1,29 +1,29 @@
-import type { WorkoutSession } from '@/types'
+import type { WorkoutSession } from "@/types";
 
 /** Shape of a Prisma WorkoutSession row with sets + runLog included. */
 export interface SessionRow {
-  id: string
-  date: string
-  dayType: string
-  status: string
-  energyRating: number | null
-  notes: string | null
-  totalDurationMin: number | null
-  createdAt: Date
+  id: string;
+  date: string;
+  dayType: string;
+  status: string;
+  energyRating: number | null;
+  notes: string | null;
+  totalDurationMin: number | null;
+  createdAt: Date;
   sets: Array<{
-    id: string
-    exerciseId: string
-    setNumber: number
-    plannedReps: number
-    actualReps: number
-    completed: boolean
-  }>
+    id: string;
+    exerciseId: string;
+    setNumber: number;
+    plannedReps: number;
+    actualReps: number;
+    completed: boolean;
+  }>;
   runLog: {
-    id: string
-    distanceKm: number | null
-    goalTimeSec: number | null
-    actualTimeSec: number | null
-  } | null
+    id: string;
+    distanceKm: number | null;
+    goalTimeSec: number | null;
+    actualTimeSec: number | null;
+  } | null;
 }
 
 /** Convert a Prisma session row into the client-facing WorkoutSession type. */
@@ -32,7 +32,7 @@ export function serializeSession(row: SessionRow): WorkoutSession {
     id: row.id,
     date: row.date,
     dayType: row.dayType,
-    status: row.status as WorkoutSession['status'],
+    status: row.status as WorkoutSession["status"],
     energyRating: row.energyRating ?? undefined,
     notes: row.notes ?? undefined,
     totalDurationMin: row.totalDurationMin ?? undefined,
@@ -53,5 +53,5 @@ export function serializeSession(row: SessionRow): WorkoutSession {
           actualTimeSec: row.runLog.actualTimeSec ?? undefined,
         }
       : null,
-  }
+  };
 }

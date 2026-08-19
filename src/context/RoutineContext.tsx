@@ -1,70 +1,70 @@
-'use client'
+"use client";
 
-import { createContext, useContext, useEffect, useState, useCallback } from 'react'
-import type { ReactNode } from 'react'
-import { useSession } from 'next-auth/react'
-import { dailyRoutine as defaultItems } from '@/data/dailyRoutine'
-import type { RoutineItem, RoutineLog } from '@/types'
-import { todayISO } from '@/lib/utils'
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import type { ReactNode } from "react";
+import { useSession } from "next-auth/react";
+import { dailyRoutine as defaultItems } from "@/data/dailyRoutine";
+import type { RoutineItem, RoutineLog } from "@/types";
+import { todayISO } from "@/lib/utils";
 
 interface RoutineContextValue {
-  items: RoutineItem[]
-  todayChecked: Set<string>
-  logs: RoutineLog[]
-  toggleItem: (itemKey: string, label: string) => Promise<void>
-  saveItems: (items: RoutineItem[]) => Promise<void>
+  items: RoutineItem[];
+  todayChecked: Set<string>;
+  logs: RoutineLog[];
+  toggleItem: (itemKey: string, label: string) => Promise<void>;
+  saveItems: (items: RoutineItem[]) => Promise<void>;
 }
 
-const RoutineContext = createContext<RoutineContextValue | null>(null)
+const RoutineContext = createContext<RoutineContextValue | null>(null);
 
 export function RoutineProvider({ children }: { children: ReactNode }) {
-  const { data: session } = useSession()
-  const [items, setItems] = useState<RoutineItem[]>(defaultItems)
-  const [todayChecked, setTodayChecked] = useState<Set<string>>(new Set())
-  const [logs, setLogs] = useState<RoutineLog[]>([])
+  const { data: session } = useSession();
+  const [items, setItems] = useState<RoutineItem[]>(defaultItems);
+  const [todayChecked, setTodayChecked] = useState<Set<string>>(new Set());
+  const [logs, setLogs] = useState<RoutineLog[]>([]);
 
   useEffect(() => {
-    if (!session?.user) return
+    if (!session?.user) return;
 
-    fetch('/api/routine')
+    fetch("/api/routine")
       .then((r) => r.json())
       .then(({ items: saved }) => {
-        if (saved && saved.length > 0) setItems(saved)
+        if (saved && saved.length > 0) setItems(saved);
       })
-      .catch(() => {})
+      .catch(() => {});
 
-    const thirtyDaysAgo = new Date()
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-    const since = thirtyDaysAgo.toISOString().split('T')[0]
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const since = thirtyDaysAgo.toISOString().split("T")[0];
 
     fetch(`/api/routine/log?since=${since}`)
       .then((r) => r.json())
       .then(({ logs: fetched }) => {
-        if (!fetched) return
-        const today = todayISO()
-        setLogs(fetched)
+        if (!fetched) return;
+        const today = todayISO();
+        setLogs(fetched);
         const checked = new Set<string>(
           fetched
             .filter((l: RoutineLog) => l.date === today && l.completed)
             .map((l: RoutineLog) => l.itemKey),
-        )
-        setTodayChecked(checked)
+        );
+        setTodayChecked(checked);
       })
-      .catch(() => {})
-  }, [session?.user])
+      .catch(() => {});
+  }, [session?.user]);
 
   const toggleItem = useCallback(
     async (itemKey: string, label: string) => {
-      const today = todayISO()
-      const wasChecked = todayChecked.has(itemKey)
-      const nowChecked = !wasChecked
+      const today = todayISO();
+      const wasChecked = todayChecked.has(itemKey);
+      const nowChecked = !wasChecked;
 
       setTodayChecked((prev) => {
-        const next = new Set(prev)
-        if (nowChecked) next.add(itemKey)
-        else next.delete(itemKey)
-        return next
-      })
+        const next = new Set(prev);
+        if (nowChecked) next.add(itemKey);
+        else next.delete(itemKey);
+        return next;
+      });
 
       if (nowChecked) {
         const newLog: RoutineLog = {
@@ -73,55 +73,55 @@ export function RoutineProvider({ children }: { children: ReactNode }) {
           itemKey,
           label,
           completed: true,
-        }
+        };
         setLogs((prev) => [
           ...prev.filter((l) => !(l.date === today && l.itemKey === itemKey)),
           newLog,
-        ])
+        ]);
       } else {
-        setLogs((prev) => prev.filter((l) => !(l.date === today && l.itemKey === itemKey)))
+        setLogs((prev) => prev.filter((l) => !(l.date === today && l.itemKey === itemKey)));
       }
 
       try {
-        await fetch('/api/routine/log', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        await fetch("/api/routine/log", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ date: today, itemKey, label, completed: nowChecked }),
-        })
+        });
       } catch {
         // Revert on error
         setTodayChecked((prev) => {
-          const next = new Set(prev)
-          if (wasChecked) next.add(itemKey)
-          else next.delete(itemKey)
-          return next
-        })
+          const next = new Set(prev);
+          if (wasChecked) next.add(itemKey);
+          else next.delete(itemKey);
+          return next;
+        });
         if (nowChecked) {
-          setLogs((prev) => prev.filter((l) => !(l.date === today && l.itemKey === itemKey)))
+          setLogs((prev) => prev.filter((l) => !(l.date === today && l.itemKey === itemKey)));
         }
       }
     },
     [todayChecked],
-  )
+  );
 
   const saveItems = useCallback(async (newItems: RoutineItem[]) => {
-    setItems(newItems)
-    await fetch('/api/routine', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    setItems(newItems);
+    await fetch("/api/routine", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ items: newItems }),
-    })
-  }, [])
+    });
+  }, []);
 
   return (
     <RoutineContext.Provider value={{ items, todayChecked, logs, toggleItem, saveItems }}>
       {children}
     </RoutineContext.Provider>
-  )
+  );
 }
 
 export function useRoutine() {
-  const ctx = useContext(RoutineContext)
-  if (!ctx) throw new Error('useRoutine must be inside RoutineProvider')
-  return ctx
+  const ctx = useContext(RoutineContext);
+  if (!ctx) throw new Error("useRoutine must be inside RoutineProvider");
+  return ctx;
 }

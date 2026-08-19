@@ -1,29 +1,29 @@
-import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
-import type { RoutineItem } from '@/types'
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import type { RoutineItem } from "@/types";
 
 export async function GET() {
-  const session = await getServerSession(authOptions)
-  if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const items = await prisma.routineItem.findMany({
     where: { userId: session.user.id },
-    orderBy: { sortOrder: 'asc' },
-  })
+    orderBy: { sortOrder: "asc" },
+  });
 
-  return NextResponse.json({ items })
+  return NextResponse.json({ items });
 }
 
 export async function POST(req: Request) {
-  const session = await getServerSession(authOptions)
-  if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { items } = (await req.json()) as { items: RoutineItem[] }
-  const userId = session.user.id
+  const { items } = (await req.json()) as { items: RoutineItem[] };
+  const userId = session.user.id;
 
-  await prisma.routineItem.deleteMany({ where: { userId } })
+  await prisma.routineItem.deleteMany({ where: { userId } });
 
   if (items.length > 0) {
     await prisma.routineItem.createMany({
@@ -37,8 +37,8 @@ export async function POST(req: Request) {
         color: item.color,
         sortOrder: i,
       })),
-    })
+    });
   }
 
-  return NextResponse.json({ ok: true })
+  return NextResponse.json({ ok: true });
 }

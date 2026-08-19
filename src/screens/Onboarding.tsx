@@ -1,64 +1,64 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useTranslation } from 'react-i18next'
-import { Button } from '@/components/common/Button'
-import { useApp } from '@/context/AppContext'
-import { ageGroupForAge } from '@/data/ageGroups'
-import { cn, pickLang, todayISO } from '@/lib/utils'
-import type { FitnessLevel, Gender, Lang } from '@/types'
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
+import { Button } from "@/components/common/Button";
+import { useApp } from "@/context/AppContext";
+import { ageGroupForAge } from "@/data/ageGroups";
+import { cn, pickLang, todayISO } from "@/lib/utils";
+import type { FitnessLevel, Gender, Lang } from "@/types";
 
-const TOTAL_STEPS = 6
+const TOTAL_STEPS = 6;
 
 export default function Onboarding() {
-  const { t } = useTranslation()
-  const router = useRouter()
-  const { profile, dataLoading, setProfile, language, setLanguage } = useApp()
+  const { t } = useTranslation();
+  const router = useRouter();
+  const { profile, dataLoading, setProfile, language, setLanguage } = useApp();
 
   // If the user already has a saved profile, skip onboarding entirely.
   useEffect(() => {
-    if (!dataLoading && profile) router.replace('/')
-  }, [dataLoading, profile, router])
+    if (!dataLoading && profile) router.replace("/");
+  }, [dataLoading, profile, router]);
 
-  const [step, setStep] = useState(1)
-  const [name, setName] = useState('')
-  const [age, setAge] = useState(30)
-  const [gender, setGender] = useState<Gender>('M')
-  const [fitnessLevel, setFitnessLevel] = useState<FitnessLevel>('Intermediate')
-  const [wakeTime, setWakeTime] = useState('06:00')
+  const [step, setStep] = useState(1);
+  const [name, setName] = useState("");
+  const [age, setAge] = useState(30);
+  const [gender, setGender] = useState<Gender>("M");
+  const [fitnessLevel, setFitnessLevel] = useState<FitnessLevel>("Intermediate");
+  const [wakeTime, setWakeTime] = useState("06:00");
 
-  const next = () => setStep((s) => Math.min(TOTAL_STEPS, s + 1))
-  const back = () => setStep((s) => Math.max(1, s - 1))
+  const next = () => setStep((s) => Math.min(TOTAL_STEPS, s + 1));
+  const back = () => setStep((s) => Math.max(1, s - 1));
 
-  const [saving, setSaving] = useState(false)
+  const [saving, setSaving] = useState(false);
 
   const finish = async () => {
-    setSaving(true)
+    setSaving(true);
     try {
       await setProfile({
-        name: name.trim() || 'Recruit',
+        name: name.trim() || "Recruit",
         age,
         gender,
         fitnessLevel,
         language,
         wakeTime,
         createdAt: todayISO(),
-      })
-      router.replace('/')
+      });
+      router.replace("/");
     } finally {
-      setSaving(false)
+      setSaving(false);
     }
-  }
+  };
 
-  const group = ageGroupForAge(age)
+  const group = ageGroupForAge(age);
 
   return (
     <div className="flex min-h-full flex-col bg-gradient-to-br from-navy to-forest text-white">
       <div className="mx-auto flex w-full max-w-md flex-1 flex-col px-6 py-8">
         <div className="mb-6">
-          <div className="text-2xl font-extrabold">🇱🇹 {t('app.name')}</div>
-          <div className="text-sm opacity-80">{t('onboarding.intro')}</div>
+          <div className="text-2xl font-extrabold">🇱🇹 {t("app.name")}</div>
+          <div className="text-sm opacity-80">{t("onboarding.intro")}</div>
         </div>
 
         {/* Progress bar */}
@@ -67,8 +67,8 @@ export default function Onboarding() {
             <div
               key={i}
               className={cn(
-                'h-1.5 flex-1 rounded-full',
-                i < step ? 'bg-flag-yellow' : 'bg-white/25',
+                "h-1.5 flex-1 rounded-full",
+                i < step ? "bg-flag-yellow" : "bg-white/25",
               )}
             />
           ))}
@@ -76,19 +76,19 @@ export default function Onboarding() {
 
         <div className="flex-1">
           {step === 1 && (
-            <Field label={t('onboarding.name')}>
+            <Field label={t("onboarding.name")}>
               <input
                 autoFocus
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder={t('onboarding.namePlaceholder')}
+                placeholder={t("onboarding.namePlaceholder")}
                 className="w-full rounded-xl border-0 bg-white/95 px-4 py-3 text-base text-slate-900 outline-none"
               />
             </Field>
           )}
 
           {step === 2 && (
-            <Field label={`${t('onboarding.age')}: ${age}`}>
+            <Field label={`${t("onboarding.age")}: ${age}`}>
               <input
                 type="range"
                 min={25}
@@ -107,11 +107,11 @@ export default function Onboarding() {
           )}
 
           {step === 3 && (
-            <Field label={t('onboarding.gender')}>
+            <Field label={t("onboarding.gender")}>
               <Choice
                 options={[
-                  { value: 'M', label: t('onboarding.male'), icon: '♂️' },
-                  { value: 'F', label: t('onboarding.female'), icon: '♀️' },
+                  { value: "M", label: t("onboarding.male"), icon: "♂️" },
+                  { value: "F", label: t("onboarding.female"), icon: "♀️" },
                 ]}
                 value={gender}
                 onChange={(v) => setGender(v as Gender)}
@@ -120,12 +120,12 @@ export default function Onboarding() {
           )}
 
           {step === 4 && (
-            <Field label={t('onboarding.fitnessLevel')}>
+            <Field label={t("onboarding.fitnessLevel")}>
               <Choice
                 options={[
-                  { value: 'Beginner', label: t('onboarding.beginner'), icon: '🌱' },
-                  { value: 'Intermediate', label: t('onboarding.intermediate'), icon: '⚡' },
-                  { value: 'Advanced', label: t('onboarding.advanced'), icon: '🔥' },
+                  { value: "Beginner", label: t("onboarding.beginner"), icon: "🌱" },
+                  { value: "Intermediate", label: t("onboarding.intermediate"), icon: "⚡" },
+                  { value: "Advanced", label: t("onboarding.advanced"), icon: "🔥" },
                 ]}
                 value={fitnessLevel}
                 onChange={(v) => setFitnessLevel(v as FitnessLevel)}
@@ -134,11 +134,11 @@ export default function Onboarding() {
           )}
 
           {step === 5 && (
-            <Field label={t('onboarding.language')}>
+            <Field label={t("onboarding.language")}>
               <Choice
                 options={[
-                  { value: 'EN', label: 'English', icon: '🇬🇧' },
-                  { value: 'LT', label: 'Lietuvių', icon: '🇱🇹' },
+                  { value: "EN", label: "English", icon: "🇬🇧" },
+                  { value: "LT", label: "Lietuvių", icon: "🇱🇹" },
                 ]}
                 value={language}
                 onChange={(v) => setLanguage(v as Lang)}
@@ -147,7 +147,7 @@ export default function Onboarding() {
           )}
 
           {step === 6 && (
-            <Field label={t('onboarding.wakeTime')}>
+            <Field label={t("onboarding.wakeTime")}>
               <input
                 type="time"
                 value={wakeTime}
@@ -164,14 +164,14 @@ export default function Onboarding() {
             disabled={step === 1}
             className="text-sm font-semibold text-white/70 disabled:opacity-0"
           >
-            ← {t('common.back')}
+            ← {t("common.back")}
           </button>
           <div className="text-xs text-white/60">
-            {t('onboarding.stepOf', { current: step, total: TOTAL_STEPS })}
+            {t("onboarding.stepOf", { current: step, total: TOTAL_STEPS })}
           </div>
           {step < TOTAL_STEPS ? (
             <Button onClick={next} className="bg-flag-yellow text-navy hover:bg-yellow-400">
-              {t('common.next')} →
+              {t("common.next")} →
             </Button>
           ) : (
             <Button
@@ -179,13 +179,13 @@ export default function Onboarding() {
               disabled={saving}
               className="bg-flag-yellow text-navy hover:bg-yellow-400"
             >
-              {saving ? '…' : `${t('onboarding.startPlan')} 🚀`}
+              {saving ? "…" : `${t("onboarding.startPlan")} 🚀`}
             </Button>
           )}
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
@@ -194,13 +194,13 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
       <div className="mb-3 text-lg font-bold">{label}</div>
       {children}
     </div>
-  )
+  );
 }
 
 interface ChoiceProps {
-  options: { value: string; label: string; icon: string }[]
-  value: string
-  onChange: (value: string) => void
+  options: { value: string; label: string; icon: string }[];
+  value: string;
+  onChange: (value: string) => void;
 }
 
 function Choice({ options, value, onChange }: ChoiceProps) {
@@ -211,10 +211,10 @@ function Choice({ options, value, onChange }: ChoiceProps) {
           key={opt.value}
           onClick={() => onChange(opt.value)}
           className={cn(
-            'flex items-center gap-3 rounded-xl px-4 py-3 text-left text-base font-semibold transition-colors',
+            "flex items-center gap-3 rounded-xl px-4 py-3 text-left text-base font-semibold transition-colors",
             value === opt.value
-              ? 'bg-flag-yellow text-navy'
-              : 'bg-white/15 text-white hover:bg-white/25',
+              ? "bg-flag-yellow text-navy"
+              : "bg-white/15 text-white hover:bg-white/25",
           )}
         >
           <span className="text-xl">{opt.icon}</span>
@@ -222,5 +222,5 @@ function Choice({ options, value, onChange }: ChoiceProps) {
         </button>
       ))}
     </div>
-  )
+  );
 }

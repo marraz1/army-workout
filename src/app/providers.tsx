@@ -1,13 +1,13 @@
-'use client'
+"use client";
 
-import type { ReactNode } from 'react'
-import { SessionProvider } from 'next-auth/react'
-import { I18nextProvider } from 'react-i18next'
-import i18n from '@/i18n'
-import { AppProvider } from '@/context/AppContext'
-import { WorkoutDataProvider } from '@/context/WorkoutDataContext'
-import { CalisthenicsProvider } from '@/context/CalisthenicsContext'
-import { RoutineProvider } from '@/context/RoutineContext'
+import type { ReactNode } from "react";
+import { SessionProvider } from "next-auth/react";
+import { I18nextProvider } from "react-i18next";
+import i18n from "@/i18n";
+import { AppProvider } from "@/context/AppContext";
+import { WorkoutDataProvider } from "@/context/WorkoutDataContext";
+import { CalisthenicsProvider } from "@/context/CalisthenicsContext";
+import { RoutineProvider } from "@/context/RoutineContext";
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
@@ -22,5 +22,5 @@ export function Providers({ children }: { children: ReactNode }) {
         </AppProvider>
       </I18nextProvider>
     </SessionProvider>
-  )
+  );
 }

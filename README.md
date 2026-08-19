@@ -8,14 +8,14 @@ A mobile-first web app that helps Lithuanian civilians (ages 25–50) prepare fo
 
 ## Stack
 
-| Layer | Tech |
-|---|---|
-| Framework | Next.js 16 (App Router) + React 19 + TypeScript |
-| Styling | Tailwind CSS 4 (military navy/forest palette + LT flag accents) |
-| Database | Neon (Postgres) via **Prisma** |
-| Auth | **NextAuth** (Credentials: email + password, bcrypt-hashed, JWT sessions) |
-| i18n | i18next / react-i18next (LT + EN) |
-| Hosting | Vercel (auto-deploy from `main`) |
+| Layer     | Tech                                                                      |
+| --------- | ------------------------------------------------------------------------- |
+| Framework | Next.js 16 (App Router) + React 19 + TypeScript                           |
+| Styling   | Tailwind CSS 4 (military navy/forest palette + LT flag accents)           |
+| Database  | Neon (Postgres) via **Prisma**                                            |
+| Auth      | **NextAuth** (Credentials: email + password, bcrypt-hashed, JWT sessions) |
+| i18n      | i18next / react-i18next (LT + EN)                                         |
+| Hosting   | Vercel (auto-deploy from `main`)                                          |
 
 ## Features
 

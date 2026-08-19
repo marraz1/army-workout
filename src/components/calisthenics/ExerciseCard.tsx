@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import type { CalisthenicsExerciseData } from "@/types/calisthenics";
 import { MuscleDisplay } from "@/components/muscle/MuscleDisplay";
 import { getMuscleHighlightsFromNames } from "@/data/muscleMap";
@@ -31,6 +32,7 @@ export function ExerciseCard({
 }: ExerciseCardProps) {
   const [expanded, setExpanded] = useState(false);
   const router = useRouter();
+  const { t } = useTranslation();
 
   const icon = ILLUS_ICONS[exercise.illustrationKey?.split("-")[0] ?? ""] ?? "🤸";
   const repLabel = exercise.isTimed
@@ -51,12 +53,12 @@ export function ExerciseCard({
               <LevelBadge level={exercise.level} />
               {customBadge && (
                 <span className="rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-bold text-orange-600 dark:bg-orange-900/30 dark:text-orange-400">
-                  🛠️ Custom
+                  🛠️ {t("calisthenics.customBadge")}
                 </span>
               )}
             </div>
             <div className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-              {repLabel} · {exercise.defaultRestSec}s rest
+              {repLabel} · {t("calisthenics.restLabel", { sec: exercise.defaultRestSec })}
             </div>
           </div>
         </div>
@@ -66,7 +68,7 @@ export function ExerciseCard({
               onClick={onEdit}
               className="rounded-lg px-2 py-1 text-xs text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700"
             >
-              Edit
+              {t("common.edit")}
             </button>
           )}
           {onDelete && (
@@ -74,7 +76,7 @@ export function ExerciseCard({
               onClick={onDelete}
               className="rounded-lg px-2 py-1 text-xs text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
             >
-              Delete
+              {t("common.delete")}
             </button>
           )}
         </div>
@@ -99,12 +101,14 @@ export function ExerciseCard({
             onClick={() => setExpanded((v) => !v)}
             className="mt-2 flex items-center gap-1 text-xs font-medium text-purple-600 dark:text-purple-400"
           >
-            {expanded ? "▲ Hide progressions" : "▼ Show progressions"}
+            {expanded
+              ? `▲ ${t("calisthenics.hideProgressions")}`
+              : `▼ ${t("calisthenics.showProgressions")}`}
           </button>
           {expanded && (
             <div className="mt-2 rounded-lg bg-slate-50 p-2 dark:bg-slate-700/50">
               <div className="text-[10px] font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1">
-                Progression Path
+                {t("calisthenics.progressionPath")}
               </div>
               <div className="flex flex-wrap gap-1">
                 {exercise.progressions.map((p, i) => (
@@ -136,7 +140,7 @@ export function ExerciseCard({
                 : "#9333ea",
         }}
       >
-        + Add to Plan
+        {t("calisthenics.addToPlanCta")}
       </button>
     </div>
   );

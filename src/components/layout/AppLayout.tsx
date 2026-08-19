@@ -2,16 +2,19 @@
 
 import { useEffect, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { Header } from "./Header";
 import { BottomNav } from "./BottomNav";
 import { useApp } from "@/context/AppContext";
 
 function Splash() {
+  const { t } = useTranslation();
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-navy to-forest text-white">
       <div className="text-center">
-        <div className="text-3xl font-extrabold">🇱🇹 LAF Fit</div>
-        <div className="mt-2 text-sm opacity-80">Loading…</div>
+        <div className="text-3xl font-extrabold">🇱🇹 {t("app.name")}</div>
+        <div className="mt-2 text-sm opacity-80">{t("common.loading")}</div>
       </div>
     </div>
   );

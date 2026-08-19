@@ -13,6 +13,15 @@ export function pickLang(lang: Lang, en: string, lt: string): string {
   return lang === "LT" ? lt : en;
 }
 
+/**
+ * Like `pickLang`, but for fields whose Lithuanian variant is optional — the
+ * case for anything a user can create (custom exercises, edited routine items),
+ * where only the English field exists. Falls back to `en` when `lt` is absent.
+ */
+export function pickLangOpt(lang: Lang, en: string, lt?: string | null): string {
+  return lang === "LT" && lt ? lt : en;
+}
+
 /** Tailwind class-name joiner that drops falsy values. */
 export function cn(...classes: Array<string | false | null | undefined>): string {
   return classes.filter(Boolean).join(" ");

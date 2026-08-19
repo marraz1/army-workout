@@ -3,17 +3,20 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
+import { useApp } from "@/context/AppContext";
 import { DayPicker } from "@/components/calisthenics/DayPicker";
 import { TimePicker } from "@/components/calisthenics/TimePicker";
 import { HoldToggle } from "@/components/calisthenics/HoldToggle";
 import { RestPicker } from "@/components/calisthenics/RestPicker";
 import { LevelBadge } from "@/components/calisthenics/LevelBadge";
 import { findCalisthenicsExercise } from "@/data/calisthenicsExercises";
+import { localizeCalisthenicsExercise } from "@/data/calisthenicsExercises.lt";
 import { useCalisthenics } from "@/context/CalisthenicsContext";
 import type { CalisthenicsSource } from "@/types/calisthenics";
 
 export default function CalisthenicsPlanner() {
   const { t } = useTranslation();
+  const { language } = useApp();
   const router = useRouter();
   const params = useSearchParams();
   const { customExercises, plans, savePlan, updatePlan, loading } = useCalisthenics();
@@ -32,7 +35,7 @@ export default function CalisthenicsPlanner() {
     `${t("common.done")} & ${t("common.save")}`,
   ];
 
-  const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const DAY_KEYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   const exerciseIdRaw = editingPlan
     ? editingPlan.source === "library"
@@ -44,7 +47,8 @@ export default function CalisthenicsPlanner() {
     ? editingPlan.source
     : ((params.get("source") ?? "library") as CalisthenicsSource);
 
-  const libEx = source === "library" ? findCalisthenicsExercise(exerciseId) : undefined;
+  const libRaw = source === "library" ? findCalisthenicsExercise(exerciseId) : undefined;
+  const libEx = libRaw ? localizeCalisthenicsExercise(libRaw, language) : undefined;
   const custEx =
     source === "custom" ? customExercises.find((e) => e.id === exerciseIdRaw) : undefined;
   const ex = libEx ?? custEx;
@@ -278,7 +282,7 @@ export default function CalisthenicsPlanner() {
               <Row label={t("calisthenics.reviewExercise")} value={ex.name} />
               <Row
                 label={t("calisthenics.reviewDays")}
-                value={days.map((d) => DAY_LABELS[d]).join(", ")}
+                value={days.map((d) => t(`weekdays.${DAY_KEYS[d]}`)).join(", ")}
               />
               <Row label={t("calisthenics.reviewTime")} value={time} />
               <Row

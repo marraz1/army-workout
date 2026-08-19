@@ -27,7 +27,31 @@
     "today": "Today",
     "goal": "Goal",
     "rest": "Rest",
-    "edit": "Edit"
+    "edit": "Edit",
+    "delete": "Delete",
+    "loading": "Loading…"
+  },
+  "a11y": {
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "toggleTheme": "Toggle theme",
+    "toggleLanguage": "Switch language",
+    "decrease": "Decrease",
+    "increase": "Increase"
+  },
+  "charts": {
+    "noData": "No data yet"
+  },
+  "muscle": {
+    "primary": "Primary",
+    "secondary": "Secondary",
+    "tapToCycle": "Tap to cycle"
+  },
+  "standards": {
+    "group": "Group",
+    "push": "Push",
+    "sit": "Sit",
+    "run": "Run"
   },
   "auth": {
     "loginTitle": "Welcome back",
@@ -118,7 +142,8 @@
     "errReps": "Reps must be between 1 and 200.",
     "errRest": "Rest must be between 15 and 300 seconds.",
     "errRun": "Enter the run goal as MM:SS.",
-    "errRunMin": "Run goal must be at least 08:00."
+    "errRunMin": "Run goal must be at least 08:00.",
+    "muscleGroups": "Muscle Groups"
   },
   "logger": {
     "title": "Workout Logger",
@@ -151,7 +176,8 @@
     "save": "Save to History",
     "saved": "Session saved!",
     "newPBs": "{{count}} new personal best(s)!",
-    "nothingToday": "Nothing scheduled to log today."
+    "nothingToday": "Nothing scheduled to log today.",
+    "emptyQueue": "No exercises in queue. Please go back and try again."
   },
   "history": {
     "title": "History & Progress",
@@ -206,7 +232,9 @@
   "progress": {
     "title": "Progress",
     "comingSoon": "Charts & LAF readiness score arrive in the next update.",
-    "readiness": "LAF Readiness"
+    "readiness": "LAF Readiness",
+    "workoutsDone": "Workouts done",
+    "currentStreak": "Current streak"
   },
   "skip": {
     "title": "Skip / Cheat Day",
@@ -325,7 +353,19 @@
     "searchPlaceholder": "Search exercises…",
     "noSearchResults": "No exercises match your search.",
     "set": "Set {{n}}",
-    "sessionSummary": "{{exercises}} exercises · {{sets}} sets completed"
+    "sessionSummary": "{{exercises}} exercises · {{sets}} sets completed",
+    "progressionPath": "Progression Path",
+    "addToPlanCta": "+ Add to Plan",
+    "repsMode": "Reps",
+    "holdMode": "Hold (s)",
+    "restCustom": "Custom",
+    "restRangeHint": "seconds (15–300)",
+    "errNameRequired": "Name is required.",
+    "errNameTooLong": "Name must be 50 characters or fewer.",
+    "errNoMuscles": "Select at least one muscle group.",
+    "errSaveExercise": "Failed to save exercise.",
+    "errSaveSession": "Failed to save session.",
+    "allMusclesFilter": "All"
   },
   "routine": {
     "editTitle": "Edit Daily Routine",
@@ -361,5 +401,51 @@
         "desc": "Calendar heatmap, exercise charts, LAF readiness, personal bests and session drill-down."
       }
     }
+  },
+  "weekdays": {
+    "Mon": "Mon",
+    "Tue": "Tue",
+    "Wed": "Wed",
+    "Thu": "Thu",
+    "Fri": "Fri",
+    "Sat": "Sat",
+    "Sun": "Sun"
+  },
+  "weekdaysShort": {
+    "mon": "M",
+    "tue": "T",
+    "wed": "W",
+    "thu": "T",
+    "fri": "F",
+    "sat": "S",
+    "sun": "S"
+  },
+  "muscles": {
+    "Abs": "Abs",
+    "Adductors": "Adductors",
+    "Ankles": "Ankles",
+    "Back": "Back",
+    "Biceps": "Biceps",
+    "Calves": "Calves",
+    "Chest": "Chest",
+    "Core": "Core",
+    "Forearms": "Forearms",
+    "Full Body": "Full Body",
+    "Glutes": "Glutes",
+    "Grip": "Grip",
+    "Hamstrings": "Hamstrings",
+    "Hip Flexors": "Hip Flexors",
+    "Lats": "Lats",
+    "Legs": "Legs",
+    "Lower Back": "Lower Back",
+    "Obliques": "Obliques",
+    "Quads": "Quads",
+    "Rear Delts": "Rear Delts",
+    "Rhomboids": "Rhomboids",
+    "Shoulders": "Shoulders",
+    "Traps": "Traps",
+    "Triceps": "Triceps",
+    "Upper Back": "Upper Back",
+    "Wrists": "Wrists"
   }
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 export interface LinePoint {
   /** X label (e.g. a short date). */
@@ -30,6 +31,7 @@ export function LineChart({
   formatValue = (v) => String(v),
   height = 160,
 }: LineChartProps) {
+  const { t } = useTranslation();
   const H = height;
   const geom = useMemo(() => {
     const values = points.map((p) => p.value);
@@ -55,7 +57,7 @@ export function LineChart({
   if (points.length === 0) {
     return (
       <div className="flex h-40 items-center justify-center rounded-xl bg-slate-50 text-xs text-slate-400 dark:bg-slate-700/40">
-        No data yet
+        {t("charts.noData")}
       </div>
     );
   }

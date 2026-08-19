@@ -4,12 +4,13 @@ import { useTranslation } from "react-i18next";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { Card } from "@/components/common/Card";
 import { useApp } from "@/context/AppContext";
+import { pickLang } from "@/lib/utils";
 import { lafStandards } from "@/data/lafStandards";
 import { computeStreak } from "@/lib/utils";
 
 export default function Progress() {
   const { t } = useTranslation();
-  const { logs } = useApp();
+  const { logs, language } = useApp();
 
   const completed = Object.values(logs).filter((l) => l.status === "completed").length;
   const streak = computeStreak(logs);
@@ -22,11 +23,15 @@ export default function Progress() {
       <div className="grid grid-cols-2 gap-3">
         <Card>
           <div className="text-3xl font-extrabold text-navy dark:text-flag-yellow">{completed}</div>
-          <div className="text-xs font-semibold text-slate-500">✅ Workouts done</div>
+          <div className="text-xs font-semibold text-slate-500">
+            ✅ {t("progress.workoutsDone")}
+          </div>
         </Card>
         <Card>
           <div className="text-3xl font-extrabold text-amber-500">{streak}</div>
-          <div className="text-xs font-semibold text-slate-500">🔥 Current streak</div>
+          <div className="text-xs font-semibold text-slate-500">
+            🔥 {t("progress.currentStreak")}
+          </div>
         </Card>
       </div>
 
@@ -36,10 +41,10 @@ export default function Progress() {
           <table className="w-full border-collapse text-[13px]">
             <thead>
               <tr className="bg-navy text-left text-white">
-                <th className="p-2 font-semibold">Group</th>
-                <th className="p-2 font-semibold">Push</th>
-                <th className="p-2 font-semibold">Sit</th>
-                <th className="p-2 font-semibold">Run</th>
+                <th className="p-2 font-semibold">{t("standards.group")}</th>
+                <th className="p-2 font-semibold">{t("standards.push")}</th>
+                <th className="p-2 font-semibold">{t("standards.sit")}</th>
+                <th className="p-2 font-semibold">{t("standards.run")}</th>
               </tr>
             </thead>
             <tbody>
@@ -48,9 +53,13 @@ export default function Progress() {
                   key={row.group}
                   className={i % 2 === 0 ? "bg-slate-50 dark:bg-slate-700/30" : ""}
                 >
-                  <td className="p-2 font-semibold text-navy dark:text-slate-200">{row.group}</td>
+                  <td className="p-2 font-semibold text-navy dark:text-slate-200">
+                    {pickLang(language, row.group, row.groupLT)}
+                  </td>
                   <td className="p-2 font-bold text-green-600">{row.pushups}</td>
-                  <td className="p-2 font-bold text-blue-600">{row.situps}</td>
+                  <td className="p-2 font-bold text-blue-600">
+                    {pickLang(language, row.situps, row.situpsLT)}
+                  </td>
                   <td className="p-2 font-bold text-red-600">{row.run}</td>
                 </tr>
               ))}

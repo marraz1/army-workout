@@ -61,7 +61,7 @@ export function SetCard({
           <button
             onClick={() => setActual((v) => Math.max(0, v - 1))}
             className="h-10 w-10 rounded-lg border border-slate-200 bg-slate-100 text-xl font-bold text-slate-600 active:scale-95 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200"
-            aria-label="decrease"
+            aria-label={t("a11y.decrease")}
           >
             −
           </button>
@@ -72,7 +72,7 @@ export function SetCard({
           <button
             onClick={() => setActual((v) => v + 1)}
             className="h-10 w-10 rounded-lg border border-slate-200 bg-slate-100 text-xl font-bold text-slate-600 active:scale-95 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200"
-            aria-label="increase"
+            aria-label={t("a11y.increase")}
           >
             +
           </button>

@@ -10,7 +10,7 @@ import { useApp } from "@/context/AppContext";
 import { useWorkoutData } from "@/context/WorkoutDataContext";
 import { ageGroups, ageGroupForAge } from "@/data/ageGroups";
 import { resolveEffectivePlan } from "@/lib/plan";
-import { cn, pickLang, todayISO } from "@/lib/utils";
+import { cn, pickLang, pickLangOpt, todayISO } from "@/lib/utils";
 
 export default function ExerciseGuide() {
   const { t } = useTranslation();
@@ -69,7 +69,9 @@ export default function ExerciseGuide() {
         {effective.map((item) => {
           const ex = item.exercise;
           const def = group.exercises.find((e) => e.id === ex.id);
-          const setsDisplay = ex.isRepBased ? `${item.setsCount}×${item.repsTarget}` : ex.sets;
+          const setsDisplay = ex.isRepBased
+            ? `${item.setsCount}×${item.repsTarget}`
+            : pickLangOpt(language, ex.sets, ex.setsLT);
           return (
             <div
               key={ex.id}
@@ -80,7 +82,7 @@ export default function ExerciseGuide() {
                 <div>
                   <div className="text-xl">{ex.icon}</div>
                   <div className="mt-1 flex items-center gap-2 font-bold text-slate-800 dark:text-slate-100">
-                    {ex.name}
+                    {pickLangOpt(language, ex.name, ex.nameLT)}
                     {item.isCustom && <CustomBadge />}
                   </div>
                 </div>

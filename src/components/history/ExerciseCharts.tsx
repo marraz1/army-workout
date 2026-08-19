@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useApp } from "@/context/AppContext";
 import { LineChart, type LinePoint } from "@/components/charts/LineChart";
 import { findExercise, exerciseName } from "@/lib/exercises";
 import { formatMMSS } from "@/lib/utils";
@@ -19,6 +20,7 @@ function shortDate(iso: string): string {
 /** Per-exercise line chart of reps (or run time) over logged sessions. */
 export function ExerciseCharts({ sessions }: ExerciseChartsProps) {
   const { t } = useTranslation();
+  const { language } = useApp();
 
   // Oldest → newest for left-to-right time axis.
   const ordered = useMemo(
@@ -76,7 +78,7 @@ export function ExerciseCharts({ sessions }: ExerciseChartsProps) {
                 : "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-200")
             }
           >
-            {exerciseName(id)}
+            {exerciseName(id, language)}
           </button>
         ))}
       </div>

@@ -13,8 +13,9 @@ import { useRoutine } from "@/context/RoutineContext";
 import { RoutineEditModal } from "@/components/routine/RoutineEditModal";
 import { ageGroupForAge } from "@/data/ageGroups";
 import { scheduleForDate } from "@/data/weekSchedule";
+import { localizedCalisthenicsName } from "@/data/calisthenicsExercises.lt";
 import { computeReadiness } from "@/lib/laf";
-import { computeStreak, pickLang, todayISO } from "@/lib/utils";
+import { computeStreak, pickLang, pickLangOpt, todayISO } from "@/lib/utils";
 
 const REST_TYPES = new Set(["Rest", "Active Recovery"]);
 
@@ -69,8 +70,12 @@ export default function Home() {
         <div className="flex items-center gap-3">
           <span className="text-4xl">{today.icon}</span>
           <div>
-            <div className="text-lg font-bold text-slate-800 dark:text-slate-100">{today.type}</div>
-            <div className="text-sm text-slate-500 dark:text-slate-400">{today.focus}</div>
+            <div className="text-lg font-bold text-slate-800 dark:text-slate-100">
+              {pickLang(language, today.type, today.typeLT)}
+            </div>
+            <div className="text-sm text-slate-500 dark:text-slate-400">
+              {pickLang(language, today.focus, today.focusLT)}
+            </div>
           </div>
         </div>
 
@@ -120,7 +125,11 @@ export default function Home() {
         <Card title={`🤸 ${t("calisthenics.todayTitle")}`} accent="#9333ea">
           <div className="mb-3 space-y-1">
             {todayCalisthenicsPlans.slice(0, 4).map((plan) => {
-              const name = plan.libraryExercise?.name ?? plan.customExercise?.name ?? "Exercise";
+              const name = localizedCalisthenicsName(
+                plan.libraryExercise,
+                language,
+                plan.customExercise?.name ?? t("calisthenics.reviewExercise"),
+              );
               return (
                 <div key={plan.id} className="text-sm text-slate-700 dark:text-slate-200">
                   · {name} — {plan.sets}×{plan.repsOrSecs}
@@ -156,8 +165,12 @@ export default function Home() {
           {group.exercises.slice(0, 4).map((ex) => (
             <div key={ex.name} className="rounded-xl bg-slate-50 px-3 py-2 dark:bg-slate-700/50">
               <div className="text-lg">{ex.icon}</div>
-              <div className="text-xs font-bold text-slate-700 dark:text-slate-200">{ex.name}</div>
-              <div className="text-xs text-slate-500 dark:text-slate-400">{ex.sets}</div>
+              <div className="text-xs font-bold text-slate-700 dark:text-slate-200">
+                {pickLangOpt(language, ex.name, ex.nameLT)}
+              </div>
+              <div className="text-xs text-slate-500 dark:text-slate-400">
+                {pickLangOpt(language, ex.sets, ex.setsLT)}
+              </div>
             </div>
           ))}
         </div>
@@ -202,9 +215,11 @@ export default function Home() {
                           : "text-slate-700 dark:text-slate-200"
                       }`}
                     >
-                      {item.label}
+                      {pickLangOpt(language, item.label, item.labelLT)}
                     </div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">{item.detail}</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">
+                      {pickLangOpt(language, item.detail, item.detailLT)}
+                    </div>
                   </div>
                   <button
                     onClick={() => toggleItem(item.id, item.label)}

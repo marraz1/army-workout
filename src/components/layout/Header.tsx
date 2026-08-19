@@ -17,13 +17,14 @@ export function Header() {
         <div className="flex items-center gap-2">
           <button
             onClick={toggleTheme}
-            aria-label="Toggle theme"
+            aria-label={t("a11y.toggleTheme")}
             className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/30 bg-white/15 text-base"
           >
             {theme === "dark" ? "☀️" : "🌙"}
           </button>
           <button
             onClick={() => setLanguage(language === "EN" ? "LT" : "EN")}
+            aria-label={t("a11y.toggleLanguage")}
             className="h-9 rounded-lg border border-white/30 bg-white/15 px-3 text-sm font-bold"
           >
             {language === "EN" ? "🇱🇹 LT" : "🇬🇧 EN"}

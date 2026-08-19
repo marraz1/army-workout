@@ -16,7 +16,7 @@ import { useWorkoutData } from "@/context/WorkoutDataContext";
 import { CalisthenicsHistory } from "@/components/history/CalisthenicsHistory";
 import { DailyRoutineProgress } from "@/components/history/DailyRoutineProgress";
 import { lafStandards } from "@/data/lafStandards";
-import { computeStreak } from "@/lib/utils";
+import { computeStreak, pickLang } from "@/lib/utils";
 import type { WorkoutSession } from "@/types";
 
 type View = "heatmap" | "charts" | "readiness" | "bests" | "sessions" | "weekly";
@@ -32,7 +32,7 @@ const VIEWS: Array<{ key: View; icon: string }> = [
 
 export default function History() {
   const { t } = useTranslation();
-  const { profile, logs } = useApp();
+  const { profile, logs, language } = useApp();
   const { sessions, personalBests, removeSession } = useWorkoutData();
 
   const [mode, setMode] = useState<"laf" | "calisthenics" | "routine">("laf");
@@ -167,10 +167,10 @@ export default function History() {
                   <table className="w-full border-collapse text-[13px]">
                     <thead>
                       <tr className="bg-navy text-left text-white">
-                        <th className="p-2 font-semibold">Group</th>
-                        <th className="p-2 font-semibold">Push</th>
-                        <th className="p-2 font-semibold">Sit</th>
-                        <th className="p-2 font-semibold">Run</th>
+                        <th className="p-2 font-semibold">{t("standards.group")}</th>
+                        <th className="p-2 font-semibold">{t("standards.push")}</th>
+                        <th className="p-2 font-semibold">{t("standards.sit")}</th>
+                        <th className="p-2 font-semibold">{t("standards.run")}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -180,10 +180,12 @@ export default function History() {
                           className={i % 2 === 0 ? "bg-slate-50 dark:bg-slate-700/30" : ""}
                         >
                           <td className="p-2 font-semibold text-navy dark:text-slate-200">
-                            {row.group}
+                            {pickLang(language, row.group, row.groupLT)}
                           </td>
                           <td className="p-2 font-bold text-green-600">{row.pushups}</td>
-                          <td className="p-2 font-bold text-blue-600">{row.situps}</td>
+                          <td className="p-2 font-bold text-blue-600">
+                            {pickLang(language, row.situps, row.situpsLT)}
+                          </td>
                           <td className="p-2 font-bold text-red-600">{row.run}</td>
                         </tr>
                       ))}

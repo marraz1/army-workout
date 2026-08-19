@@ -6,7 +6,9 @@ export const dailyRoutine: RoutineItem[] = [
     time: "06:00",
     icon: "⏰",
     label: "Wake Up",
+    labelLT: "Kėlimasis",
     detail: "Alarm + hydration (500ml water)",
+    detailLT: "Žadintuvas + vanduo (500 ml)",
     color: "#f59e0b",
   },
   {
@@ -14,7 +16,9 @@ export const dailyRoutine: RoutineItem[] = [
     time: "06:05",
     icon: "🧘",
     label: "Morning Mobility",
+    labelLT: "Rytinis Mankštinimasis",
     detail: "5 min joint warm-up, neck rolls, hip circles",
+    detailLT: "5 min sąnarių apšilimas, kaklo ir klubų sukimai",
     color: "#10b981",
   },
   {
@@ -22,7 +26,9 @@ export const dailyRoutine: RoutineItem[] = [
     time: "06:15",
     icon: "💪",
     label: "Workout Session",
+    labelLT: "Treniruotė",
     detail: "30–45 min structured exercise per schedule",
+    detailLT: "30–45 min treniruotė pagal tvarkaraštį",
     color: "#ef4444",
   },
   {
@@ -30,7 +36,9 @@ export const dailyRoutine: RoutineItem[] = [
     time: "07:00",
     icon: "🚿",
     label: "Cool Down + Shower",
+    labelLT: "Atvėsimas ir Dušas",
     detail: "5 min stretch + hygiene",
+    detailLT: "5 min tempimas + higiena",
     color: "#06b6d4",
   },
   {
@@ -38,7 +46,9 @@ export const dailyRoutine: RoutineItem[] = [
     time: "07:15",
     icon: "🍳",
     label: "Breakfast",
+    labelLT: "Pusryčiai",
     detail: "High protein meal (eggs, oats, dairy)",
+    detailLT: "Baltymingas patiekalas (kiaušiniai, avižos, pieno produktai)",
     color: "#f97316",
   },
   {
@@ -46,7 +56,9 @@ export const dailyRoutine: RoutineItem[] = [
     time: "12:30",
     icon: "🥗",
     label: "Lunch",
+    labelLT: "Pietūs",
     detail: "Balanced meal — protein + carbs + vegetables",
+    detailLT: "Subalansuotas patiekalas — baltymai + angliavandeniai + daržovės",
     color: "#22c55e",
   },
   {
@@ -54,7 +66,9 @@ export const dailyRoutine: RoutineItem[] = [
     time: "15:00",
     icon: "💧",
     label: "Hydration Check",
+    labelLT: "Vandens Patikra",
     detail: "App reminder: drink 500ml water",
+    detailLT: "Programėlės priminimas: išgerkite 500 ml vandens",
     color: "#3b82f6",
   },
   {
@@ -62,7 +76,9 @@ export const dailyRoutine: RoutineItem[] = [
     time: "19:00",
     icon: "🍽️",
     label: "Dinner",
+    labelLT: "Vakarienė",
     detail: "Light meal, reduce carbs in evening",
+    detailLT: "Lengvas patiekalas, vakare mažiau angliavandenių",
     color: "#8b5cf6",
   },
   {
@@ -70,7 +86,9 @@ export const dailyRoutine: RoutineItem[] = [
     time: "21:00",
     icon: "📱",
     label: "Log Workout",
+    labelLT: "Įrašyti Treniruotę",
     detail: "Mark complete / skip / cheat day in app",
+    detailLT: "Pažymėti atlikta / praleista / poilsio diena",
     color: "#ec4899",
   },
   {
@@ -78,7 +96,9 @@ export const dailyRoutine: RoutineItem[] = [
     time: "22:00",
     icon: "😴",
     label: "Sleep",
+    labelLT: "Miegas",
     detail: "8 hours recommended for muscle recovery",
+    detailLT: "8 valandos raumenų atsistatymui",
     color: "#6366f1",
   },
 ];

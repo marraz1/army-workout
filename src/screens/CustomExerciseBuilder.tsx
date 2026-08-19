@@ -82,16 +82,16 @@ export default function CustomExerciseBuilder({ editId: editIdProp }: Props) {
     e.preventDefault();
     setError("");
     if (!name.trim()) {
-      setError("Name is required.");
+      setError(t("calisthenics.errNameRequired"));
       return;
     }
     if (name.length > 50) {
-      setError("Name must be 50 characters or fewer.");
+      setError(t("calisthenics.errNameTooLong"));
       return;
     }
     const muscles = svgIdsToCalisthenicsNames([...muscleState.primary, ...muscleState.secondary]);
     if (muscles.length === 0) {
-      setError("Select at least one muscle group.");
+      setError(t("calisthenics.errNoMuscles"));
       return;
     }
 
@@ -127,7 +127,7 @@ export default function CustomExerciseBuilder({ editId: editIdProp }: Props) {
 
       router.push("/calisthenics");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save exercise.");
+      setError(err instanceof Error ? err.message : t("calisthenics.errSaveExercise"));
     } finally {
       setSaving(false);
     }

@@ -10,6 +10,7 @@ import { useApp } from "@/context/AppContext";
 import { useWorkoutData } from "@/context/WorkoutDataContext";
 import { useCalisthenics } from "@/context/CalisthenicsContext";
 import { weekSchedule, trainingPhases, scheduleForDate } from "@/data/weekSchedule";
+import { localizedCalisthenicsName } from "@/data/calisthenicsExercises.lt";
 import { cn, pickLang, todayISO } from "@/lib/utils";
 import type { SessionStatus } from "@/types";
 
@@ -77,7 +78,7 @@ export default function Schedule() {
                 >
                   <div className="w-11 text-center">
                     <div className="text-sm font-extrabold" style={{ color: day.color }}>
-                      {day.day}
+                      {t(`weekdays.${day.day}`)}
                     </div>
                     {day.day === todayDay && (
                       <div className="text-[9px] font-bold uppercase text-slate-400">
@@ -88,9 +89,11 @@ export default function Schedule() {
                   <div className="text-2xl">{day.icon}</div>
                   <div className="flex-1">
                     <div className="text-sm font-bold text-slate-800 dark:text-slate-100">
-                      {day.type}
+                      {pickLang(language, day.type, day.typeLT)}
                     </div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">{day.focus}</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">
+                      {pickLang(language, day.focus, day.focusLT)}
+                    </div>
                   </div>
                   {status && (
                     <span
@@ -147,8 +150,11 @@ export default function Schedule() {
                         </p>
                         <div className="mb-3 space-y-1.5">
                           {dayCalPlans.map((plan) => {
-                            const name =
-                              plan.libraryExercise?.name ?? plan.customExercise?.name ?? "Exercise";
+                            const name = localizedCalisthenicsName(
+                              plan.libraryExercise,
+                              language,
+                              plan.customExercise?.name ?? t("calisthenics.reviewExercise"),
+                            );
                             return (
                               <div
                                 key={plan.id}

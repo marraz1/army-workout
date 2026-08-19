@@ -1,34 +1,43 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useTranslation } from 'react-i18next'
-import type { CalisthenicsExerciseData } from '@/types/calisthenics'
-import { MuscleDisplay } from '@/components/muscle/MuscleDisplay'
-import { getMuscleHighlightsFromNames } from '@/data/muscleMap'
-import { LevelBadge } from './LevelBadge'
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
+import type { CalisthenicsExerciseData } from "@/types/calisthenics";
+import { MuscleDisplay } from "@/components/muscle/MuscleDisplay";
+import { getMuscleHighlightsFromNames } from "@/data/muscleMap";
+import { LevelBadge } from "./LevelBadge";
 
 interface ExerciseCardProps {
-  exercise: CalisthenicsExerciseData
-  customBadge?: boolean
-  onEdit?: () => void
-  onDelete?: () => void
-  onAddToPlan?: () => void
+  exercise: CalisthenicsExerciseData;
+  customBadge?: boolean;
+  onEdit?: () => void;
+  onDelete?: () => void;
+  onAddToPlan?: () => void;
 }
 
 const ILLUS_ICONS: Record<string, string> = {
-  push: '💪', pull: '🏋️', squat: '🦵', hold: '🤸',
-}
+  push: "💪",
+  pull: "🏋️",
+  squat: "🦵",
+  hold: "🤸",
+};
 
-export function ExerciseCard({ exercise, customBadge, onEdit, onDelete, onAddToPlan }: ExerciseCardProps) {
-  const [expanded, setExpanded] = useState(false)
-  const router = useRouter()
-  const { t } = useTranslation()
+export function ExerciseCard({
+  exercise,
+  customBadge,
+  onEdit,
+  onDelete,
+  onAddToPlan,
+}: ExerciseCardProps) {
+  const [expanded, setExpanded] = useState(false);
+  const router = useRouter();
+  const { t } = useTranslation();
 
-  const icon = ILLUS_ICONS[exercise.illustrationKey?.split('-')[0] ?? ''] ?? '🤸'
+  const icon = ILLUS_ICONS[exercise.illustrationKey?.split("-")[0] ?? ""] ?? "🤸";
   const repLabel = exercise.isTimed
     ? `${exercise.defaultSets}×${exercise.defaultReps}s`
-    : `${exercise.defaultSets}×${exercise.defaultReps}`
+    : `${exercise.defaultSets}×${exercise.defaultReps}`;
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
@@ -38,16 +47,18 @@ export function ExerciseCard({ exercise, customBadge, onEdit, onDelete, onAddToP
           <span className="text-2xl">{icon}</span>
           <div className="min-w-0">
             <div className="flex items-center flex-wrap gap-1.5">
-              <span className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{exercise.name}</span>
+              <span className="font-semibold text-slate-800 dark:text-slate-100 text-sm">
+                {exercise.name}
+              </span>
               <LevelBadge level={exercise.level} />
               {customBadge && (
                 <span className="rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-bold text-orange-600 dark:bg-orange-900/30 dark:text-orange-400">
-                  🛠️ {t('calisthenics.customBadge')}
+                  🛠️ {t("calisthenics.customBadge")}
                 </span>
               )}
             </div>
             <div className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-              {repLabel} · {t('calisthenics.restLabel', { sec: exercise.defaultRestSec })}
+              {repLabel} · {t("calisthenics.restLabel", { sec: exercise.defaultRestSec })}
             </div>
           </div>
         </div>
@@ -57,7 +68,7 @@ export function ExerciseCard({ exercise, customBadge, onEdit, onDelete, onAddToP
               onClick={onEdit}
               className="rounded-lg px-2 py-1 text-xs text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700"
             >
-              {t('common.edit')}
+              {t("common.edit")}
             </button>
           )}
           {onDelete && (
@@ -65,7 +76,7 @@ export function ExerciseCard({ exercise, customBadge, onEdit, onDelete, onAddToP
               onClick={onDelete}
               className="rounded-lg px-2 py-1 text-xs text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
             >
-              {t('common.delete')}
+              {t("common.delete")}
             </button>
           )}
         </div>
@@ -91,13 +102,13 @@ export function ExerciseCard({ exercise, customBadge, onEdit, onDelete, onAddToP
             className="mt-2 flex items-center gap-1 text-xs font-medium text-purple-600 dark:text-purple-400"
           >
             {expanded
-              ? `▲ ${t('calisthenics.hideProgressions')}`
-              : `▼ ${t('calisthenics.showProgressions')}`}
+              ? `▲ ${t("calisthenics.hideProgressions")}`
+              : `▼ ${t("calisthenics.showProgressions")}`}
           </button>
           {expanded && (
             <div className="mt-2 rounded-lg bg-slate-50 p-2 dark:bg-slate-700/50">
               <div className="text-[10px] font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1">
-                {t('calisthenics.progressionPath')}
+                {t("calisthenics.progressionPath")}
               </div>
               <div className="flex flex-wrap gap-1">
                 {exercise.progressions.map((p, i) => (
@@ -114,15 +125,23 @@ export function ExerciseCard({ exercise, customBadge, onEdit, onDelete, onAddToP
 
       {/* Add to plan */}
       <button
-        onClick={() => onAddToPlan
-          ? onAddToPlan()
-          : router.push(`/calisthenics/plan/new?exerciseId=${exercise.id}&source=library`)
+        onClick={() =>
+          onAddToPlan
+            ? onAddToPlan()
+            : router.push(`/calisthenics/plan/new?exerciseId=${exercise.id}&source=library`)
         }
         className="mt-3 w-full rounded-xl py-2 text-sm font-semibold text-white transition-colors"
-        style={{ backgroundColor: exercise.level === 'Beginner' ? '#16a34a' : exercise.level === 'Intermediate' ? '#2563eb' : '#9333ea' }}
+        style={{
+          backgroundColor:
+            exercise.level === "Beginner"
+              ? "#16a34a"
+              : exercise.level === "Intermediate"
+                ? "#2563eb"
+                : "#9333ea",
+        }}
       >
-        {t('calisthenics.addToPlanCta')}
+        {t("calisthenics.addToPlanCta")}
       </button>
     </div>
-  )
+  );
 }

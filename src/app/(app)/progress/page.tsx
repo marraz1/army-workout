@@ -1,1 +1,1 @@
-export { default } from '@/screens/History'
+export { default } from "@/screens/History";

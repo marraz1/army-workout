@@ -1,23 +1,23 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
-const PRESETS = [30, 45, 60, 90, 120]
+const PRESETS = [30, 45, 60, 90, 120];
 
 interface RestPickerProps {
-  value: number
-  onChange: (sec: number) => void
+  value: number;
+  onChange: (sec: number) => void;
 }
 
 export function RestPicker({ value, onChange }: RestPickerProps) {
-  const [custom, setCustom] = useState(!PRESETS.includes(value))
-  const { t } = useTranslation()
+  const [custom, setCustom] = useState(!PRESETS.includes(value));
+  const { t } = useTranslation();
 
   const selectPreset = (sec: number) => {
-    setCustom(false)
-    onChange(sec)
-  }
+    setCustom(false);
+    onChange(sec);
+  };
 
   return (
     <div className="space-y-2">
@@ -29,8 +29,8 @@ export function RestPicker({ value, onChange }: RestPickerProps) {
             onClick={() => selectPreset(sec)}
             className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
               !custom && value === sec
-                ? 'bg-purple-600 text-white'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300'
+                ? "bg-purple-600 text-white"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300"
             }`}
           >
             {sec}s
@@ -41,11 +41,11 @@ export function RestPicker({ value, onChange }: RestPickerProps) {
           onClick={() => setCustom(true)}
           className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
             custom
-              ? 'bg-purple-600 text-white'
-              : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300'
+              ? "bg-purple-600 text-white"
+              : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300"
           }`}
         >
-          {t('calisthenics.restCustom')}
+          {t("calisthenics.restCustom")}
         </button>
       </div>
       {custom && (
@@ -58,9 +58,9 @@ export function RestPicker({ value, onChange }: RestPickerProps) {
             onChange={(e) => onChange(Math.min(300, Math.max(15, Number(e.target.value))))}
             className="w-24 rounded-lg border border-slate-200 px-3 py-1.5 text-sm dark:border-slate-600 dark:bg-slate-800"
           />
-          <span className="text-sm text-slate-500">{t('calisthenics.restRangeHint')}</span>
+          <span className="text-sm text-slate-500">{t("calisthenics.restRangeHint")}</span>
         </div>
       )}
     </div>
-  )
+  );
 }

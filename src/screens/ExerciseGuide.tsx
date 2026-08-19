@@ -1,37 +1,32 @@
-'use client'
+"use client";
 
-import { useMemo, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useTranslation } from 'react-i18next'
-import { MuscleDisplay } from '@/components/muscle/MuscleDisplay'
-import { SectionHeader } from '@/components/common/SectionHeader'
-import { CustomBadge } from '@/components/plan/CustomBadge'
-import { useApp } from '@/context/AppContext'
-import { useWorkoutData } from '@/context/WorkoutDataContext'
-import { ageGroups, ageGroupForAge } from '@/data/ageGroups'
-import { resolveEffectivePlan } from '@/lib/plan'
-import { cn, pickLang, pickLangOpt, todayISO } from '@/lib/utils'
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
+import { MuscleDisplay } from "@/components/muscle/MuscleDisplay";
+import { SectionHeader } from "@/components/common/SectionHeader";
+import { CustomBadge } from "@/components/plan/CustomBadge";
+import { useApp } from "@/context/AppContext";
+import { useWorkoutData } from "@/context/WorkoutDataContext";
+import { ageGroups, ageGroupForAge } from "@/data/ageGroups";
+import { resolveEffectivePlan } from "@/lib/plan";
+import { cn, pickLang, pickLangOpt, todayISO } from "@/lib/utils";
 
 export default function ExerciseGuide() {
-  const { t } = useTranslation()
-  const router = useRouter()
-  const { profile, language } = useApp()
-  const { plans } = useWorkoutData()
+  const { t } = useTranslation();
+  const router = useRouter();
+  const { profile, language } = useApp();
+  const { plans } = useWorkoutData();
 
-  const defaultIndex = profile
-    ? ageGroups.indexOf(ageGroupForAge(profile.age))
-    : 0
-  const [active, setActive] = useState(defaultIndex < 0 ? 0 : defaultIndex)
-  const group = ageGroups[active]
+  const defaultIndex = profile ? ageGroups.indexOf(ageGroupForAge(profile.age)) : 0;
+  const [active, setActive] = useState(defaultIndex < 0 ? 0 : defaultIndex);
+  const group = ageGroups[active];
 
-  const effective = useMemo(
-    () => resolveEffectivePlan(group, plans, todayISO()),
-    [group, plans],
-  )
+  const effective = useMemo(() => resolveEffectivePlan(group, plans, todayISO()), [group, plans]);
 
   return (
     <div>
-      <SectionHeader icon="🖼️" title={t('guide.title')} />
+      <SectionHeader icon="🖼️" title={t("guide.title")} />
 
       {/* Age-group tabs */}
       <div className="mb-5 flex gap-2">
@@ -40,12 +35,12 @@ export default function ExerciseGuide() {
             key={g.range}
             onClick={() => setActive(i)}
             className={cn(
-              'flex-1 rounded-full border-2 px-2 py-2 text-sm font-bold transition-colors',
+              "flex-1 rounded-full border-2 px-2 py-2 text-sm font-bold transition-colors",
             )}
             style={{
               borderColor: g.color,
-              background: active === i ? g.color : 'transparent',
-              color: active === i ? '#fff' : g.color,
+              background: active === i ? g.color : "transparent",
+              color: active === i ? "#fff" : g.color,
             }}
           >
             {g.range}
@@ -72,11 +67,11 @@ export default function ExerciseGuide() {
       {/* Exercise cards (effective plan: defaults + user overrides) */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {effective.map((item) => {
-          const ex = item.exercise
-          const def = group.exercises.find((e) => e.id === ex.id)
+          const ex = item.exercise;
+          const def = group.exercises.find((e) => e.id === ex.id);
           const setsDisplay = ex.isRepBased
             ? `${item.setsCount}×${item.repsTarget}`
-            : pickLangOpt(language, ex.sets, ex.setsLT)
+            : pickLangOpt(language, ex.sets, ex.setsLT);
           return (
             <div
               key={ex.id}
@@ -102,7 +97,7 @@ export default function ExerciseGuide() {
                     onClick={() => router.push(`/plan/edit?exercise=${ex.id}&group=${active}`)}
                     className="text-xs font-semibold text-slate-400 hover:text-navy dark:hover:text-flag-yellow"
                   >
-                    ✏️ {t('common.edit')}
+                    ✏️ {t("common.edit")}
                   </button>
                 </div>
               </div>
@@ -111,16 +106,16 @@ export default function ExerciseGuide() {
               </div>
               {def && item.isCustom && (
                 <div className="mt-1 text-[11px] text-slate-400">
-                  {t('plan.defaultWas', { sets: def.sets, goal: def.target })}
+                  {t("plan.defaultWas", { sets: def.sets, goal: def.target })}
                 </div>
               )}
               <div className="mt-3 flex justify-center rounded-lg bg-slate-50 px-3 py-3 dark:bg-slate-700/40">
                 <MuscleDisplay exerciseId={ex.id} compact />
               </div>
             </div>
-          )
+          );
         })}
       </div>
     </div>
-  )
+  );
 }

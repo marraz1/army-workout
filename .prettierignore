@@ -1,0 +1,12 @@
+dist
+build
+node_modules
+coverage
+.next
+out
+package-lock.json
+
+# Local requirements/design docs (not app source)
+LAF_App_Update_Requirements_v1.1.jsx
+LAF_App_Update_Requirements_v2.0.jsx
+LAF_Workout_App_Requirements.jsx

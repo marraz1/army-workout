@@ -1,57 +1,51 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { todayISO } from '@/lib/utils'
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { todayISO } from "@/lib/utils";
 
-export type HeatStatus =
-  | 'completed'
-  | 'partial'
-  | 'skipped'
-  | 'cheat'
-  | 'recovery'
-  | 'rest'
+export type HeatStatus = "completed" | "partial" | "skipped" | "cheat" | "recovery" | "rest";
 
 export const heatColor: Record<HeatStatus, string> = {
-  completed: '#22c55e',
-  partial: '#eab308',
-  skipped: '#ef4444',
-  cheat: '#8b5cf6',
-  recovery: '#06b6d4',
-  rest: '#cbd5e1',
-}
+  completed: "#22c55e",
+  partial: "#eab308",
+  skipped: "#ef4444",
+  cheat: "#8b5cf6",
+  recovery: "#06b6d4",
+  rest: "#cbd5e1",
+};
 
 interface HeatmapProps {
   /** ISO date (YYYY-MM-DD) → status. */
-  statusByDate: Record<string, HeatStatus>
-  onSelectDate?: (dateISO: string) => void
+  statusByDate: Record<string, HeatStatus>;
+  onSelectDate?: (dateISO: string) => void;
 }
 
-const WEEKDAY_KEYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+const WEEKDAY_KEYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
 function monthLabel(year: number, month: number, locale: string): string {
-  return new Date(year, month, 1).toLocaleDateString(locale, { month: 'long', year: 'numeric' })
+  return new Date(year, month, 1).toLocaleDateString(locale, { month: "long", year: "numeric" });
 }
 
 /** Monthly calendar grid, each day cell coloured by status. Mon-first. */
 export function Heatmap({ statusByDate, onSelectDate }: HeatmapProps) {
-  const { t, i18n } = useTranslation()
-  const localeTag = i18n.language === 'lt' ? 'lt-LT' : 'en-GB'
-  const now = new Date()
-  const [year, setYear] = useState(now.getFullYear())
-  const [month, setMonth] = useState(now.getMonth())
+  const { t, i18n } = useTranslation();
+  const localeTag = i18n.language === "lt" ? "lt-LT" : "en-GB";
+  const now = new Date();
+  const [year, setYear] = useState(now.getFullYear());
+  const [month, setMonth] = useState(now.getMonth());
 
-  const first = new Date(year, month, 1)
-  const daysInMonth = new Date(year, month + 1, 0).getDate()
+  const first = new Date(year, month, 1);
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
   // JS getDay 0=Sun..6=Sat → Mon-first leading blanks.
-  const leading = (first.getDay() + 6) % 7
-  const today = todayISO()
+  const leading = (first.getDay() + 6) % 7;
+  const today = todayISO();
 
   const step = (delta: number) => {
-    const d = new Date(year, month + delta, 1)
-    setYear(d.getFullYear())
-    setMonth(d.getMonth())
-  }
+    const d = new Date(year, month + delta, 1);
+    setYear(d.getFullYear());
+    setMonth(d.getMonth());
+  };
 
   return (
     <div>
@@ -59,15 +53,17 @@ export function Heatmap({ statusByDate, onSelectDate }: HeatmapProps) {
         <button
           onClick={() => step(-1)}
           className="rounded-lg px-3 py-1 text-sm font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700"
-          aria-label={t('a11y.previousMonth')}
+          aria-label={t("a11y.previousMonth")}
         >
           ‹
         </button>
-        <div className="text-sm font-bold text-navy dark:text-slate-100">{monthLabel(year, month, localeTag)}</div>
+        <div className="text-sm font-bold text-navy dark:text-slate-100">
+          {monthLabel(year, month, localeTag)}
+        </div>
         <button
           onClick={() => step(1)}
           className="rounded-lg px-3 py-1 text-sm font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700"
-          aria-label={t('a11y.nextMonth')}
+          aria-label={t("a11y.nextMonth")}
         >
           ›
         </button>
@@ -83,26 +79,26 @@ export function Heatmap({ statusByDate, onSelectDate }: HeatmapProps) {
           <div key={`blank-${i}`} />
         ))}
         {Array.from({ length: daysInMonth }).map((_, i) => {
-          const day = i + 1
-          const iso = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
-          const status = statusByDate[iso]
-          const isToday = iso === today
+          const day = i + 1;
+          const iso = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+          const status = statusByDate[iso];
+          const isToday = iso === today;
           return (
             <button
               key={iso}
               onClick={() => onSelectDate?.(iso)}
               className="flex aspect-square items-center justify-center rounded-md text-[11px] font-semibold transition-transform active:scale-95"
               style={{
-                background: status ? heatColor[status] : 'transparent',
-                color: status && status !== 'rest' ? '#fff' : '#94a3b8',
-                border: isToday ? '2px solid #1e3a5f' : '1px solid #e2e8f0',
+                background: status ? heatColor[status] : "transparent",
+                color: status && status !== "rest" ? "#fff" : "#94a3b8",
+                border: isToday ? "2px solid #1e3a5f" : "1px solid #e2e8f0",
               }}
             >
               {day}
             </button>
-          )
+          );
         })}
       </div>
     </div>
-  )
+  );
 }

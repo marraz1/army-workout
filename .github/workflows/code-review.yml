@@ -1,0 +1,38 @@
+name: Code Review
+
+# Free automated code review: runs ESLint and posts findings as inline
+# review comments on the PR. Uses the built-in GITHUB_TOKEN — no secret,
+# no subscription, no external signup required.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  eslint-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - uses: reviewdog/action-eslint@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+          # Only comment on lines changed in the PR, not the whole codebase.
+          filter_mode: added
+          eslint_flags: "."
+          # Don't fail this job on findings — the CI workflow already gates
+          # merges on lint errors; this job is purely for review comments.
+          fail_on_error: false
